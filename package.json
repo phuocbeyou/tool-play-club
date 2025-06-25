@@ -1,0 +1,85 @@
+{
+  "name": "tool-play-club",
+  "version": "1.0.0",
+  "description": "Universal tool with cross-platform executable build support",
+  "type": "module",
+  "main": "./index.js",
+  "bin": "./index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "build": "node build.js",
+    "build:bun": "bun build --compile ./index.js --outfile dist/tool-play-club",
+    "build:win": "bun build --compile ./index.js --outfile dist/tool-play-club.exe",
+    "build:mac": "bun build --compile ./index.js --outfile dist/tool-play-club-macos",
+    "build:linux": "bun build --compile ./index.js --outfile dist/tool-play-club-linux",
+    "clean": "rm -rf dist && mkdir -p dist",
+    "test": "node index.js --help"
+  },
+  "keywords": [
+    "tool",
+    "cli",
+    "executable",
+    "cross-platform"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.10.0",
+    "boxen": "^8.0.1",
+    "chalk": "^5.4.1",
+    "dotenv": "^16.5.0",
+    "inquirer": "^12.6.3",
+    "websocket": "^1.0.35"
+  },
+  "devDependencies": {
+    "esbuild": "^0.19.0",
+    "postject": "^1.0.0-alpha.6"
+  },
+  "files": [
+    "index.js",
+    "src/",
+    "build.js",
+    "README.md",
+    "users.json"
+  ],
+  "bun": {
+    "build": {
+      "entrypoint": "./index.js",
+      "outdir": "./dist",
+      "target": "bun",
+      "minify": true,
+      "sourcemap": false
+    }
+  },
+  "build": {
+    "executable": {
+      "name": "tool-play-club",
+      "platforms": [
+        "win32",
+        "darwin",
+        "linux"
+      ],
+      "architectures": [
+        "x64",
+        "arm64"
+      ]
+    },
+    "assets": [
+      "users.json",
+      "config/",
+      "templates/"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/tool-play-club.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/tool-play-club/issues"
+  },
+  "homepage": "https://github.com/yourusername/tool-play-club#readme"
+}
