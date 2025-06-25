@@ -1,0 +1,20 @@
+# dependencies
+node_modules/
+
+# production
+dist/
+build/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# dotenv
+.env
+
+# OS files
+.DS_Store
+
+# VSCode settings
+.vscode/
