@@ -29,7 +29,7 @@ export function parseAndValidate(input) {
   
       const data = arr[4];
   
-      const requiredKeys = ["info", "signature", "pid", "subi"];
+      const requiredKeys = ["info", "signature"];
       for (const key of requiredKeys) {
         if (!(key in data)) {
           throw new Error(`Thiếu khóa '${key}' trong phần tử thứ 5.`);
