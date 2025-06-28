@@ -1,0 +1,84 @@
+export const config = {
+    "gameSettings": {
+      "BET_AMOUNT": 1000,
+      "JACKPOT_THRESHOLD": 5000000
+    },
+    "gameRules": [
+      "Trò chơi dựa trên kết quả của 3 viên xúc xắc.",
+      "Tổng điểm từ 4 đến 10 là XỈU.",
+      "Tổng điểm từ 11 đến 17 là TÀI.",
+      "Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU)."
+    ],
+    "bettingRules": [
+      {
+        "id": "rule_1_tai_tai_bet_tai",
+        "name": "Theo cầu Tài (2 Tài liên tiếp)",
+        "pattern": ["TAI", "TAI"],
+        "betOn": "TAI",
+        "priority": 10,
+        "active": true,
+        "description": "Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI.",
+        "betAmount": 2000
+      },
+      {
+        "id": "rule_2_xiu_xiu_bet_xiu",
+        "name": "Theo cầu Xỉu (2 Xỉu liên tiếp)",
+        "pattern": ["XIU", "XIU"],
+        "betOn": "XIU",
+        "priority": 10,
+        "active": true,
+        "description": "Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu.",
+        "betAmount": 2000
+      },
+      {
+        "id": "rule_3_tai_tai_bet_xiu",
+        "name": "Bẻ cầu Tài (2 Tài liên tiếp, bẻ sang Xỉu)",
+        "pattern": ["TAI", "TAI"],
+        "betOn": "XIU",
+        "priority": 5,
+        "active": false,
+        "description": "Nếu 2 phiên gần nhất đều ra TÀI, đặt cược Xỉu (ưu tiên cao hơn để bẻ cầu).",
+        "betAmount": 5000
+      },
+      {
+        "id": "rule_4_xiu_xiu_bet_tai",
+        "name": "Bẻ cầu Xỉu (2 Xỉu liên tiếp, bẻ sang Tài)",
+        "pattern": ["XIU", "XIU"],
+        "betOn": "TAI",
+        "priority": 5,
+        "active": false,
+        "description": "Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Tài (ưu tiên cao hơn để bẻ cầu).",
+        "betAmount": 5000
+      },
+      {
+        "id": "rule_5_tai_xiu_tai_bet_xiu",
+        "name": "Cầu 1-1 (Tài-Xỉu-Tài)",
+        "pattern": ["TAI", "XIU", "TAI"],
+        "betOn": "XỈU",
+        "priority": 15,
+        "active": true,
+        "description": "Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu.",
+        "betAmount": 1500
+      },
+      {
+        "id": "rule_6_xiu_tai_xiu_bet_tai",
+        "name": "Cầu 1-1 (Xỉu-Tài-Xỉu)",
+        "pattern": ["XIU", "TAI", "XIU"],
+        "betOn": "TAI",
+        "priority": 15,
+        "active": true,
+        "description": "Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài.",
+        "betAmount": 1500
+      },
+      {
+        "id": "rule_7_any_bet_tai_if_jackpot_high",
+        "name": "Cược Tài khi hũ cực cao (quy tắc dự phòng)",
+        "pattern": [],
+        "betOn": "TAI",
+        "priority": 99,
+        "active": false,
+        "description": "Quy tắc dự phòng: Luôn đặt Tài nếu hũ rất cao và không có quy tắc nào khác khớp. (Pattern rỗng khớp mọi lúc)",
+        "betAmount": 1000
+      }
+    ]
+  }

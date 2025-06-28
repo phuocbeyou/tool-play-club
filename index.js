@@ -1,24 +1,28 @@
 import {
   promptMainMenu,
-  promptAccountMenu,
-  promptUserAdd,
-  promptUserUpdate,
-  promptUserDelete,
-  promptUserSelect,
 } from './src/ui/prompt.js';
 
 import {
-  userAdd,
   userUpdate,
   userDelete,
   userSelect,
   userGetSelected,
+  tokenAdd,
 } from './src/commands/user.js';
 import { showBanner } from './src/ui/banner.js';
+import { promptAccountMenu,promptUserAdd,
+  promptUserUpdate,
+  promptUserDelete,
+  promptUserSelect, } from './src/ui/promptUser.js';
+import { promptEvenOddMenu, promptSetBetCombos, promptSetBetRule, promptSetJackpot } from './src/ui/promtEvenOdd.js';
+import { setBetCombos, setBetRule, setJackpotTargetValue } from './src/commands/evenOdd.js';
+import { promptArletMenu, promptSetWalletAlert } from './src/ui/promptArlet.js';
+import { setWalletAlertConfig } from './src/commands/arlet.js';
+import { startGame, stopGame } from './src/socket/index.js';
 
 async function main() {
+  showBanner()
   while (true) {
-    showBanner()
     const mainCmd = await promptMainMenu();
 
     if (mainCmd === 'exit') {
@@ -34,10 +38,11 @@ async function main() {
 
         if (accountCmd === 'add') {
           const user = await promptUserAdd();
-          await userAdd(user);
+          const userData = user.metaData
+          await tokenAdd(userData);
         } else if (accountCmd === 'update') {
           const user = await promptUserUpdate();
-          await userUpdate(user);
+          await userUpdate(user.metaData);
         } else if (accountCmd === 'delete') {
           const { id } = await promptUserDelete();
           await userDelete(id);
@@ -50,18 +55,43 @@ async function main() {
       }
     }
 
-    // Các case cho các menu khác
-    else if (mainCmd === 'check_wallet') {
-      // gọi function kiểm tra tiền ví ở đây
-      console.log('Kiểm tra tiền trong ví (demo)');
-    } else if (mainCmd === 'get_token') {
-      // gọi function lấy token
-      console.log('Lấy token account (demo)');
+    else if (mainCmd === 'even_odd') {
+      while (true) {
+        const action = await promptEvenOddMenu();
+    
+        if (action === 'back') break;
+    
+        if (action === 'set_jackpot') {
+          const jackpot = await promptSetJackpot();
+          await setJackpotTargetValue(jackpot);
+        }
+        else if (action === 'set_combos') {
+          const combos = await promptSetBetCombos();
+          await setBetCombos(combos);
+        }
+        else if (action === 'set_rule') {
+          const rule = await promptSetBetRule();
+          await setBetRule(rule);
+        }
+      }
+    } else if (mainCmd === 'alerts') {
+      while (true) {
+        const action = await promptArletMenu();
+    
+        if (action === 'back') break;
+    
+        if (action === 'wallet') {
+          console.log('ping 82')
+          const config = await promptSetWalletAlert();
+          await setWalletAlertConfig(config);
+        }
+      }
     } else if (mainCmd === 'start_bet') {
-      // gọi function bắt đầu cược
-      console.log('Bắt đầu cược (demo)');
+      startGame()
     }
-    // ... thêm cho taixiu, baocua, alerts sau
+    else if (mainCmd === 'stop_bet') {
+      stopGame()
+    }
   }
 }
 

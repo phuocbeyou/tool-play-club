@@ -1,0 +1,21 @@
+{
+  "jackpotTarget": 1000000,
+  "betCombos": [
+    {
+      "threshold": 1000000,
+      "amount": 1000
+    }
+  ],
+  "betRule": {
+    "pattern": [
+      "\"xiu",
+      "xiu\""
+    ],
+    "result": "\"xiu\""
+  },
+  "walletAlert": {
+    "threshold": 1000000,
+    "interval": 2,
+    "lastSent": 0
+  }
+}
