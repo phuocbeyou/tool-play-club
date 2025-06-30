@@ -749,3 +749,791 @@ man (5:13:17 PM) Kết quả [36m#2059720[39m[32m XIU[39m
 [90mLịch sử gần đây: [XIU, TAI, XIU, TAI, TAI, TAI, XIU, XIU, XIU, XIU][39m
 [34m[10:10:18 PM] [39m[35mHũ hiện tại: [39m[32m185703013 đ[39m
 [34m[10:10:38 PM] [39mPhiên mới bắt đầu: [36m#2060018[39m. Đang chờ đặt cược...
+[36mKết nối Simms thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 2000 đ)[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 1500 đ)[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m5000000 đ[39m[33m[39m
+[36mKết nối MainGame thành công.[39m
+[34m[12:26:22 PM] [39mKết quả phiên [36m#2060873[39m: [32mTAI (14 điểm)[39m
+[90mLịch sử gần đây: [TAI, TAI, XIU, XIU, XIU, XIU, TAI, TAI, XIU, TAI][39m
+[34m[12:26:22 PM] [39m[35mHũ hiện tại: [39m[32m8574384 đ[39m
+[34m[12:26:24 PM] [39mSố dư ví: [32m109997 đ[39m
+[34m[12:26:42 PM] [39mPhiên mới bắt đầu: [36m#2060874[39m. Đang chờ đặt cược...
+[35m[12:26:52 PM] [39mĐã chọn quy tắc: [33mCầu 1-1 (Tài-Xỉu-Tài)[39m - Đặt cược: [33mXỈU[39m với số tiền [31m1500[39m đ.
+[34m[12:26:52 PM] [39mĐang cố gắng đặt 1500 đ vào cửa [33mXỈU[39m cho phiên [36m#2060874[39m.
+[34m[12:26:52 PM] [39mPhiên [36m#2060874[39m - [32mNgười dùng: phuocph1903[39m - Đặt cược: [31m1500[39m đ. [35mCược thành công cửa: [39m[33mXỈU[39m
+[34m[12:26:54 PM] [39mSố dư ví: [32m108497 đ[39m
+[34m[12:27:22 PM] [39mKết quả phiên [36m#2060874[39m: [32mTAI (11 điểm)[39m
+[90mLịch sử gần đây: [TAI, XIU, XIU, XIU, XIU, TAI, TAI, XIU, TAI, TAI][39m
+[31mĐang dừng quản lý trò chơi...[39m
+[32mQuản lý trò chơi đã dừng thành công.[39m
+[32mTrò chơi đã dừng bởi người dùng.[39m
+[33mKết nối đã đóng (MainGame): Trò chơi dừng theo yêu cầu người dùng.[39m
+[33mQuản lý trò chơi đã dừng.[39m
+[36mKết nối Simms thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 2000 đ)[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 1500 đ)[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m5000000 đ[39m[33m[39m
+[36mKết nối MainGame thành công.[39m
+[34m[11:10:13 PM] [39mSố dư ví: [32m45250 đ[39m
+[34m[11:10:25 PM] [39mKết quả phiên [36m#2061517[39m: [32mXIU (9 điểm)[39m
+[90mLịch sử gần đây: [XIU, XIU, TAI, XIU, TAI, TAI, XIU, XIU, TAI, XIU][39m
+[34m[11:10:25 PM] [39m[35mHũ hiện tại: [39m[32m15692682 đ[39m
+[31mĐang dừng quản lý trò chơi...[39m
+[32mQuản lý trò chơi đã dừng thành công.[39m
+[32mTrò chơi đã dừng bởi người dùng.[39m
+[33mKết nối đã đóng (MainGame): Trò chơi dừng theo yêu cầu người dùng.[39m
+[33mQuản lý trò chơi đã dừng.[39m
+[36mKết nối Simms thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 1500 đ)[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m5000000 đ[39m[33m[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 2000 đ)[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[36mKết nối MainGame thành công.[39m
+[34m[11:12:00 PM] [39mSố dư ví: [32m45250 đ[39m
+[31mĐang dừng quản lý trò chơi...[39m
+[32mQuản lý trò chơi đã dừng thành công.[39m
+[32mTrò chơi đã dừng bởi người dùng.[39m
+[33mKết nối đã đóng (MainGame): Trò chơi dừng theo yêu cầu người dùng.[39m
+[33mQuản lý trò chơi đã dừng.[39m
+[36mKết nối MainGame thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 2000 đ)[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 1500 đ)[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m5000000 đ[39m[33m[39m
+[36mKết nối Simms thành công.[39m
+[34m[11:15:40 PM] [39mSố dư ví: [32m45250 đ[39m
+[31mĐang dừng quản lý trò chơi...[39m
+[32mQuản lý trò chơi đã dừng thành công.[39m
+[32mTrò chơi đã dừng bởi người dùng.[39m
+[33mKết nối đã đóng (MainGame): Trò chơi dừng theo yêu cầu người dùng.[39m
+[33mQuản lý trò chơi đã dừng.[39m
+[36mKết nối MainGame thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 2000 đ)[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 1500 đ)[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m5000000 đ[39m[33m[39m
+[36mKết nối Simms thành công.[39m
+[34m[11:16:13 PM] [39mSố dư ví: [32m45250 đ[39m
+[34m[11:16:25 PM] [39mKết quả phiên [36m#2061523[39m: [32mTAI (16 điểm)[39m
+[90mLịch sử gần đây: [XIU, XIU, TAI, XIU, TAI, TAI, XIU, XIU, XIU, TAI][39m
+[34m[11:16:25 PM] [39m[35mHũ hiện tại: [39m[32m18146110 đ[39m
+[31mĐang dừng quản lý trò chơi...[39m
+[32mQuản lý trò chơi đã dừng thành công.[39m
+[32mTrò chơi đã dừng bởi người dùng.[39m
+[33mKết nối đã đóng (MainGame): Trò chơi dừng theo yêu cầu người dùng.[39m
+[33mQuản lý trò chơi đã dừng.[39m
+[36mKết nối Simms thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 2000 đ)[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 1500 đ)[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m5000000 đ[39m[33m[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[36mKết nối MainGame thành công.[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[34m[11:17:32 PM] [39mSố dư ví: [32m45250 đ[39m
+[34m[11:17:45 PM] [39mPhiên mới bắt đầu: [36m#2061525[39m. Đang chờ đặt cược...
+[31mĐang dừng quản lý trò chơi...[39m
+[32mQuản lý trò chơi đã dừng thành công.[39m
+[32mTrò chơi đã dừng bởi người dùng.[39m
+[33mKết nối đã đóng (MainGame): Trò chơi dừng theo yêu cầu người dùng.[39m
+[33mQuản lý trò chơi đã dừng.[39m
+[90m[11:18:01 PM] [39mBỏ qua đặt cược cho phiên [36m#2061525[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[36mKết nối Simms thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 2000 đ)[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m5000000 đ[39m[33m[39m
+[36mKết nối MainGame thành công.[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 1500 đ)[39m
+[34m[11:28:09 PM] [39mSố dư ví: [32m45250 đ[39m
+[31mĐang dừng quản lý trò chơi...[39m
+[32mQuản lý trò chơi đã dừng thành công.[39m
+[32mTrò chơi đã dừng bởi người dùng.[39m
+[33mKết nối đã đóng (MainGame): Trò chơi dừng theo yêu cầu người dùng.[39m
+[33mQuản lý trò chơi đã dừng.[39m
+[36mKết nối Simms thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 2000 đ)[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 1500 đ)[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m5000000 đ[39m[33m[39m
+[36mKết nối MainGame thành công.[39m
+[34m[11:35:20 PM] [39mSố dư ví: [32m45250 đ[39m
+[31mĐang dừng quản lý trò chơi...[39m
+[32mTrò chơi đã dừng bởi người dùng.[39m
+[32mQuản lý trò chơi đã dừng thành công.[39m
+[33mKết nối đã đóng (MainGame): Trò chơi dừng theo yêu cầu người dùng.[39m
+[33mQuản lý trò chơi đã dừng.[39m
+[36mKết nối Simms thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 2000 đ)[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 1500 đ)[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33mNgưỡng dừng cược: [32m20000 đ[39m[33m[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m5000000 đ[39m[33m[39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[36mKết nối MainGame thành công.[39m
+[34m[11:50:05 PM] [39mSố dư ví: [32m45250 đ[39m
+[34m[11:50:25 PM] [39mKết quả phiên [36m#2061557[39m: [32mXIU (5 điểm)[39m
+[90mLịch sử gần đây: [XIU, XIU, TAI, XIU, TAI, XIU, XIU, XIU, TAI, XIU][39m
+[34m[11:50:25 PM] [39m[35mHũ hiện tại: [39m[32m29082357 đ[39m
+[34m[11:50:45 PM] [39mPhiên mới bắt đầu: [36m#2061558[39m. Đang chờ đặt cược...
+[35m[11:51:05 PM] [39mĐã chọn quy tắc: [33mCầu 1-1 (Xỉu-Tài-Xỉu)[39m - Đặt cược: [33mTAI[39m với số tiền [31m1500[39m đ.
+[34m[11:51:05 PM] [39mĐang cố gắng đặt 1500 đ vào cửa [33mTAI[39m cho phiên [36m#2061558[39m.
+[34m[11:51:05 PM] [39mPhiên [36m#2061558[39m - [32mNgười dùng: akay131[39m - Đặt cược: [31m1500[39m đ. [35mCược thành công cửa: [39m[33mTAI[39m
+[34m[11:51:05 PM] [39mSố dư ví: [32m43750 đ[39m
+[34m[11:51:25 PM] [39mKết quả phiên [36m#2061558[39m: [32mXIU (10 điểm)[39m
+[90mLịch sử gần đây: [XIU, TAI, XIU, TAI, XIU, XIU, XIU, TAI, XIU, XIU][39m
+[34m[11:51:25 PM] [39m[35mHũ hiện tại: [39m[32m30067515 đ[39m
+[34m[11:51:45 PM] [39mPhiên mới bắt đầu: [36m#2061559[39m. Đang chờ đặt cược...
+[35m[11:51:55 PM] [39mĐã chọn quy tắc: [33mTheo cầu Xỉu (2 Xỉu liên tiếp)[39m - Đặt cược: [33mXIU[39m với số tiền [31m2000[39m đ.
+[34m[11:51:55 PM] [39mĐang cố gắng đặt 2000 đ vào cửa [33mXIU[39m cho phiên [36m#2061559[39m.
+[34m[11:51:55 PM] [39mPhiên [36m#2061559[39m - [32mNgười dùng: akay131[39m - Đặt cược: [31m2000[39m đ. [35mCược thành công cửa: [39m[33mXIU[39m
+[34m[11:52:00 PM] [39mSố dư ví: [32m41750 đ[39m
+[34m[11:52:25 PM] [39mKết quả phiên [36m#2061559[39m: [32mXIU (9 điểm)[39m
+[90mLịch sử gần đây: [TAI, XIU, TAI, XIU, XIU, XIU, TAI, XIU, XIU, XIU][39m
+[34m[11:52:25 PM] [39m[35mHũ hiện tại: [39m[32m30323015 đ[39m
+[36mKết nối MainGame thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 1000 đ)[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m99999 đ[39m[33m[39m
+[33mNgưỡng dừng cược: [32m100000 đ[39m[33m[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 20000 đ)[39m
+[36mKết nối Simms thành công.[39m
+[34m[2:52:27 PM] [39mSố dư ví: [32m45710 đ[39m
+[34m[2:52:28 PM] [39mKết quả phiên [36m#2062459[39m: [32mXIU (7 điểm)[39m
+[90mLịch sử gần đây: [TAI, TAI, TAI, XIU, TAI, XIU, TAI, XIU, TAI, XIU][39m
+[31mĐang dừng quản lý trò chơi...[39m
+[32mTrò chơi đã dừng bởi người dùng.[39m
+[32mQuản lý trò chơi đã dừng thành công.[39m
+[33mKết nối đã đóng (MainGame): Trò chơi dừng theo yêu cầu người dùng.[39m
+[33mQuản lý trò chơi đã dừng.[39m
+[36mKết nối Simms thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 1000 đ)[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 20000 đ)[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33mNgưỡng dừng cược: [32m100000 đ[39m[33m[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m99999 đ[39m[33m[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[36mKết nối MainGame thành công.[39m
+[34m[2:55:40 PM] [39mSố dư ví: [32m45710 đ[39m
+[34m[2:55:48 PM] [39mPhiên mới bắt đầu: [36m#2062463[39m. Đang chờ đặt cược...
+[90m[2:56:10 PM] [39mBỏ qua đặt cược cho phiên [36m#2062463[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[2:56:28 PM] [39mKết quả phiên [36m#2062463[39m: [32mTAI (13 điểm)[39m
+[90mLịch sử gần đây: [TAI, XIU, TAI, XIU, TAI, XIU, TAI, TAI, TAI, TAI][39m
+[34m[2:56:28 PM] [39m[35mHũ hiện tại: [39m[32m132138243 đ[39m
+[34m[2:56:48 PM] [39mPhiên mới bắt đầu: [36m#2062464[39m. Đang chờ đặt cược...
+[36mKết nối Simms thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 1000 đ)[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 20000 đ)[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m99999 đ[39m[33m[39m
+[33mNgưỡng dừng cược: [32m100000000 đ[39m[33m[39m
+[36mKết nối MainGame thành công.[39m
+[34m[2:57:18 PM] [39mSố dư ví: [32m45710 đ[39m
+[36mKết nối Simms thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 1000 đ)[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 20000 đ)[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m99999 đ[39m[33m[39m
+[33mNgưỡng dừng cược: [32m100000000 đ[39m[33m[39m
+[36mKết nối MainGame thành công.[39m
+[34m[2:58:14 PM] [39mSố dư ví: [32m45710 đ[39m
+[34m[2:58:28 PM] [39mKết quả phiên [36m#2062465[39m: [32mTAI (14 điểm)[39m
+[90mLịch sử gần đây: [TAI, XIU, TAI, XIU, TAI, TAI, TAI, TAI, TAI, TAI][39m
+[34m[2:58:28 PM] [39m[35mHũ hiện tại: [39m[32m135124963 đ[39m
+[34m[2:58:48 PM] [39mPhiên mới bắt đầu: [36m#2062466[39m. Đang chờ đặt cược...
+[35m[2:59:08 PM] [39mĐã chọn quy tắc: [33mTheo cầu Tài (2 Tài liên tiếp)[39m - Đặt cược: [33mTAI[39m với số tiền [31m1000[39m đ.
+[31m[2:59:08 PM] [39mKhông đủ số dư để đặt cược 1.000 ₫. Số dư hiện tại: 45.710 ₫. Đang dừng trò chơi.
+[32mQuản lý trò chơi đã dừng thành công.[39m
+[31mĐang dừng quản lý trò chơi...[39m
+[33mKết nối đã đóng (MainGame): Trò chơi dừng theo yêu cầu người dùng.[39m
+[33mQuản lý trò chơi đã dừng.[39m
+[36mKết nối MainGame thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 1000 đ)[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 20000 đ)[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33mNgưỡng dừng cược: [32m100000000 đ[39m[33m[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m99999 đ[39m[33m[39m
+[36mKết nối Simms thành công.[39m
+[34m[3:01:23 PM] [39mSố dư ví: [32m45710 đ[39m
+[34m[3:01:28 PM] [39mKết quả phiên [36m#2062468[39m: [32mXIU (10 điểm)[39m
+[90mLịch sử gần đây: [XIU, TAI, TAI, TAI, TAI, TAI, TAI, TAI, XIU, XIU][39m
+[34m[3:01:28 PM] [39m[35mHũ hiện tại: [39m[32m136136623 đ[39m
+[34m[3:01:48 PM] [39mPhiên mới bắt đầu: [36m#2062469[39m. Đang chờ đặt cược...
+[35m[3:02:01 PM] [39mĐã chọn quy tắc: [33mTheo cầu Xỉu (2 Xỉu liên tiếp)[39m - Đặt cược: [33mXIU[39m với số tiền [31m2000[39m đ.
+[31m[3:02:01 PM] [39mCảnh báo ví tiền không đủ để cược (dưới ngưỡng dừng cược)Số dư hiện tại: 45.710 ₫. Đang dừng trò chơi.
+[32mQuản lý trò chơi đã dừng thành công.[39m
+[31mĐang dừng quản lý trò chơi...[39m
+[33mKết nối đã đóng (MainGame): Trò chơi dừng theo yêu cầu người dùng.[39m
+[33mQuản lý trò chơi đã dừng.[39m
+[36mKết nối Simms thành công.[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 1000 đ)[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 20000 đ)[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m99999 đ[39m[33m[39m
+[33mNgưỡng dừng cược: [32m100000000 đ[39m[33m[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[36mKết nối MainGame thành công.[39m
+[34m[3:10:43 PM] [39mSố dư ví: [32m45710 đ[39m
+[36mKết nối Simms thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 1000 đ)[39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 20000 đ)[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m99999 đ[39m[33m[39m
+[33mNgưỡng dừng cược: [32m30000 đ[39m[33m[39m
+[36mKết nối MainGame thành công.[39m
+[34m[3:11:20 PM] [39mSố dư ví: [32m45710 đ[39m
+[31mĐang dừng quản lý trò chơi...[39m
+[32mQuản lý trò chơi đã dừng thành công.[39m
+[32mTrò chơi đã dừng bởi người dùng.[39m
+[33mKết nối đã đóng (MainGame): Trò chơi dừng theo yêu cầu người dùng.[39m
+[33mQuản lý trò chơi đã dừng.[39m
+[36mKết nối MainGame thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 1000 đ)[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 20000 đ)[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m99999 đ[39m[33m[39m
+[33mNgưỡng dừng cược: [32m30000 đ[39m[33m[39m
+[36mKết nối Simms thành công.[39m
+[34m[3:11:28 PM] [39mKết quả phiên [36m#2062478[39m: [32mXIU (10 điểm)[39m
+[90mLịch sử gần đây: [XIU, XIU, TAI, XIU, TAI, TAI, TAI, XIU, TAI, XIU][39m
+[34m[3:11:28 PM] [39m[35mHũ hiện tại: [39m[32m138326592 đ[39m
+[34m[3:11:33 PM] [39mSố dư ví: [32m45710 đ[39m
+[34m[3:11:48 PM] [39mPhiên mới bắt đầu: [36m#2062479[39m. Đang chờ đặt cược...
+[35m[3:12:00 PM] [39mĐã chọn quy tắc: [33mCầu 1-1 (Xỉu-Tài-Xỉu)[39m - Đặt cược: [33mTAI[39m với số tiền [31m1500[39m đ.
+[34m[3:12:00 PM] [39mĐang cố gắng đặt 1500 đ vào cửa [33mTAI[39m cho phiên [36m#2062479[39m.
+[34m[3:12:00 PM] [39mPhiên [36m#2062479[39m - [32mNgười dùng: akay131[39m - Đặt cược: [31m1500[39m đ. [35mCược thành công cửa: [39m[33mTAI[39m
+[34m[3:12:03 PM] [39mSố dư ví: [32m44210 đ[39m
+[34m[3:12:28 PM] [39mKết quả phiên [36m#2062479[39m: [32mTAI (15 điểm)[39m
+[90mLịch sử gần đây: [XIU, TAI, XIU, TAI, TAI, TAI, XIU, TAI, XIU, TAI][39m
+[31mĐang dừng quản lý trò chơi...[39m
+[32mQuản lý trò chơi đã dừng thành công.[39m
+[32mTrò chơi đã dừng bởi người dùng.[39m
+[33mKết nối đã đóng (MainGame): Trò chơi dừng theo yêu cầu người dùng.[39m
+[33mQuản lý trò chơi đã dừng.[39m
+[36mKết nối Simms thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 20000 đ)[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 1000 đ)[39m
+[33mNgưỡng dừng cược: [32m30000 đ[39m[33m[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m99999 đ[39m[33m[39m
+[36mKết nối MainGame thành công.[39m
+[34m[3:12:35 PM] [39mSố dư ví: [32m47180 đ[39m
+[34m[3:12:48 PM] [39mPhiên mới bắt đầu: [36m#2062480[39m. Đang chờ đặt cược...
+[90m[3:13:08 PM] [39mBỏ qua đặt cược cho phiên [36m#2062480[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[31mĐang dừng quản lý trò chơi...[39m
+[32mQuản lý trò chơi đã dừng thành công.[39m
+[32mTrò chơi đã dừng bởi người dùng.[39m
+[33mKết nối đã đóng (MainGame): Trò chơi dừng theo yêu cầu người dùng.[39m
+[33mQuản lý trò chơi đã dừng.[39m
+[36mKết nối MainGame thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 1000 đ)[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 20000 đ)[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m10000000 đ[39m[33m[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[33mNgưỡng dừng cược: [32m30000 đ[39m[33m[39m
+[36mKết nối Simms thành công.[39m
+[34m[3:13:42 PM] [39mSố dư ví: [32m47180 đ[39m
+[34m[3:13:48 PM] [39mPhiên mới bắt đầu: [36m#2062481[39m. Đang chờ đặt cược...
+[31mĐang dừng quản lý trò chơi...[39m
+[32mQuản lý trò chơi đã dừng thành công.[39m
+[32mTrò chơi đã dừng bởi người dùng.[39m
+[33mKết nối đã đóng (MainGame): Trò chơi dừng theo yêu cầu người dùng.[39m
+[33mQuản lý trò chơi đã dừng.[39m
+[36mKết nối MainGame thành công.[39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 1000 đ)[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 20000 đ)[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m10000000 đ[39m[33m[39m
+[33mNgưỡng dừng cược: [32m30000 đ[39m[33m[39m
+[36mKết nối Simms thành công.[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[34m[3:13:58 PM] [39mSố dư ví: [32m47180 đ[39m
+[90m[3:14:02 PM] [39mBỏ qua đặt cược cho phiên [36m#2062481[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[3:14:28 PM] [39mKết quả phiên [36m#2062481[39m: [32mXIU (7 điểm)[39m
+[90mLịch sử gần đây: [XIU, TAI, TAI, TAI, XIU, TAI, XIU, TAI, XIU, XIU][39m
+[34m[3:14:28 PM] [39m[35mHũ hiện tại: [39m[32m139151757 đ[39m
+[34m[3:14:48 PM] [39mPhiên mới bắt đầu: [36m#2062482[39m. Đang chờ đặt cược...
+[35m[3:15:10 PM] [39mĐã chọn quy tắc: [33mTheo cầu Xỉu (2 Xỉu liên tiếp)[39m - Đặt cược: [33mXIU[39m với số tiền [31m2000[39m đ.
+[34m[3:15:10 PM] [39mĐang cố gắng đặt 2000 đ vào cửa [33mXIU[39m cho phiên [36m#2062482[39m.
+[34m[3:15:10 PM] [39mPhiên [36m#2062482[39m - [32mNgười dùng: akay131[39m - Đặt cược: [31m2000[39m đ. [35mCược thành công cửa: [39m[33mXIU[39m
+[34m[3:15:13 PM] [39mSố dư ví: [32m45180 đ[39m
+[34m[3:15:28 PM] [39mKết quả phiên [36m#2062482[39m: [32mTAI (18 điểm)[39m
+[90mLịch sử gần đây: [TAI, TAI, TAI, XIU, TAI, XIU, TAI, XIU, XIU, TAI][39m
+[34m[3:15:48 PM] [39mPhiên mới bắt đầu: [36m#2062483[39m. Đang chờ đặt cược...
+[90m[3:16:04 PM] [39mKhông tìm thấy quy tắc đặt cược phù hợp trong lịch sử gần đây.
+[90m[3:16:04 PM] [39mBỏ qua đặt cược cho phiên [36m#2062483[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[3:16:28 PM] [39mKết quả phiên [36m#2062483[39m: [32mTAI (12 điểm)[39m
+[90mLịch sử gần đây: [TAI, TAI, XIU, TAI, XIU, TAI, XIU, XIU, TAI, TAI][39m
+[34m[3:16:29 PM] [39m[35mHũ hiện tại: [39m[32m139431355 đ[39m
+[34m[3:16:48 PM] [39mPhiên mới bắt đầu: [36m#2062484[39m. Đang chờ đặt cược...
+[31mĐang dừng quản lý trò chơi...[39m
+[32mQuản lý trò chơi đã dừng thành công.[39m
+[32mTrò chơi đã dừng bởi người dùng.[39m
+[33mKết nối đã đóng (MainGame): Trò chơi dừng theo yêu cầu người dùng.[39m
+[33mQuản lý trò chơi đã dừng.[39m
+[36mKết nối MainGame thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 1000 đ)[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 20000 đ)[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m10000000 đ[39m[33m[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33mNgưỡng dừng cược: [32m30000 đ[39m[33m[39m
+[36mKết nối Simms thành công.[39m
+[34m[3:17:08 PM] [39mSố dư ví: [32m45180 đ[39m
+[31mKhông thể gửi lệnh đặt cược: Kết nối chưa sẵn sàng hoặc lệnh không hợp lệ.[39m
+[35m[3:17:11 PM] [39mĐã chọn quy tắc: [33mTheo cầu Tài (2 Tài liên tiếp)[39m - Đặt cược: [33mTAI[39m với số tiền [31m1000[39m đ.
+[36mKết nối Simms thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 20000 đ)[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m15000000 đ[39m[33m[39m
+[33mNgưỡng dừng cược: [32m30000 đ[39m[33m[39m
+[36mKết nối MainGame thành công.[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 1000 đ)[39m
+[34m[3:17:47 PM] [39mSố dư ví: [32m45180 đ[39m
+[34m[3:17:48 PM] [39mPhiên mới bắt đầu: [36m#2062485[39m. Đang chờ đặt cược...
+[31mĐang dừng quản lý trò chơi...[39m
+[32mQuản lý trò chơi đã dừng thành công.[39m
+[32mTrò chơi đã dừng bởi người dùng.[39m
+[33mKết nối đã đóng (MainGame): Trò chơi dừng theo yêu cầu người dùng.[39m
+[33mQuản lý trò chơi đã dừng.[39m
+[36mKết nối Simms thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 1000 đ)[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 20000 đ)[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33mNgưỡng dừng cược: [32m30000 đ[39m[33m[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m15000000 đ[39m[33m[39m
+[36mKết nối MainGame thành công.[39m
+[34m[3:18:02 PM] [39mSố dư ví: [32m45180 đ[39m
+[90m[3:18:06 PM] [39mBỏ qua đặt cược cho phiên [36m#2062485[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[3:18:28 PM] [39mKết quả phiên [36m#2062485[39m: [32mTAI (14 điểm)[39m
+[90mLịch sử gần đây: [XIU, TAI, XIU, TAI, XIU, XIU, TAI, TAI, TAI, TAI][39m
+[34m[3:18:29 PM] [39m[35mHũ hiện tại: [39m[32m140421203 đ[39m
+[34m[3:18:48 PM] [39mPhiên mới bắt đầu: [36m#2062486[39m. Đang chờ đặt cược...
+[35m[3:18:59 PM] [39mĐã chọn quy tắc: [33mTheo cầu Tài (2 Tài liên tiếp)[39m - Đặt cược: [33mTAI[39m với số tiền [31m1000[39m đ.
+[34m[3:18:59 PM] [39mĐang cố gắng đặt 1000 đ vào cửa [33mTAI[39m cho phiên [36m#2062486[39m.
+[34m[3:18:59 PM] [39mPhiên [36m#2062486[39m - [32mNgười dùng: akay131[39m - Đặt cược: [31m1000[39m đ. [35mCược thành công cửa: [39m[33mTAI[39m
+[34m[3:19:02 PM] [39mSố dư ví: [32m44180 đ[39m
+[34m[3:19:28 PM] [39mKết quả phiên [36m#2062486[39m: [32mTAI (13 điểm)[39m
+[90mLịch sử gần đây: [TAI, XIU, TAI, XIU, XIU, TAI, TAI, TAI, TAI, TAI][39m
+[34m[3:19:48 PM] [39mPhiên mới bắt đầu: [36m#2062487[39m. Đang chờ đặt cược...
+[35m[3:20:05 PM] [39mĐã chọn quy tắc: [33mTheo cầu Tài (2 Tài liên tiếp)[39m - Đặt cược: [33mTAI[39m với số tiền [31m1000[39m đ.
+[34m[3:20:05 PM] [39mĐang cố gắng đặt 1000 đ vào cửa [33mTAI[39m cho phiên [36m#2062487[39m.
+[34m[3:20:05 PM] [39mPhiên [36m#2062487[39m - [32mNgười dùng: akay131[39m - Đặt cược: [31m1000[39m đ. [35mCược thành công cửa: [39m[33mTAI[39m
+[34m[3:20:07 PM] [39mSố dư ví: [32m45160 đ[39m
+[34m[3:20:28 PM] [39mKết quả phiên [36m#2062487[39m: [32mTAI (13 điểm)[39m
+[90mLịch sử gần đây: [XIU, TAI, XIU, XIU, TAI, TAI, TAI, TAI, TAI, TAI][39m
+[34m[3:20:29 PM] [39m[35mHũ hiện tại: [39m[32m142614240 đ[39m
+[34m[3:20:48 PM] [39mPhiên mới bắt đầu: [36m#2062488[39m. Đang chờ đặt cược...
+[35m[3:21:16 PM] [39mĐã chọn quy tắc: [33mTheo cầu Tài (2 Tài liên tiếp)[39m - Đặt cược: [33mTAI[39m với số tiền [31m1000[39m đ.
+[34m[3:21:16 PM] [39mĐang cố gắng đặt 1000 đ vào cửa [33mTAI[39m cho phiên [36m#2062488[39m.
+[34m[3:21:16 PM] [39mPhiên [36m#2062488[39m - [32mNgười dùng: akay131[39m - Đặt cược: [31m1000[39m đ. [35mCược thành công cửa: [39m[33mTAI[39m
+[34m[3:21:17 PM] [39mSố dư ví: [32m46140 đ[39m
+[34m[3:21:28 PM] [39mKết quả phiên [36m#2062488[39m: [32mXIU (9 điểm)[39m
+[90mLịch sử gần đây: [TAI, XIU, XIU, TAI, TAI, TAI, TAI, TAI, TAI, XIU][39m
+[34m[3:21:48 PM] [39mPhiên mới bắt đầu: [36m#2062489[39m. Đang chờ đặt cược...
+[90m[3:22:15 PM] [39mKhông tìm thấy quy tắc đặt cược phù hợp trong lịch sử gần đây.
+[90m[3:22:15 PM] [39mBỏ qua đặt cược cho phiên [36m#2062489[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[90mLịch sử gần đây: [XIU, XIU, TAI, TAI, TAI, TAI, TAI, TAI, XIU, TAI][39m
+[34m[3:22:28 PM] [39mKết quả phiên [36m#2062489[39m: [32mTAI (11 điểm)[39m
+[34m[3:22:48 PM] [39mPhiên mới bắt đầu: [36m#2062490[39m. Đang chờ đặt cược...
+[35m[3:23:05 PM] [39mĐã chọn quy tắc: [33mCầu 1-1 (Tài-Xỉu-Tài)[39m - Đặt cược: [33mXỈU[39m với số tiền [31m20000[39m đ.
+[34m[3:23:05 PM] [39mĐang cố gắng đặt 20000 đ vào cửa [33mXỈU[39m cho phiên [36m#2062490[39m.
+[34m[3:23:05 PM] [39mPhiên [36m#2062490[39m - [32mNgười dùng: akay131[39m - Đặt cược: [31m20000[39m đ. [35mCược thành công cửa: [39m[33mXỈU[39m
+[34m[3:23:07 PM] [39mSố dư ví: [32m26140 đ[39m
+[34m[3:23:29 PM] [39mKết quả phiên [36m#2062490[39m: [32mTAI (11 điểm)[39m
+[90mLịch sử gần đây: [XIU, TAI, TAI, TAI, TAI, TAI, TAI, XIU, TAI, TAI][39m
+[34m[3:23:29 PM] [39m[35mHũ hiện tại: [39m[32m142757054 đ[39m
+[34m[3:23:48 PM] [39mPhiên mới bắt đầu: [36m#2062491[39m. Đang chờ đặt cược...
+[31m[3:24:04 PM] [39mCảnh báo ví tiền không đủ để cược (dưới ngưỡng dừng cược)Số dư hiện tại: 26.140 ₫. Đang dừng trò chơi.
+[35m[3:24:04 PM] [39mĐã chọn quy tắc: [33mTheo cầu Tài (2 Tài liên tiếp)[39m - Đặt cược: [33mTAI[39m với số tiền [31m1000[39m đ.
+[31mĐang dừng quản lý trò chơi...[39m
+[32mQuản lý trò chơi đã dừng thành công.[39m
+[33mKết nối đã đóng (MainGame): Trò chơi dừng theo yêu cầu người dùng.[39m
+[33mQuản lý trò chơi đã dừng.[39m
+[33m[3:28:05 PM] Phát hiện thay đổi trong rule.json (change). Đang tải lại...[39m
+[33m[3:28:05 PM] Phát hiện thay đổi trong rule.json (change). Đang tải lại...[39m
+[32m[3:28:06 PM] Cấu hình rule.json đã được tải lại.[39m
+[36mKết nối Simms thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 1000 đ)[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m10000000 đ[39m[33m[39m
+[33mNgưỡng dừng cược: [32m1000 đ[39m[33m[39m
+[36mKết nối MainGame thành công.[39m
+[34m[3:28:13 PM] [39mSố dư ví: [32m26140 đ[39m
+[31mĐang dừng quản lý trò chơi...[39m
+[32mQuản lý trò chơi đã dừng thành công.[39m
+[32mTrò chơi đã dừng bởi người dùng.[39m
+[33mKết nối đã đóng (MainGame): Trò chơi dừng theo yêu cầu người dùng.[39m
+[33mQuản lý trò chơi đã dừng.[39m
+[36mKết nối MainGame thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 1000 đ)[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[33mNgưỡng dừng cược: [32m1000 đ[39m[33m[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m10000000 đ[39m[33m[39m
+[36mKết nối Simms thành công.[39m
+[34m[3:28:46 PM] [39mSố dư ví: [32m26140 đ[39m
+[34m[3:28:49 PM] [39mPhiên mới bắt đầu: [36m#2062496[39m. Đang chờ đặt cược...
+[33m[3:28:58 PM] Phát hiện thay đổi trong rule.json (change). Đang tải lại...[39m
+[33m[3:28:58 PM] Phát hiện thay đổi trong rule.json (change). Đang tải lại...[39m
+[32m[3:28:59 PM] Cấu hình rule.json đã được tải lại.[39m
+[90m[3:29:02 PM] [39mBỏ qua đặt cược cho phiên [36m#2062496[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[3:29:28 PM] [39mKết quả phiên [36m#2062496[39m: [32mTAI (13 điểm)[39m
+[90mLịch sử gần đây: [TAI, XIU, TAI, TAI, XIU, TAI, XIU, TAI, XIU, TAI][39m
+[34m[3:29:29 PM] [39m[35mHũ hiện tại: [39m[32m144976177 đ[39m
+[34m[3:29:48 PM] [39mPhiên mới bắt đầu: [36m#2062497[39m. Đang chờ đặt cược...
+[35m[3:30:14 PM] [39mĐã chọn quy tắc: [33mCầu 1-1 (Tài-Xỉu-Tài)[39m - Đặt cược: [33mXỈU[39m với số tiền [31m2000[39m đ.
+[31m[3:30:14 PM] [39mCảnh báo ví tiền không đủ để cược (dưới ngưỡng dừng cược)Số dư hiện tại: 26.140 ₫. Đang dừng trò chơi.
+[31mĐang dừng quản lý trò chơi...[39m
+[32mQuản lý trò chơi đã dừng thành công.[39m
+[33mKết nối đã đóng (MainGame): Trò chơi dừng theo yêu cầu người dùng.[39m
+[33mQuản lý trò chơi đã dừng.[39m
+[33m[3:31:03 PM] Phát hiện thay đổi trong rule.json (change). Đang tải lại...[39m
+[33m[3:31:03 PM] Phát hiện thay đổi trong rule.json (change). Đang tải lại...[39m
+[32m[3:31:04 PM] Cấu hình rule.json đã được tải lại.[39m
+[33m[3:31:21 PM] Phát hiện thay đổi trong rule.json (change). Đang tải lại...[39m
+[33m[3:31:21 PM] Phát hiện thay đổi trong rule.json (change). Đang tải lại...[39m
+[32m[3:31:21 PM] Cấu hình rule.json đã được tải lại.[39m
+[36mKết nối MainGame thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 1000 đ)[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m10000000 đ[39m[33m[39m
+[33mNgưỡng dừng cược: [32m1000 đ[39m[33m[39m
+[36mKết nối Simms thành công.[39m
+[34m[3:31:28 PM] [39mKết quả phiên [36m#2062498[39m: [32mXIU (10 điểm)[39m
+[90mLịch sử gần đây: [TAI, TAI, XIU, TAI, XIU, TAI, XIU, TAI, TAI, XIU][39m
+[34m[3:31:29 PM] [39m[35mHũ hiện tại: [39m[32m145085877 đ[39m
+[34m[3:31:32 PM] [39mSố dư ví: [32m26140 đ[39m
+[34m[3:31:48 PM] [39mPhiên mới bắt đầu: [36m#2062499[39m. Đang chờ đặt cược...
+[33m[3:31:52 PM] Phát hiện thay đổi trong rule.json (change). Đang tải lại...[39m
+[33m[3:31:52 PM] Phát hiện thay đổi trong rule.json (change). Đang tải lại...[39m
+[32m[3:31:52 PM] Cấu hình rule.json đã được tải lại.[39m
+[90m[3:32:16 PM] [39mKhông tìm thấy quy tắc đặt cược phù hợp trong lịch sử gần đây.
+[90m[3:32:16 PM] [39mBỏ qua đặt cược cho phiên [36m#2062499[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[3:32:28 PM] [39mKết quả phiên [36m#2062499[39m: [32mTAI (15 điểm)[39m
+[90mLịch sử gần đây: [TAI, XIU, TAI, XIU, TAI, XIU, TAI, TAI, XIU, TAI][39m
+[34m[3:32:49 PM] [39mPhiên mới bắt đầu: [36m#2062500[39m. Đang chờ đặt cược...
+[31mĐang dừng quản lý trò chơi...[39m
+[32mTrò chơi đã dừng bởi người dùng.[39m
+[32mQuản lý trò chơi đã dừng thành công.[39m
+[33mKết nối đã đóng (MainGame): Trò chơi dừng theo yêu cầu người dùng.[39m
+[33mQuản lý trò chơi đã dừng.[39m
+[35m[3:33:13 PM] [39mĐã chọn quy tắc: [33mCầu 1-1 (Tài-Xỉu-Tài)[39m - Đặt cược: [33mXỈU[39m với số tiền [31m2000[39m đ.
+[31mKhông thể gửi lệnh đặt cược: Kết nối chưa sẵn sàng hoặc lệnh không hợp lệ.[39m
+[32m[3:38:47 PM] Cấu hình rule.json đã được tải lại.[39m
+[36mKết nối MainGame thành công.[39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (2 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 2000 đ)[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (2 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m3. [Ưu tiên: 15] Cầu 1-1 (Tài-Xỉu-Tài): Nếu lịch sử là Tài-Xỉu-Tài, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m4. [Ưu tiên: 15] Cầu 1-1 (Xỉu-Tài-Xỉu): Nếu lịch sử là Xỉu-Tài-Xỉu, đặt cược Tài. (Cược: 1500 đ)[39m
+[33mSố tiền đặt cược mặc định: [32m1000 đ[39m[33m[39m
+[33mNgưỡng dừng cược: [32m1000 đ[39m[33m[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m10000000 đ[39m[33m[39m
+[36mKết nối Simms thành công.[39m
+[34m[3:39:00 PM] [39mSố dư ví: [32m26140 đ[39m
+[33m[3:39:12 PM] Phát hiện thay đổi trong rule.json (change). Đang tải lại...[39m
+[33m[3:39:12 PM] Phát hiện thay đổi trong rule.json (change). Đang tải lại...[39m
+[32m[3:39:12 PM] Cấu hình rule.json đã được tải lại.[39m
+[34m[3:39:29 PM] [39mKết quả phiên [36m#2062506[39m: [32mXIU (8 điểm)[39m
+[90mLịch sử gần đây: [TAI, XIU, TAI, XIU, TAI, TAI, XIU, XIU, TAI, XIU][39m
+[34m[3:39:29 PM] [39m[35mHũ hiện tại: [39m[32m146582476 đ[39m
+[34m[3:39:49 PM] [39mPhiên mới bắt đầu: [36m#2062507[39m. Đang chờ đặt cược...
+[35m[3:40:11 PM] [39mĐã chọn quy tắc: [33mCầu 1-1 (Xỉu-Tài-Xỉu)[39m - Đặt cược: [33mTAI[39m với số tiền [31m1500[39m đ.
+[31m[3:40:11 PM] [39mCảnh báo ví tiền không đủ để cược (dưới ngưỡng dừng cược)Số dư hiện tại: 26.140 ₫. Đang dừng trò chơi.
+[32mQuản lý trò chơi đã dừng thành công.[39m
+[31mĐang dừng quản lý trò chơi...[39m
+[33mKết nối đã đóng (MainGame): Trò chơi dừng theo yêu cầu người dùng.[39m
+[33mQuản lý trò chơi đã dừng.[39m
+[32m[3:44:56 PM] Cấu hình rule.json đã được tải lại.[39m

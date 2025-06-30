@@ -14,10 +14,7 @@ import { promptAccountMenu,promptUserAdd,
   promptUserUpdate,
   promptUserDelete,
   promptUserSelect, } from './src/ui/promptUser.js';
-import { promptEvenOddMenu, promptSetBetCombos, promptSetBetRule, promptSetJackpot } from './src/ui/promtEvenOdd.js';
-import { setBetCombos, setBetRule, setJackpotTargetValue } from './src/commands/evenOdd.js';
-import { promptArletMenu, promptSetWalletAlert } from './src/ui/promptArlet.js';
-import { setWalletAlertConfig } from './src/commands/arlet.js';
+import { promptEvenOddMenu, promptSetBetStop, promptSetJackpot, promptUpdateBetAmount } from './src/ui/promtEvenOdd.js';
 import { startGame, stopGame } from './src/socket/index.js';
 
 async function main() {
@@ -62,31 +59,19 @@ async function main() {
         if (action === 'back') break;
     
         if (action === 'set_jackpot') {
-          const jackpot = await promptSetJackpot();
-          await setJackpotTargetValue(jackpot);
+          await promptSetJackpot();
         }
-        else if (action === 'set_combos') {
-          const combos = await promptSetBetCombos();
-          await setBetCombos(combos);
+    
+        else if (action === 'set_bet_stop') {
+          await promptSetBetStop()
         }
-        else if (action === 'set_rule') {
-          const rule = await promptSetBetRule();
-          await setBetRule(rule);
+
+        else if (action === 'update_bet_amount') {
+          await promptUpdateBetAmount()
         }
       }
-    } else if (mainCmd === 'alerts') {
-      while (true) {
-        const action = await promptArletMenu();
-    
-        if (action === 'back') break;
-    
-        if (action === 'wallet') {
-          console.log('ping 82')
-          const config = await promptSetWalletAlert();
-          await setWalletAlertConfig(config);
-        }
-      }
-    } else if (mainCmd === 'start_bet') {
+    }
+    else if (mainCmd === 'start_bet') {
       startGame()
     }
     else if (mainCmd === 'stop_bet') {

@@ -1,3 +1,6 @@
+import chalk from "chalk";
+import { startGame, stopGame } from "../socket/index.js";
+
 // socketUtils.js
 export function sendHeartbeat(connection, intervalRef, isCloseRef) {
     let _next_ive = 0;
@@ -36,5 +39,22 @@ export function sendHeartbeat(connection, intervalRef, isCloseRef) {
   export function handleError(error, log) {
     log("Error: " + error.toString());
     return new Error(error);
+  }
+  
+  export async function restartGame() {
+    console.log(chalk.yellow('🔄 Hệ thống đang cập nhật lại dữ liệu sau thay đổi...'));
+  
+    console.log(chalk.yellow('🛑 Đang dừng game để áp dụng cấu hình mới...'));
+    stopGame(); // không await được
+    console.log(chalk.green('✅ Game đã dừng thành công.'));
+  
+    console.log(chalk.cyan('⏳ Đang chờ hệ thống ổn định trước khi khởi động lại...'));
+  
+    // Delay 500ms (có thể điều chỉnh)
+    setTimeout(() => {
+      console.log(chalk.cyan('🚀 Đang khởi động lại game với cấu hình mới...'));
+      startGame();
+      console.log(chalk.green('✅ Game đã khởi động lại và sẵn sàng hoạt động.'));
+    }, 2000);
   }
   

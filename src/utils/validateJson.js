@@ -60,6 +60,3 @@ logError(  {
      return null
     }
   }
-  
-  // Dùng thử
-  export const inputUserExample = `[1,"Simms","MA_akay131","chanvl123",{"info":"{\\"ipAddress\\":\\"27.65.19.233\\",\\"userId\\":\\"a7e3baa0-14fd-4a4b-bfe8-ea4f4b95e640\\",\\"username\\":\\"MA_akay131\\",\\"timestamp\\":1751074336280,\\"refreshToken\\":\\"09cd706fe7994bfaab9c7fccdde99347.2dbb415441204326a02d20b41428b478\\"}","signature":"abc","pid":4,"subi":true}]`;

@@ -1,5 +1,7 @@
 import inquirer from 'inquirer';
 import chalk from 'chalk';
+import { updateGameSetting, updateBetAmountByRuleId } from '../commands/evenOdd.js';
+import { readRule } from '../logic/dataManager.js';
 
 export async function promptEvenOddMenu() {
   const answers = await inquirer.prompt([
@@ -9,8 +11,8 @@ export async function promptEvenOddMenu() {
       message: chalk.cyan('🎲 Chọn thiết lập cược even/odd:'),
       choices: [
         { name: '🎯 Thiết lập jackpot target', value: 'set_jackpot' },
-        { name: '💰 Thiết lập combo tiền cược', value: 'set_combos' },
-        { name: '🧩 Thiết lập rule cược', value: 'set_rule' },
+        { name: '⛔ Thiết lập bet stop', value: 'set_bet_stop' },
+        { name: '🔧 Cập nhật số tiền cược theo rule', value: 'update_bet_amount' },
         new inquirer.Separator(),
         { name: '🔙 Quay lại menu chính', value: 'back' },
       ],
@@ -20,8 +22,6 @@ export async function promptEvenOddMenu() {
   return answers.action;
 }
 
-
-// Prompt nhập số jackpot target
 export async function promptSetJackpot() {
   const { jackpot } = await inquirer.prompt([
     {
@@ -37,87 +37,59 @@ export async function promptSetJackpot() {
       filter: v => Number(v),
     }
   ]);
-  return jackpot;
+  await updateGameSetting('JACKPOT_THRESHOLD', jackpot);
+  console.log(chalk.green(`✅ Đã cập nhật JACKPOT_THRESHOLD thành ${jackpot.toLocaleString('vi-VN')} VND.`));
 }
 
-// Prompt nhập một combo cược (threshold và amount)
-async function promptOneCombo() {
-  const combo = await inquirer.prompt([
+export async function promptSetBetStop() {
+  const { betStop } = await inquirer.prompt([
     {
-      name: 'threshold',
+      name: 'betStop',
       type: 'input',
-      message: chalk.yellow('⏳ Nhập ngưỡng jackpot (threshold):'),
+      message: chalk.yellow('🎯 Nhập giá trị bet stop (số dương):'),
       validate: v => {
+        if (v.trim() === '') return '⚠️ Vui lòng nhập giá trị';
         const n = Number(v);
-        if (isNaN(n) || n < 0) return '⚠️ Phải là số không âm';
-        return true;
-      },
-      filter: v => Number(v),
-    },
-    {
-      name: 'amount',
-      type: 'input',
-      message: chalk.yellow('💰 Nhập số tiền cược tương ứng:'),
-      validate: v => {
-        const n = Number(v);
-        if (isNaN(n) || n <= 0) return '⚠️ Phải là số lớn hơn 0';
+        if (isNaN(n) || n <= 0) return '⚠️ Vui lòng nhập số dương lớn hơn 0';
         return true;
       },
       filter: v => Number(v),
     }
   ]);
-  return combo;
+  await updateGameSetting('BET_STOP', betStop);
+  console.log(chalk.green(`✅ Đã cập nhật BET_STOP thành ${betStop.toLocaleString('vi-VN')} VND.`));
 }
 
-// Prompt nhập danh sách combo cược (lặp cho đến khi user chọn kết thúc)
-export async function promptSetBetCombos() {
-  const combos = [];
+export async function promptUpdateBetAmount() {
+  const config = await readRule();
+  const choices = config.bettingRules.map(rule => ({
+    name: `${rule.name} - hiện tại: ${rule.betAmount.toLocaleString('vi-VN')} VND`,
+    value: rule.id
+  }));
 
-  console.log(chalk.green('💰 Nhập combo tiền cược theo ngưỡng jackpot. Nhập xong chọn "Hoàn thành".'));
-
-  while (true) {
-    const combo = await promptOneCombo();
-    combos.push(combo);
-
-    const { next } = await inquirer.prompt([
-      {
-        type: 'list',
-        name: 'next',
-        message: chalk.blue('Bạn có muốn nhập thêm combo nữa không?'),
-        choices: [
-          { name: '➕ Tiếp tục nhập', value: 'continue' },
-          { name: '✅ Hoàn thành', value: 'done' },
-        ],
-      }
-    ]);
-
-    if (next === 'done') break;
-  }
-
-  return combos;
-}
-
-// Prompt nhập rule cược
-export async function promptSetBetRule() {
-  const answers = await inquirer.prompt([
+  const { selectedRuleId } = await inquirer.prompt([
     {
-      name: 'pattern',
-      type: 'input',
-      message: chalk.yellow('🧩 Nhập pattern (ví dụ: "xiu,xiu" hoặc "tai,tai"):'),
-      validate: v => {
-        if (!v || !v.includes(',')) return '⚠️ Vui lòng nhập ít nhất 2 giá trị, phân cách dấu phẩy';
-        return true;
-      },
-      filter: v => v.split(',').map(s => s.trim()).filter(Boolean),
-    },
-    {
-      name: 'result',
-      type: 'input',
-      message: chalk.yellow('🧩 Nhập kết quả cược tiếp theo (ví dụ: "tai" hoặc "xiu"):'),
-      validate: v => !!v || '⚠️ Không được để trống',
-      filter: v => v.trim(),
-    },
+      type: 'list',
+      name: 'selectedRuleId',
+      message: chalk.magenta('📋 Chọn rule để cập nhật số tiền cược:'),
+      choices,
+    }
   ]);
 
-  return answers;
+  const { newAmount } = await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'newAmount',
+      message: chalk.yellow('💰 Nhập số tiền cược mới:'),
+      validate: v => {
+        const n = Number(v);
+        if (isNaN(n) || n <= 0) return '⚠️ Nhập số dương hợp lệ';
+        return true;
+      },
+      filter: v => Number(v),
+    }
+  ]);
+
+  await updateBetAmountByRuleId(selectedRuleId, newAmount);
+  console.log(chalk.green(`✅ Đã cập nhật thành công số tiền cược cho rule.`));
 }

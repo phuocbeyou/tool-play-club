@@ -1,9 +1,9 @@
 {
-  "jackpotTarget": 1000000,
+  "jackpotTarget": 1000,
   "betCombos": [
     {
-      "threshold": 1000000,
-      "amount": 1000
+      "threshold": 10000,
+      "amount": 2999
     }
   ],
   "betRule": {
