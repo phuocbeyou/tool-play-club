@@ -32,11 +32,13 @@ const Log = (message) => {
 
 /*------- CẤU HÌNH ĐƯỢC TẢI TỪ FILE JSON ----------------*/
 
-// Thay đổi từ const sang let để có thể gán lại giá trị
 let config
 let DEFAULT_BET_AMOUNT
 let JACKPOT_THRESHOLD
 let BET_STOP
+// Các biến này sẽ được cập nhật khi config thay đổi
+let IS_MARTINGALE
+let RATE_MARTINGALE
 
 let configReloadTimeout // Biến để quản lý debounce
 
@@ -50,12 +52,15 @@ const loadConfigAndConstants = () => {
     DEFAULT_BET_AMOUNT = config.gameSettings.BET_AMOUNT
     JACKPOT_THRESHOLD = config.gameSettings.JACKPOT_THRESHOLD
     BET_STOP = config.gameSettings.BET_STOP
+    IS_MARTINGALE = config.gameSettings.IS_MARTINGALE // Cập nhật biến Martingale
+    RATE_MARTINGALE = config.gameSettings.RATE_MARTINGALE // Cập nhật biến Martingale Rate
     Log(chalk.green(`[${new Date().toLocaleTimeString()}] Cấu hình rule.json đã được tải lại.`))
+    Log(chalk.yellow(`Chế độ Martingale: ${IS_MARTINGALE ? 'BẬT' : 'TẮT'}`))
+    if (IS_MARTINGALE) {
+      Log(chalk.yellow(`Tỷ lệ gấp thếp: ${RATE_MARTINGALE}`))
+    }
   } catch (error) {
-    // Sử dụng console.error thay vì Log để đảm bảo lỗi được hiển thị ngay cả khi Log có vấn đề
     console.error(chalk.red(`Lỗi khi đọc hoặc phân tích cú pháp rule.json: ${error.message}`))
-    // Không thoát ứng dụng nếu lỗi xảy ra trong quá trình chạy, chỉ ghi log và tiếp tục với cấu hình cũ
-    // process.exit(1); // Chỉ thoát nếu lỗi xảy ra khi tải cấu hình lần đầu
   }
 }
 
@@ -66,13 +71,17 @@ loadConfigAndConstants()
 fs.watch(configPath, (eventType, filename) => {
   if (filename) {
     Log(chalk.yellow(`[${new Date().toLocaleTimeString()}] Phát hiện thay đổi trong rule.json (${eventType}). Đang tải lại...`))
-    // Debounce việc tải lại để tránh tải nhiều lần cho một lần lưu file
     clearTimeout(configReloadTimeout)
     configReloadTimeout = setTimeout(() => {
       loadConfigAndConstants()
-      // Các instance GameWorker đang chạy sẽ tự động sử dụng các giá trị config mới
-      // khi chúng truy cập các biến global như DEFAULT_BET_AMOUNT, JACKPOT_THRESHOLD, BET_STOP
-      // hoặc config.bettingRules trong các lần thực thi tiếp theo.
+      // Khi cấu hình được tải lại, các GameWorker đang chạy sẽ tự động sử dụng các giá trị mới
+      // vì chúng truy cập các biến global như IS_MARTINGALE, RATE_MARTINGALE, DEFAULT_BET_AMOUNT.
+      // Tuy nhiên, martingaleCurrentBet của các instance hiện tại cần được reset nếu IS_MARTINGALE bị tắt
+      // hoặc nếu baseBetAmount thay đổi. Để đơn giản, chúng ta sẽ reset martingaleCurrentBet về baseBetAmount
+      // khi config được tải lại, đảm bảo trạng thái sạch.
+      if (activeGameWorker) {
+        activeGameWorker.resetMartingaleState();
+      }
     }, 300); // Thời gian debounce 300ms
   }
 });
@@ -107,14 +116,20 @@ class GameWorker {
     this.secondLatestGameResult = null
     this.currentSessionId = null
     this.previousSessionId = null
-    this.bettingChoice = null
-    // currentBetAmount sẽ được cập nhật bởi determineBettingChoice dựa trên DEFAULT_BET_AMOUNT hiện tại
-    this.currentBetAmount = DEFAULT_BET_AMOUNT
+    this.bettingChoice = null // Lựa chọn cược cho phiên hiện tại (TAI/XIU)
+    this.currentBetAmount = DEFAULT_BET_AMOUNT // Số tiền cược cho phiên hiện tại
+
     this.currentBudget = null
     this.currentJackpot = 0
     this.gameHistory = [] // Lưu trữ lịch sử kết quả TAI/XIU (ví dụ: ["TAI", "XIU", "TAI"])
     this.activeIntervals = []
     this.pingCounter = 0
+
+    // Biến cho chế độ Martingale
+    this.baseBetAmount = DEFAULT_BET_AMOUNT // Số tiền cược cơ sở, không đổi trong một chuỗi Martingale
+    this.martingaleCurrentBet = this.baseBetAmount // Số tiền cược hiện tại theo Martingale
+    this.lastBetAmount = 0 // Số tiền đã cược ở phiên trước
+    this.lastBetChoice = null // Cửa đã cược ở phiên trước (TAI/XIU)
 
     // Gắn các hàm xử lý sự kiện vào ngữ cảnh 'this'
     this.handleConnectFailed = this.handleConnectFailed.bind(this)
@@ -122,6 +137,20 @@ class GameWorker {
     this.handleConnectionError = this.handleConnectionError.bind(this)
     this.handleMainGameMessage = this.handleMainGameMessage.bind(this)
     this.handleSimmsMessage = this.handleSimmsMessage.bind(this)
+  }
+
+  /**
+   * Reset trạng thái Martingale về ban đầu.
+   * Được gọi khi cấu hình được tải lại hoặc khi bắt đầu một phiên mới nếu cần.
+   */
+  resetMartingaleState() {
+    this.baseBetAmount = DEFAULT_BET_AMOUNT; // Đảm bảo baseBetAmount được cập nhật theo config mới
+    this.martingaleCurrentBet = this.baseBetAmount;
+    this.lastBetAmount = 0;
+    this.lastBetChoice = null;
+    if(IS_MARTINGALE){
+      Log(chalk.magenta(`[${new Date().toLocaleTimeString()}] Trạng thái Martingale đã được reset.`));
+    }
   }
 
   /**
@@ -210,11 +239,34 @@ class GameWorker {
       this.latestGameResult = parsedMessage[1]
       const sumResult = parsedMessage[1].d1 + parsedMessage[1].d2 + parsedMessage[1].d3
       const resultType = sumResult > 10 ? "TAI" : "XIU"
+
       Log(
         chalk.blue(`[${new Date().toLocaleTimeString()}] `) +
         `Kết quả phiên ${chalk.cyan(`#${parsedMessage[1].sid}`)}: ` +
         chalk.green(`${resultType} (${sumResult} điểm)`),
       )
+
+      // Xử lý logic Martingale sau khi có kết quả
+      if (IS_MARTINGALE) {
+        if (this.lastBetChoice && this.lastBetAmount > 0) { // Đảm bảo có cược trước đó
+          if (this.lastBetChoice === resultType) {
+            Log(chalk.green(`[${new Date().toLocaleTimeString()}] Phiên #${parsedMessage[1].sid}: THẮNG! Reset cược gấp thếp.`));
+            this.martingaleCurrentBet = this.baseBetAmount; // Reset về cược cơ sở
+          } else {
+            Log(chalk.red(`[${new Date().toLocaleTimeString()}] Phiên #${parsedMessage[1].sid}: THUA! Tăng cược gấp thếp.`));
+            this.martingaleCurrentBet = Math.ceil(this.lastBetAmount * RATE_MARTINGALE); // Tăng cược theo tỷ lệ
+            // Đảm bảo cược không vượt quá một giới hạn nào đó nếu cần
+            // if (this.martingaleCurrentBet > MAX_MARTINGALE_CAP) {
+            //   this.martingaleCurrentBet = this.baseBetAmount;
+            //   Log(chalk.yellow("Cược gấp thếp đã đạt giới hạn và được reset."));
+            // }
+          }
+        }
+      }
+      // Reset lastBetChoice và lastBetAmount cho phiên tiếp theo
+      this.lastBetChoice = null;
+      this.lastBetAmount = 0;
+
       // Thêm kết quả mới vào lịch sử và giới hạn độ dài
       this.gameHistory.push(resultType)
       if (this.gameHistory.length > 10) {
@@ -247,10 +299,9 @@ class GameWorker {
           chalk.green(`${newJackpot} đ`),
         )
         this.currentJackpot = newJackpot
-        // Sử dụng JACKPOT_THRESHOLD đã được cập nhật global
-        if (this.currentJackpot < JACKPOT_THRESHOLD) {
-          Log(chalk.red("Giá trị hũ dưới ngưỡng dừng. Đang dừng trò chơi."))
-          this.stop()
+        if (this.currentJackpot < JACKPOT_THRESHOLD) { // Sử dụng JACKPOT_THRESHOLD global
+          Log(chalk.red("Giá trị hũ dưới ngưỡng dừng. Bỏ cược"))
+          // this.stop()
         }
       }
     }
@@ -312,25 +363,19 @@ class GameWorker {
    */
   determineBettingChoice() {
     this.bettingChoice = null // Reset lựa chọn cược
-    this.currentBetAmount = DEFAULT_BET_AMOUNT // Reset số tiền cược về mặc định (sử dụng giá trị global hiện tại)
+    // this.currentBetAmount = DEFAULT_BET_AMOUNT // Không reset ở đây nếu dùng Martingale
 
     let selectedRule = null
 
-    // Lấy lịch sử trò chơi gần nhất (đảo ngược để dễ so khớp mẫu từ cuối)
     const recentHistory = [...this.gameHistory].reverse()
-
-    // Lọc các quy tắc đang hoạt động và sắp xếp theo độ ưu tiên
-    // Sử dụng đối tượng `config` global hiện tại
-    const activeRules = config.bettingRules.filter((rule) => rule.active).sort((a, b) => a.priority - b.priority) // Sắp xếp tăng dần theo priority (ưu tiên thấp nhất là cao nhất)
+    const activeRules = config.bettingRules.filter((rule) => rule.active).sort((a, b) => a.priority - b.priority)
 
     for (const rule of activeRules) {
-      // Nếu pattern rỗng, đây là quy tắc dự phòng, luôn khớp
       if (rule.pattern.length === 0) {
         selectedRule = rule
-        break // Chọn quy tắc dự phòng và thoát (vì nó có priority cao nhất trong số các quy tắc dự phòng)
+        break
       }
 
-      // Kiểm tra xem lịch sử có đủ dài để khớp với pattern của quy tắc không
       if (recentHistory.length >= rule.pattern.length) {
         const historySlice = recentHistory.slice(0, rule.pattern.length)
         const reversedPattern = [...rule.pattern].reverse()
@@ -338,19 +383,29 @@ class GameWorker {
 
         if (patternMatches) {
           selectedRule = rule
-          break // Tìm thấy quy tắc khớp có độ ưu tiên cao nhất, thoát vòng lặp
+          break
         }
       }
     }
 
     if (selectedRule) {
       this.bettingChoice = selectedRule.betOn
-      // Sử dụng betAmount của rule nếu có, nếu không thì dùng DEFAULT_BET_AMOUNT (giá trị global hiện tại)
-      this.currentBetAmount = selectedRule.betAmount || DEFAULT_BET_AMOUNT
-      Log(
-        chalk.magenta(`[${new Date().toLocaleTimeString()}] `) +
-        `Đã chọn quy tắc: ${chalk.yellow(selectedRule.name)} - Đặt cược: ${chalk.yellow(this.bettingChoice)} với số tiền ${chalk.red(this.currentBetAmount)} đ.`,
-      )
+
+      // Áp dụng logic Martingale nếu IS_MARTINGALE là true
+      if (IS_MARTINGALE) {
+        this.currentBetAmount = this.martingaleCurrentBet;
+        Log(
+          chalk.magenta(`[${new Date().toLocaleTimeString()}] `) +
+          `Đã chọn quy tắc: ${chalk.yellow(selectedRule.name)} - Đặt cược (Martingale): ${chalk.yellow(this.bettingChoice)} với số tiền ${chalk.red(this.currentBetAmount)} đ.`,
+        )
+      } else {
+        // Nếu không phải Martingale, sử dụng betAmount của rule hoặc DEFAULT_BET_AMOUNT
+        this.currentBetAmount = selectedRule.betAmount || DEFAULT_BET_AMOUNT
+        Log(
+          chalk.magenta(`[${new Date().toLocaleTimeString()}] `) +
+          `Đã chọn quy tắc: ${chalk.yellow(selectedRule.name)} - Đặt cược: ${chalk.yellow(this.bettingChoice)} với số tiền ${chalk.red(this.currentBetAmount)} đ.`,
+        )
+      }
       return true
     } else {
       Log(
@@ -366,17 +421,15 @@ class GameWorker {
    * @param {number} sessionId - ID phiên trò chơi hiện tại.
    */
   executeBettingLogic(sessionId) {
-    // Chỉ đặt cược nếu hũ trên ngưỡng và tìm thấy mẫu đặt cược
-    // Sử dụng JACKPOT_THRESHOLD đã được cập nhật global
-    if (this.currentJackpot > JACKPOT_THRESHOLD && this.determineBettingChoice()) {
+    if (this.currentJackpot > JACKPOT_THRESHOLD && this.determineBettingChoice()) { // Sử dụng JACKPOT_THRESHOLD global
       if (!this.isBettingAllowed) {
         Log(chalk.yellow("Chưa được phép đặt cược, đang chờ xác nhận cược trước đó."))
         return
       }
 
-      // Kiểm tra số dư
+      // Kiểm tra số dư trước khi đặt cược
       if (this.currentBudget !== null) {
-        const notEnoughToPlay = this.currentBudget <= BET_STOP // Sử dụng BET_STOP đã được cập nhật global
+        const notEnoughToPlay = this.currentBudget <= BET_STOP // Sử dụng BET_STOP global
         const notEnoughToBet = this.currentBetAmount > this.currentBudget
 
         if (notEnoughToPlay || notEnoughToBet) {
@@ -390,7 +443,8 @@ class GameWorker {
             metadata: {
               wallet: `Số tiền hiện tại: ${convertVnd(this.currentBudget)}`,
               betAmount: `Số tiền muốn cược: ${convertVnd(this.currentBetAmount)}`,
-              betStop: `Ngưỡng dừng cược: ${convertVnd(BET_STOP)}`, // Sử dụng BET_STOP đã được cập nhật global
+              betStop: `Ngưỡng dừng cược: ${convertVnd(BET_STOP)}`, // Sử dụng BET_STOP global
+              rateMartingale:`${this.lastBetAmount / RATE_MARTINGALE} số thếp đang gấp`
             },
           })
           const logTime = new Date().toLocaleTimeString()
@@ -405,13 +459,16 @@ class GameWorker {
       }
 
       let betCommand
-      // eid: 1 cho TAI, 2 cho XIU
       const betId = this.bettingChoice === "TAI" ? 1 : 2
-      betCommand = `[6,"MiniGame","taixiuUnbalancedPlugin",{"cmd":2002,"b":${this.currentBetAmount},"aid":1,"sid":${sessionId},"eid":${betId}}]` // Sử dụng currentBetAmount
+      betCommand = `[6,"MiniGame","taixiuUnbalancedPlugin",{"cmd":2002,"b":${this.currentBetAmount},"aid":1,"sid":${sessionId},"eid":${betId}}]`
 
       if (betCommand && this.mainGameConnection && this.mainGameConnection.connected) {
         this.mainGameConnection.sendUTF(betCommand)
         this.isBettingAllowed = false
+        // Lưu lại thông tin cược cho logic Martingale ở phiên sau
+        this.lastBetAmount = this.currentBetAmount;
+        this.lastBetChoice = this.bettingChoice;
+
         Log(
           chalk.blue(`[${new Date().toLocaleTimeString()}] `) +
           `Đang cố gắng đặt ${this.currentBetAmount} đ vào cửa ${chalk.yellow(this.bettingChoice)} cho phiên ${chalk.cyan(`#${sessionId}`)}.`,
@@ -558,6 +615,9 @@ class GameWorker {
         type: "warning",
         title: "Trò chơi đã tạm dừng",
         content: "Xin hãy vào kiểm tra lại",
+        metadata:{
+          rateMartingale:`${this.lastBetAmount / RATE_MARTINGALE} số thếp đang gấp`
+        }
       })
       Log(chalk.yellow("Quản lý trò chơi đã dừng."))
       return
@@ -624,21 +684,25 @@ export const startGame = async () => {
 
     // Log các quy tắc trò chơi và đặt cược từ config.json
     Log(chalk.yellow("\n--- Quy tắc trò chơi ---"))
-    config.gameRules.forEach((rule, index) => Log(chalk.yellow(`${index + 1}. ${rule}`))) // Sử dụng đối tượng `config` global hiện tại
+    config.gameRules.forEach((rule, index) => Log(chalk.yellow(`${index + 1}. ${rule}`)))
     Log(chalk.yellow("\n--- Quy tắc đặt cược đang hoạt động ---"))
-    config.bettingRules // Sử dụng đối tượng `config` global hiện tại
+    config.bettingRules
       .filter((rule) => rule.active)
-      .sort((a, b) => a.priority - b.priority) // Sắp xếp để hiển thị theo ưu tiên
+      .sort((a, b) => a.priority - b.priority)
       .forEach((rule, index) =>
         Log(
           chalk.yellow(
-            `${index + 1}. [Ưu tiên: ${rule.priority}] ${rule.name}: ${rule.description} (Cược: ${rule.betAmount || DEFAULT_BET_AMOUNT} đ)`, // Sử dụng DEFAULT_BET_AMOUNT global hiện tại
+            `${index + 1}. [Ưu tiên: ${rule.priority}] ${rule.name}: ${rule.description} (Cược: ${rule.betAmount || DEFAULT_BET_AMOUNT} đ)`,
           ),
         ),
       )
-    Log(chalk.yellow(`Số tiền đặt cược mặc định: ${chalk.green(DEFAULT_BET_AMOUNT + " đ")}`)) // Sử dụng DEFAULT_BET_AMOUNT global hiện tại
-    Log(chalk.yellow(`Ngưỡng hũ để tiếp tục chơi: ${chalk.green(JACKPOT_THRESHOLD + " đ")}`)) // Sử dụng JACKPOT_THRESHOLD global hiện tại
-    Log(chalk.yellow(`Ngưỡng dừng cược: ${chalk.green(BET_STOP + " đ")}`)) // Sử dụng BET_STOP global hiện tại
+    Log(chalk.yellow(`Số tiền đặt cược mặc định: ${chalk.green(DEFAULT_BET_AMOUNT + " đ")}`))
+    Log(chalk.yellow(`Ngưỡng hũ để tiếp tục chơi: ${chalk.green(JACKPOT_THRESHOLD + " đ")}`))
+    Log(chalk.yellow(`Ngưỡng dừng cược: ${chalk.green(BET_STOP + " đ")}`))
+    Log(chalk.yellow(`Chế độ Martingale: ${IS_MARTINGALE ? 'BẬT' : 'TẮT'}`))
+    if (IS_MARTINGALE) {
+      Log(chalk.yellow(`Tỷ lệ gấp thếp: ${RATE_MARTINGALE}`))
+    }
   } catch (error) {
     logError(`Không thể bắt đầu trò chơi: ${error.message}`)
     console.error(error)

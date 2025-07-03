@@ -1,4 +1,4 @@
-export async function sendTelegramAlert(body, chatId = "-4770980416", token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ1dWt5cXZuaXRsaGRod3lnZmN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYwNDc2MjMsImV4cCI6MjA1MTYyMzYyM30.M26CFOgXO6ISnrxVVTd_jGLiQZ_LLQcUMV2g8oSTpaU") {
+export async function sendTelegramAlert(body, chatId = "-4895866665", token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ1dWt5cXZuaXRsaGRod3lnZmN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYwNDc2MjMsImV4cCI6MjA1MTYyMzYyM30.M26CFOgXO6ISnrxVVTd_jGLiQZ_LLQcUMV2g8oSTpaU") {
     const url = `https://fuukyqvnitlhdhwygfcy.supabase.co/functions/v1/hyper-action?chat_id=${encodeURIComponent(chatId)}`;
 
     try {
