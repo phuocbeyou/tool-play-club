@@ -10,7 +10,6 @@ import { sendTelegramAlert } from "../utils/bot.js"
 import { convertVnd } from "../utils/bet.js"
 
 const WebSocketClient = websocket.client
-
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 const configPath = path.resolve(__dirname, "../../rule.json")
@@ -31,7 +30,6 @@ const Log = (message) => {
 }
 
 /*------- CẤU HÌNH ĐƯỢC TẢI TỪ FILE JSON ----------------*/
-
 let config
 let DEFAULT_BET_AMOUNT
 let JACKPOT_THRESHOLD
@@ -39,7 +37,6 @@ let BET_STOP
 // Các biến này sẽ được cập nhật khi config thay đổi
 let IS_MARTINGALE
 let RATE_MARTINGALE
-
 let configReloadTimeout // Biến để quản lý debounce
 
 /**
@@ -55,7 +52,7 @@ const loadConfigAndConstants = () => {
     IS_MARTINGALE = config.gameSettings.IS_MARTINGALE // Cập nhật biến Martingale
     RATE_MARTINGALE = config.gameSettings.RATE_MARTINGALE // Cập nhật biến Martingale Rate
     Log(chalk.green(`[${new Date().toLocaleTimeString()}] Cấu hình rule.json đã được tải lại.`))
-    Log(chalk.yellow(`Chế độ Martingale: ${IS_MARTINGALE ? 'BẬT' : 'TẮT'}`))
+    Log(chalk.yellow(`Chế độ Martingale: ${IS_MARTINGALE ? "BẬT" : "TẮT"}`))
     if (IS_MARTINGALE) {
       Log(chalk.yellow(`Tỷ lệ gấp thếp: ${RATE_MARTINGALE}`))
     }
@@ -80,15 +77,13 @@ fs.watch(configPath, (eventType, filename) => {
       // hoặc nếu baseBetAmount thay đổi. Để đơn giản, chúng ta sẽ reset martingaleCurrentBet về baseBetAmount
       // khi config được tải lại, đảm bảo trạng thái sạch.
       if (activeGameWorker) {
-        activeGameWorker.resetMartingaleState();
+        activeGameWorker.resetMartingaleState()
       }
-    }, 300); // Thời gian debounce 300ms
+    }, 300) // Thời gian debounce 300ms
   }
-});
-
+})
 
 /*------- LỚP QUẢN LÝ TRÒ CHƠI --------------------*/
-
 /**
  * Quản lý các kết nối WebSocket và logic trò chơi cho một người dùng.
  */
@@ -109,7 +104,7 @@ class GameWorker {
     this.simmsClient = new WebSocketClient()
     this.mainGameConnection = null
     this.simmsConnection = null
-    this.isStopped = false
+    this.isStopped = false // Indicates if the game is explicitly stopped by user or max reconnects
     this.isBettingAllowed = true
     this.shouldRequestBudget = true
     this.latestGameResult = null
@@ -118,7 +113,6 @@ class GameWorker {
     this.previousSessionId = null
     this.bettingChoice = null // Lựa chọn cược cho phiên hiện tại (TAI/XIU)
     this.currentBetAmount = DEFAULT_BET_AMOUNT // Số tiền cược cho phiên hiện tại
-
     this.currentBudget = null
     this.currentJackpot = 0
     this.gameHistory = [] // Lưu trữ lịch sử kết quả TAI/XIU (ví dụ: ["TAI", "XIU", "TAI"])
@@ -130,6 +124,12 @@ class GameWorker {
     this.martingaleCurrentBet = this.baseBetAmount // Số tiền cược hiện tại theo Martingale
     this.lastBetAmount = 0 // Số tiền đã cược ở phiên trước
     this.lastBetChoice = null // Cửa đã cược ở phiên trước (TAI/XIU)
+
+    // Reconnection properties
+    this.reconnectAttempts = 0
+    this.maxReconnectAttempts = 5
+    this.reconnectDelay = 5000 // 5 seconds
+    this.reconnectTimeout = null
 
     // Gắn các hàm xử lý sự kiện vào ngữ cảnh 'this'
     this.handleConnectFailed = this.handleConnectFailed.bind(this)
@@ -144,12 +144,12 @@ class GameWorker {
    * Được gọi khi cấu hình được tải lại hoặc khi bắt đầu một phiên mới nếu cần.
    */
   resetMartingaleState() {
-    this.baseBetAmount = DEFAULT_BET_AMOUNT; // Đảm bảo baseBetAmount được cập nhật theo config mới
-    this.martingaleCurrentBet = this.baseBetAmount;
-    this.lastBetAmount = 0;
-    this.lastBetChoice = null;
-    if(IS_MARTINGALE){
-      Log(chalk.magenta(`[${new Date().toLocaleTimeString()}] Trạng thái Martingale đã được reset.`));
+    this.baseBetAmount = DEFAULT_BET_AMOUNT // Đảm bảo baseBetAmount được cập nhật theo config mới
+    this.martingaleCurrentBet = this.baseBetAmount
+    this.lastBetAmount = 0
+    this.lastBetChoice = null
+    if (IS_MARTINGALE) {
+      Log(chalk.magenta(`[${new Date().toLocaleTimeString()}] Trạng thái Martingale đã được reset.`))
     }
   }
 
@@ -172,7 +172,11 @@ class GameWorker {
    */
   handleConnectFailed(error, clientName) {
     Log(chalk.red(`Kết nối thất bại (${clientName}): ${error.toString()}`))
-    this.stop()
+    if (!this.isStopped) {
+      this.tryReconnect(clientName)
+    } else {
+      Log(chalk.yellow(`Không tự động kết nối lại ${clientName} vì trò chơi đã dừng.`))
+    }
   }
 
   /**
@@ -183,7 +187,11 @@ class GameWorker {
    */
   handleConnectionClose(reasonCode, description, clientName) {
     Log(chalk.yellow(`Kết nối đã đóng (${clientName}): ${description.toString()}`))
-    this.stop()
+    if (!this.isStopped) { // Only try to reconnect if not explicitly stopped by user
+      this.tryReconnect(clientName)
+    } else {
+      Log(chalk.yellow(`Không tự động kết nối lại ${clientName} vì trò chơi đã dừng.`))
+    }
   }
 
   /**
@@ -193,7 +201,42 @@ class GameWorker {
    */
   handleConnectionError(error, clientName) {
     Log(chalk.red(`Lỗi (${clientName}): ${error.toString()}`))
-    this.stop()
+    if (!this.isStopped) { // Only try to reconnect if not explicitly stopped by user
+      this.tryReconnect(clientName)
+    } else {
+      Log(chalk.red(`Không tự động kết nối lại ${clientName} vì trò chơi đã dừng.`))
+    }
+  }
+
+  /**
+   * Cố gắng kết nối lại sau một khoảng thời gian.
+   * @param {string} clientName - Tên client đang cố gắng kết nối lại.
+   */
+  tryReconnect(clientName) {
+    if (!this.isStopped) {
+      Log(chalk.yellow(`Không thể tự động kết nối lại ${clientName}: Trò chơi đã dừng.`))
+      return
+    }
+
+    if (this.reconnectAttempts < this.maxReconnectAttempts) {
+      this.reconnectAttempts++
+      Log(chalk.yellow(`[${new Date().toLocaleTimeString()}] Đang cố gắng kết nối lại ${clientName} (Lần ${this.reconnectAttempts}/${this.maxReconnectAttempts})...`))
+      this.reconnectTimeout = setTimeout(() => {
+        this.start() // Attempt to restart the worker
+      }, this.reconnectDelay)
+    } else {
+      Log(chalk.red(`[${new Date().toLocaleTimeString()}] Đã đạt số lần kết nối lại tối đa (${this.maxReconnectAttempts}) cho ${clientName}. Đang dừng trò chơi.`))
+      sendTelegramAlert({
+        type: "error",
+        title: "Kết nối lại thất bại",
+        content: `Đã đạt số lần kết nối lại tối đa (${this.maxReconnectAttempts}) cho ${clientName}.`,
+        metadata: {
+          user: this.username,
+          reason: "Max reconnect attempts reached",
+        },
+      })
+      this.stop(true) // Pass a flag to indicate it's an auto-stop, not user-initiated
+    }
   }
 
   /**
@@ -205,7 +248,6 @@ class GameWorker {
       Log(chalk.yellow(`Nhận tin nhắn không phải UTF8 từ MainGame: ${msg.type}. Bỏ qua.`))
       return
     }
-
     const messageString = msg.utf8Data
     let parsedMessage
     try {
@@ -232,14 +274,12 @@ class GameWorker {
         }
       }
     }
-
     // Lệnh 2006: Cập nhật kết quả trò chơi
     else if (messageString.includes(`"cmd":2006`)) {
       this.secondLatestGameResult = this.latestGameResult
       this.latestGameResult = parsedMessage[1]
       const sumResult = parsedMessage[1].d1 + parsedMessage[1].d2 + parsedMessage[1].d3
       const resultType = sumResult > 10 ? "TAI" : "XIU"
-
       Log(
         chalk.blue(`[${new Date().toLocaleTimeString()}] `) +
         `Kết quả phiên ${chalk.cyan(`#${parsedMessage[1].sid}`)}: ` +
@@ -274,7 +314,6 @@ class GameWorker {
       }
       Log(chalk.gray(`Lịch sử gần đây: [${this.gameHistory.join(", ")}]`))
     }
-
     // Lệnh 2002: Xác nhận đặt cược thành công
     else if (messageString.includes(`"cmd":2002`)) {
       Log(
@@ -288,7 +327,6 @@ class GameWorker {
       this.isBettingAllowed = true
       this.shouldRequestBudget = true
     }
-
     // Lệnh 2011: Cập nhật hũ
     else if (messageString.includes(`"cmd":2011`)) {
       const newJackpot = parsedMessage[1].J
@@ -305,7 +343,6 @@ class GameWorker {
         }
       }
     }
-
     // Lệnh 2005: Phiên trò chơi mới bắt đầu
     else if (messageString.includes(`"cmd":2005`)) {
       if (parsedMessage[1].sid !== this.previousSessionId) {
@@ -333,7 +370,6 @@ class GameWorker {
       Log(chalk.yellow(`Nhận tin nhắn không phải UTF8 từ Simms: ${msg.type}. Bỏ qua.`))
       return
     }
-
     const messageString = msg.utf8Data
     let parsedMessage
     try {
@@ -364,9 +400,7 @@ class GameWorker {
   determineBettingChoice() {
     this.bettingChoice = null // Reset lựa chọn cược
     // this.currentBetAmount = DEFAULT_BET_AMOUNT // Không reset ở đây nếu dùng Martingale
-
     let selectedRule = null
-
     const recentHistory = [...this.gameHistory].reverse()
     const activeRules = config.bettingRules.filter((rule) => rule.active).sort((a, b) => a.priority - b.priority)
 
@@ -375,12 +409,10 @@ class GameWorker {
         selectedRule = rule
         break
       }
-
       if (recentHistory.length >= rule.pattern.length) {
         const historySlice = recentHistory.slice(0, rule.pattern.length)
         const reversedPattern = [...rule.pattern].reverse()
         const patternMatches = reversedPattern.every((val, index) => val === historySlice[index])
-
         if (patternMatches) {
           selectedRule = rule
           break
@@ -390,10 +422,9 @@ class GameWorker {
 
     if (selectedRule) {
       this.bettingChoice = selectedRule.betOn
-
       // Áp dụng logic Martingale nếu IS_MARTINGALE là true
       if (IS_MARTINGALE) {
-        this.currentBetAmount = this.martingaleCurrentBet;
+        this.currentBetAmount = this.martingaleCurrentBet
         Log(
           chalk.magenta(`[${new Date().toLocaleTimeString()}] `) +
           `Đã chọn quy tắc: ${chalk.yellow(selectedRule.name)} - Đặt cược (Martingale): ${chalk.yellow(this.bettingChoice)} với số tiền ${chalk.red(this.currentBetAmount)} đ.`,
@@ -431,11 +462,10 @@ class GameWorker {
       if (this.currentBudget !== null) {
         const notEnoughToPlay = this.currentBudget <= BET_STOP // Sử dụng BET_STOP global
         const notEnoughToBet = this.currentBetAmount > this.currentBudget
-
         if (notEnoughToPlay || notEnoughToBet) {
-          const reason = notEnoughToPlay
-            ? "Cảnh báo ví tiền không đủ để cược (dưới ngưỡng dừng cược)"
-            : "Cảnh báo ví tiền không đủ để đặt cược (không đủ tiền cho ván này)"
+          const reason = notEnoughToPlay ?
+            "Cảnh báo ví tiền không đủ để cược (dưới ngưỡng dừng cược)" :
+            "Cảnh báo ví tiền không đủ để đặt cược (không đủ tiền cho ván này)"
           sendTelegramAlert({
             type: "warning",
             title: reason,
@@ -444,7 +474,7 @@ class GameWorker {
               wallet: `Số tiền hiện tại: ${convertVnd(this.currentBudget)}`,
               betAmount: `Số tiền muốn cược: ${convertVnd(this.currentBetAmount)}`,
               betStop: `Ngưỡng dừng cược: ${convertVnd(BET_STOP)}`, // Sử dụng BET_STOP global
-              rateMartingale:`${this.lastBetAmount / RATE_MARTINGALE} số thếp đang gấp`
+              rateMartingale: `${this.lastBetAmount / RATE_MARTINGALE} số thếp đang gấp`,
             },
           })
           const logTime = new Date().toLocaleTimeString()
@@ -468,7 +498,6 @@ class GameWorker {
         // Lưu lại thông tin cược cho logic Martingale ở phiên sau
         this.lastBetAmount = this.currentBetAmount;
         this.lastBetChoice = this.bettingChoice;
-
         Log(
           chalk.blue(`[${new Date().toLocaleTimeString()}] `) +
           `Đang cố gắng đặt ${this.currentBetAmount} đ vào cửa ${chalk.yellow(this.bettingChoice)} cho phiên ${chalk.cyan(`#${sessionId}`)}.`,
@@ -504,7 +533,6 @@ class GameWorker {
     setTimeout(() => {
       this.mainGameConnection.sendUTF(`[6,"MiniGame","taixiuUnbalancedPlugin",{"cmd":2000}]`)
     }, 200)
-
     this.addManagedInterval(() => {
       if (this.isStopped) return
       if (this.mainGameConnection && this.mainGameConnection.connected) {
@@ -547,17 +575,16 @@ class GameWorker {
    * @returns {Promise<void>} Một promise sẽ được giải quyết khi các kết nối được thiết lập hoặc bị từ chối khi thất bại.
    */
   async start() {
-    if (this.isStopped) {
-      Log(chalk.yellow("Quản lý trò chơi đã dừng hoặc đang dừng. Không thể bắt đầu."))
-      sendTelegramAlert({
-        type: "warning",
-        title: "Quản lý trò chơi đã dừng hoặc đang dừng",
-        content: "Không thể bắt đầu",
-        metadata: {
-          error: "Vui lòng kiểm tra lại",
-        },
-      })
-      return Promise.reject(new Error("Worker đã dừng."))
+    // Reset isStopped to false when start is explicitly called, allowing connection attempts
+    this.isStopped = false
+
+    let mainGameConnected = false
+    let simmsConnected = false
+
+    const checkBothConnected = (resolve, reject) => {
+      if (mainGameConnected && simmsConnected) {
+        resolve()
+      }
     }
 
     return new Promise((resolve, reject) => {
@@ -565,40 +592,44 @@ class GameWorker {
         this.handleConnectFailed(error, "MainGame")
         reject(new Error(`Kết nối MainGame thất bại: ${error.message}`))
       })
-
       this.mainGameClient.on("connect", (connection) => {
         this.mainGameConnection = connection
         Log(chalk.cyan("Kết nối MainGame thành công."))
+        this.reconnectAttempts = 0 // Reset attempts on successful connect
+        if (this.reconnectTimeout) {
+          clearTimeout(this.reconnectTimeout)
+          this.reconnectTimeout = null
+        }
         this.initializeMainGameConnection()
         this.mainGameConnection.on("message", this.handleMainGameMessage)
         this.mainGameConnection.on("error", (error) => this.handleConnectionError(error, "MainGame"))
         this.mainGameConnection.on("close", (reasonCode, description) =>
           this.handleConnectionClose(reasonCode, description, "MainGame"),
         )
-        if (this.simmsConnection || !this.simmsClient.connected) {
-          resolve()
-        }
+        mainGameConnected = true
+        checkBothConnected(resolve, reject)
       })
 
       this.simmsClient.on("connectFailed", (error) => {
         this.handleConnectFailed(error, "Simms")
-        if (!this.mainGameConnection || !this.mainGameConnection.connected) {
-          reject(new Error(`Kết nối Simms thất bại: ${error.message}`))
-        }
+        reject(new Error(`Kết nối Simms thất bại: ${error.message}`)) // Reject if Simms fails
       })
-
       this.simmsClient.on("connect", (connection) => {
         this.simmsConnection = connection
         Log(chalk.cyan("Kết nối Simms thành công."))
+        this.reconnectAttempts = 0 // Reset attempts on successful connect
+        if (this.reconnectTimeout) {
+          clearTimeout(this.reconnectTimeout)
+          this.reconnectTimeout = null
+        }
         this.initializeSimmsConnection()
         this.simmsConnection.on("message", this.handleSimmsMessage)
         this.simmsConnection.on("error", (error) => this.handleConnectionError(error, "Simms"))
         this.simmsClient.on("close", (reasonCode, description) =>
           this.handleConnectionClose(reasonCode, description, "Simms"),
         )
-        if (this.mainGameConnection || !this.mainGameClient.connected) {
-          resolve()
-        }
+        simmsConnected = true
+        checkBothConnected(resolve, reject)
       })
 
       this.mainGameClient.connect("wss://websocket.mangee.io/websocket")
@@ -608,23 +639,28 @@ class GameWorker {
 
   /**
    * Dừng quản lý trò chơi bằng cách đóng các kết nối WebSocket và xóa tất cả các interval.
+   * @param {boolean} isAutoStop - True if stopping automatically due to max reconnect attempts, false if user-initiated.
    */
-  stop() {
-    if (this.isStopped) {
-      sendTelegramAlert({
-        type: "warning",
-        title: "Trò chơi đã tạm dừng",
-        content: "Xin hãy vào kiểm tra lại",
-        metadata:{
-          rateMartingale:`${this.lastBetAmount / RATE_MARTINGALE} số thếp đang gấp`
-        }
-      })
+  stop(isAutoStop = false) {
+    if (this.isStopped && !isAutoStop) { // If already stopped by user, and not an auto-stop call
       Log(chalk.yellow("Quản lý trò chơi đã dừng."))
+      return
+    }
+    if (this.isStopped && isAutoStop) { // If already stopped by auto-stop, and another auto-stop call
+      Log(chalk.yellow("Quản lý trò chơi đã dừng (tự động)."))
       return
     }
 
     Log(chalk.red("Đang dừng quản lý trò chơi..."))
-    this.isStopped = true
+    this.isStopped = true // Set to true immediately to prevent new reconnects
+
+    // Clear any pending reconnect timeouts
+    if (this.reconnectTimeout) {
+      clearTimeout(this.reconnectTimeout)
+      this.reconnectTimeout = null
+    }
+    this.reconnectAttempts = 0 // Reset attempts on explicit stop
+
     this.activeIntervals.forEach(clearInterval)
     this.activeIntervals = []
 
@@ -634,14 +670,23 @@ class GameWorker {
     if (this.simmsConnection && this.simmsConnection.connected) {
       this.simmsConnection.close(1000, "Trò chơi dừng theo yêu cầu người dùng.")
     }
+
+    if (!isAutoStop) { // Only send alert if it's a user-initiated stop
+      sendTelegramAlert({
+        type: "warning",
+        title: "Trò chơi đã tạm dừng",
+        content: "Xin hãy vào kiểm tra lại",
+        metadata: {
+          rateMartingale: `${this.lastBetAmount / RATE_MARTINGALE} số thếp đang gấp`,
+        },
+      })
+    }
     Log(chalk.green("Quản lý trò chơi đã dừng thành công."))
   }
 }
 
 /*------- CÁC HÀM ĐIỀU KHIỂN TRÒ CHƠI TOÀN CỤC --------*/
-
 let activeGameWorker = null
-
 /**
  * Bắt đầu trò chơi bằng cách khởi tạo một thể hiện GameWorker mới.
  * Nếu trò chơi đang chạy, nó sẽ ghi lỗi.
@@ -652,25 +697,18 @@ export const startGame = async () => {
     logError("Trò chơi đang chạy. Vui lòng dừng nó trước.")
     return
   }
-
   const users = await readUsers()
   const selectedUser = users.find((u) => u.selected)
-
   if (!selectedUser) {
-    return logError(
-      "Không tìm thấy người dùng được chọn. Vui lòng chọn một người dùng trong trình quản lý dữ liệu của bạn.",
+    return logError("Không tìm thấy người dùng được chọn. Vui lòng chọn một người dùng trong trình quản lý dữ liệu của bạn.",
     )
   }
-
   const { name: username, password, infoData, signature } = selectedUser
   const userInfo = infoData && infoData[4] ? infoData[4].info : null
-
   if (!username || !signature || !userInfo) {
-    return logError(
-      "Thiếu thông tin tài khoản bắt buộc (tên người dùng, chữ ký hoặc dữ liệu thông tin). Vui lòng kiểm tra cấu hình người dùng của bạn.",
+    return logError("Thiếu thông tin tài khoản bắt buộc (tên người dùng, chữ ký hoặc dữ liệu thông tin). Vui lòng kiểm tra cấu hình người dùng của bạn.",
     )
   }
-
   try {
     activeGameWorker = new GameWorker({
       username,
@@ -678,10 +716,8 @@ export const startGame = async () => {
       info: userInfo,
       signature,
     })
-
     await activeGameWorker.start()
     Log(chalk.green("Trò chơi đã bắt đầu thành công!"))
-
     // Log các quy tắc trò chơi và đặt cược từ config.json
     Log(chalk.yellow("\n--- Quy tắc trò chơi ---"))
     config.gameRules.forEach((rule, index) => Log(chalk.yellow(`${index + 1}. ${rule}`)))
@@ -699,7 +735,7 @@ export const startGame = async () => {
     Log(chalk.yellow(`Số tiền đặt cược mặc định: ${chalk.green(DEFAULT_BET_AMOUNT + " đ")}`))
     Log(chalk.yellow(`Ngưỡng hũ để tiếp tục chơi: ${chalk.green(JACKPOT_THRESHOLD + " đ")}`))
     Log(chalk.yellow(`Ngưỡng dừng cược: ${chalk.green(BET_STOP + " đ")}`))
-    Log(chalk.yellow(`Chế độ Martingale: ${IS_MARTINGALE ? 'BẬT' : 'TẮT'}`))
+    Log(chalk.yellow(`Chế độ Martingale: ${IS_MARTINGALE ? "BẬT" : "TẮT"}`))
     if (IS_MARTINGALE) {
       Log(chalk.yellow(`Tỷ lệ gấp thếp: ${RATE_MARTINGALE}`))
     }
@@ -716,7 +752,7 @@ export const startGame = async () => {
  */
 export const stopGame = () => {
   if (activeGameWorker) {
-    activeGameWorker.stop()
+    activeGameWorker.stop() // Call stop without isAutoStop=true, indicating user-initiated stop
     activeGameWorker = null
     Log(chalk.green("Trò chơi đã dừng bởi người dùng."))
   } else {
