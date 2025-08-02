@@ -7,7 +7,7 @@ export function sendHeartbeat(connection, intervalRef, isCloseRef) {
     intervalRef.current = setInterval(() => {
       if (isCloseRef.current) return clearInterval(intervalRef.current);
       connection.sendUTF(`[7,"Simms",${++_next_ive},0]`);
-    }, 5000);
+    }, 1500);
   }
   
   export function sendInitData(connection, username,password,info, signature) {

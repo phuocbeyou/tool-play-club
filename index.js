@@ -16,6 +16,8 @@ import { promptAccountMenu,promptUserAdd,
   promptUserSelect, } from './src/ui/promptUser.js';
 import { promptEvenOddMenu, promptSetBetStop, promptSetJackpot, promptUpdateBetAmount } from './src/ui/promtEvenOdd.js';
 import { startGame, stopGame } from './src/socket/index.js';
+import { promptXocDiaMenu } from './src/ui/promtFanTan.js';
+import { startGameShake, stopGameShake } from './src/socket/shake.js';
 
 async function main() {
   showBanner()
@@ -70,6 +72,31 @@ async function main() {
           await promptUpdateBetAmount()
         }
       }
+    }
+    else if (mainCmd === 'xoc_dia') {
+      while (true) {
+        const action = await promptXocDiaMenu();
+    
+        if (action === 'back') break;
+    
+        if (action === 'set_jackpot') {
+          await promptSetJackpot();
+        }
+    
+        else if (action === 'set_bet_stop') {
+          await promptSetBetStop()
+        }
+
+        else if (action === 'update_bet_amount') {
+          await promptUpdateBetAmount()
+        }
+      }
+    }
+    else if (mainCmd === 'start_bet_shake') {
+      startGameShake()
+    }
+    else if (mainCmd === 'stop_bet_shake') {
+      stopGameShake()
     }
     else if (mainCmd === 'start_bet') {
       startGame()
