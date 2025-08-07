@@ -34,6 +34,7 @@ let config
 let DEFAULT_BET_AMOUNT
 let JACKPOT_THRESHOLD
 let BET_STOP
+let ZOMBIE_MODE // Thêm biến zombie mode
 // Các biến này sẽ được cập nhật khi config thay đổi
 let IS_MARTINGALE
 let RATE_MARTINGALE
@@ -51,8 +52,10 @@ const loadConfigAndConstants = () => {
     BET_STOP = config.gameSettings.BET_STOP
     IS_MARTINGALE = config.gameSettings.IS_MARTINGALE // Cập nhật biến Martingale
     RATE_MARTINGALE = config.gameSettings.RATE_MARTINGALE // Cập nhật biến Martingale Rate
+    ZOMBIE_MODE = config.gameSettings.ZOMBIE || false // Thêm zombie mode
     Log(chalk.green(`[${new Date().toLocaleTimeString()}] Cấu hình rule.json đã được tải lại.`))
     Log(chalk.yellow(`Chế độ Martingale: ${IS_MARTINGALE ? "BẬT" : "TẮT"}`))
+    Log(chalk.yellow(`Chế độ Zombie: ${ZOMBIE_MODE ? "BẬT" : "TẮT"}`))
     if (IS_MARTINGALE) {
       Log(chalk.yellow(`Tỷ lệ gấp thếp: ${RATE_MARTINGALE}`))
     }
@@ -131,6 +134,12 @@ class GameWorker {
     this.reconnectDelay = 5000 // 5 seconds
     this.reconnectTimeout = null
 
+    // Zombie mode properties
+    this.zombieReconnectAttempts = 0 // Đếm số lần kết nối lại trong zombie mode
+    this.zombieReconnectDelay = 5 * 60 * 1000 // 5 phút
+    this.zombieReconnectTimeout = null
+    this.zombieFailureCount = 0 // Đếm số lần kết nối thất bại liên tiếp
+
     // Gắn các hàm xử lý sự kiện vào ngữ cảnh 'this'
     this.handleConnectFailed = this.handleConnectFailed.bind(this)
     this.handleConnectionClose = this.handleConnectionClose.bind(this)
@@ -166,13 +175,60 @@ class GameWorker {
   }
 
   /**
+   * Force kill tất cả connections và cleanup
+   */
+  forceKillConnections() {
+    Log(chalk.red(`[${new Date().toLocaleTimeString()}] Force killing all connections...`))
+    
+    // Clear tất cả intervals
+    this.activeIntervals.forEach(clearInterval)
+    this.activeIntervals = []
+
+    // Clear timeouts
+    if (this.reconnectTimeout) {
+      clearTimeout(this.reconnectTimeout)
+      this.reconnectTimeout = null
+    }
+    if (this.zombieReconnectTimeout) {
+      clearTimeout(this.zombieReconnectTimeout)
+      this.zombieReconnectTimeout = null
+    }
+
+    // Force close connections
+    try {
+      if (this.mainGameConnection) {
+        this.mainGameConnection.close()
+        this.mainGameConnection = null
+      }
+    } catch (e) {
+      Log(chalk.yellow(`Warning: Error closing mainGame connection: ${e.message}`))
+    }
+
+    try {
+      if (this.simmsConnection) {
+        this.simmsConnection.close()
+        this.simmsConnection = null
+      }
+    } catch (e) {
+      Log(chalk.yellow(`Warning: Error closing simms connection: ${e.message}`))
+    }
+
+    // Create new clients
+    this.mainGameClient = new WebSocketClient()
+    this.simmsClient = new WebSocketClient()
+  }
+
+  /**
    * Xử lý lỗi kết nối WebSocket.
    * @param {Error} error - Lỗi kết nối.
    * @param {string} clientName - Tên client (ví dụ: "MainGame", "Simms").
    */
   handleConnectFailed(error, clientName) {
     Log(chalk.red(`Kết nối thất bại (${clientName}): ${error.toString()}`))
-    if (!this.isStopped) {
+    
+    if (ZOMBIE_MODE && !this.isStopped) {
+      this.handleZombieReconnect(clientName, error)
+    } else if (!this.isStopped) {
       this.tryReconnect(clientName)
     } else {
       Log(chalk.yellow(`Không tự động kết nối lại ${clientName} vì trò chơi đã dừng.`))
@@ -187,7 +243,10 @@ class GameWorker {
    */
   handleConnectionClose(reasonCode, description, clientName) {
     Log(chalk.yellow(`Kết nối đã đóng (${clientName}): ${description.toString()}`))
-    if (!this.isStopped) { // Only try to reconnect if not explicitly stopped by user
+    
+    if (ZOMBIE_MODE && !this.isStopped) {
+      this.handleZombieReconnect(clientName, new Error(`Connection closed: ${description}`))
+    } else if (!this.isStopped) {
       this.tryReconnect(clientName)
     } else {
       Log(chalk.yellow(`Không tự động kết nối lại ${clientName} vì trò chơi đã dừng.`))
@@ -201,7 +260,10 @@ class GameWorker {
    */
   handleConnectionError(error, clientName) {
     Log(chalk.red(`Lỗi (${clientName}): ${error.toString()}`))
-    if (!this.isStopped) { // Only try to reconnect if not explicitly stopped by user
+    
+    if (ZOMBIE_MODE && !this.isStopped) {
+      this.handleZombieReconnect(clientName, error)
+    } else if (!this.isStopped) {
       this.tryReconnect(clientName)
     } else {
       Log(chalk.red(`Không tự động kết nối lại ${clientName} vì trò chơi đã dừng.`))
@@ -209,11 +271,51 @@ class GameWorker {
   }
 
   /**
+   * Xử lý zombie reconnect - kết nối lại vô hạn với delay 5 phút
+   * @param {string} clientName - Tên client
+   * @param {Error} error - Lỗi gây ra việc kết nối lại
+   */
+  handleZombieReconnect(clientName, error) {
+    this.zombieFailureCount++
+    Log(chalk.magenta(`[${new Date().toLocaleTimeString()}] Zombie Mode: Lần thất bại thứ ${this.zombieFailureCount} cho ${clientName}`))
+
+    // Gửi telegram alert mỗi 3 lần thất bại
+    if (this.zombieFailureCount % 3 === 0) {
+      sendTelegramAlert({
+        type: "error",
+        title: "Zombie Mode: Kết nối thất bại liên tiếp",
+        content: `Đã thất bại ${this.zombieFailureCount} lần kết nối. Hệ thống vẫn đang cố gắng kết nối lại.`,
+        metadata: {
+          user: this.username,
+          client: clientName,
+          error: error.message,
+          failureCount: this.zombieFailureCount,
+          lastFailure: new Date().toLocaleString(),
+        },
+      })
+    }
+
+    // Force kill và tạo kết nối mới
+    this.forceKillConnections()
+
+    // Delay 5 phút trước khi thử lại
+    Log(chalk.magenta(`[${new Date().toLocaleTimeString()}] Zombie Mode: Sẽ thử kết nối lại sau 5 phút...`))
+    this.zombieReconnectTimeout = setTimeout(() => {
+      this.zombieReconnectAttempts++
+      Log(chalk.magenta(`[${new Date().toLocaleTimeString()}] Zombie Mode: Đang thử kết nối lại lần ${this.zombieReconnectAttempts}...`))
+      this.start().catch((startError) => {
+        Log(chalk.red(`Zombie reconnect failed: ${startError.message}`))
+        // Sẽ tự động trigger handleConnectFailed và tiếp tục zombie cycle
+      })
+    }, this.zombieReconnectDelay)
+  }
+
+  /**
    * Cố gắng kết nối lại sau một khoảng thời gian.
    * @param {string} clientName - Tên client đang cố gắng kết nối lại.
    */
   tryReconnect(clientName) {
-    if (!this.isStopped) {
+    if (this.isStopped) {
       Log(chalk.yellow(`Không thể tự động kết nối lại ${clientName}: Trò chơi đã dừng.`))
       return
     }
@@ -225,17 +327,24 @@ class GameWorker {
         this.start() // Attempt to restart the worker
       }, this.reconnectDelay)
     } else {
-      Log(chalk.red(`[${new Date().toLocaleTimeString()}] Đã đạt số lần kết nối lại tối đa (${this.maxReconnectAttempts}) cho ${clientName}. Đang dừng trò chơi.`))
-      sendTelegramAlert({
-        type: "error",
-        title: "Kết nối lại thất bại",
-        content: `Đã đạt số lần kết nối lại tối đa (${this.maxReconnectAttempts}) cho ${clientName}.`,
-        metadata: {
-          user: this.username,
-          reason: "Max reconnect attempts reached",
-        },
-      })
-      this.stop(true) // Pass a flag to indicate it's an auto-stop, not user-initiated
+      Log(chalk.red(`[${new Date().toLocaleTimeString()}] Đã đạt số lần kết nối lại tối đa (${this.maxReconnectAttempts}) cho ${clientName}.`))
+      
+      if (ZOMBIE_MODE) {
+        Log(chalk.magenta(`[${new Date().toLocaleTimeString()}] Chuyển sang Zombie Mode...`))
+        this.handleZombieReconnect(clientName, new Error("Max reconnect attempts reached"))
+      } else {
+        Log(chalk.red(`[${new Date().toLocaleTimeString()}] Đang dừng trò chơi.`))
+        sendTelegramAlert({
+          type: "error",
+          title: "Kết nối lại thất bại",
+          content: `Đã đạt số lần kết nối lại tối đa (${this.maxReconnectAttempts}) cho ${clientName}.`,
+          metadata: {
+            user: this.username,
+            reason: "Max reconnect attempts reached",
+          },
+        })
+        this.stop(true) // Pass a flag to indicate it's an auto-stop, not user-initiated
+      }
     }
   }
 
@@ -285,6 +394,12 @@ class GameWorker {
         `Kết quả phiên ${chalk.cyan(`#${parsedMessage[1].sid}`)}: ` +
         chalk.green(`${resultType} (${sumResult} điểm)`),
       )
+
+      // Reset zombie failure count khi có kết quả thành công
+      if (ZOMBIE_MODE && this.zombieFailureCount > 0) {
+        Log(chalk.green(`[${new Date().toLocaleTimeString()}] Zombie Mode: Kết nối ổn định, reset failure count.`))
+        this.zombieFailureCount = 0
+      }
 
       // Xử lý logic Martingale sau khi có kết quả
       if (IS_MARTINGALE) {
@@ -600,6 +715,11 @@ class GameWorker {
           clearTimeout(this.reconnectTimeout)
           this.reconnectTimeout = null
         }
+        // Reset zombie failure count trên kết nối thành công
+        if (ZOMBIE_MODE && this.zombieFailureCount > 0) {
+          Log(chalk.green(`[${new Date().toLocaleTimeString()}] Zombie Mode: Kết nối MainGame thành công, reset failure count.`))
+          this.zombieFailureCount = 0
+        }
         this.initializeMainGameConnection()
         this.mainGameConnection.on("message", this.handleMainGameMessage)
         this.mainGameConnection.on("error", (error) => this.handleConnectionError(error, "MainGame"))
@@ -621,6 +741,11 @@ class GameWorker {
         if (this.reconnectTimeout) {
           clearTimeout(this.reconnectTimeout)
           this.reconnectTimeout = null
+        }
+        // Reset zombie failure count trên kết nối thành công
+        if (ZOMBIE_MODE && this.zombieFailureCount > 0) {
+          Log(chalk.green(`[${new Date().toLocaleTimeString()}] Zombie Mode: Kết nối Simms thành công, reset failure count.`))
+          this.zombieFailureCount = 0
         }
         this.initializeSimmsConnection()
         this.simmsConnection.on("message", this.handleSimmsMessage)
@@ -659,7 +784,14 @@ class GameWorker {
       clearTimeout(this.reconnectTimeout)
       this.reconnectTimeout = null
     }
+    // Clear zombie reconnect timeout
+    if (this.zombieReconnectTimeout) {
+      clearTimeout(this.zombieReconnectTimeout)
+      this.zombieReconnectTimeout = null
+    }
     this.reconnectAttempts = 0 // Reset attempts on explicit stop
+    this.zombieReconnectAttempts = 0 // Reset zombie attempts
+    this.zombieFailureCount = 0 // Reset zombie failure count
 
     this.activeIntervals.forEach(clearInterval)
     this.activeIntervals = []
@@ -678,6 +810,7 @@ class GameWorker {
         content: "Xin hãy vào kiểm tra lại",
         metadata: {
           rateMartingale: `${this.lastBetAmount / RATE_MARTINGALE} số thếp đang gấp`,
+          zombieMode: ZOMBIE_MODE ? "Đã tắt zombie mode" : "Zombie mode không hoạt động",
         },
       })
     }
@@ -739,6 +872,7 @@ export const startGame = async () => {
     if (IS_MARTINGALE) {
       Log(chalk.yellow(`Tỷ lệ gấp thếp: ${RATE_MARTINGALE}`))
     }
+    Log(chalk.yellow(`Chế độ Zombie: ${ZOMBIE_MODE ? "BẬT" : "TẮT"}`))
   } catch (error) {
     logError(`Không thể bắt đầu trò chơi: ${error.message}`)
     console.error(error)

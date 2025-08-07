@@ -8068,3 +8068,255 @@ man (5:13:17 PM) Kết quả [36m#2059720[39m[32m XIU[39m
 [32m[9:28:31 PM] Trò chơi đã dừng thành công[39m
 [32m[9:28:31 PM] Trò chơi đã dừng bởi người dùng[39m
 [33m[9:28:31 PM] Kết nối ShakeDisk đã đóng: Trò chơi dừng theo yêu cầu người dùng.[39m
+[32m[9:32:46 PM] Cấu hình rule.json đã được tải lại.[39m
+[33mChế độ Martingale: TẮT[39m
+[33m  - Số tiền cược mặc định: 500 đ[39m
+[33m  - Ngưỡng hũ: 1000000 đ[39m
+[32m[9:32:46 PM] Cấu hình đã được tải thành công[39m
+[34m[9:32:46 PM] Đang tải cấu hình từ /Users/phuocph/Desktop/CODE/REACT_NATIVE/freelancer/tool-play-club/rule_shake.json[39m
+[33m  - Ngưỡng dừng cược: 1000 đ[39m
+[33m  - Chế độ Martingale: TẮT[39m
+[33mChế độ Martingale: TẮT[39m
+[32m[11:46:04 PM] Cấu hình rule.json đã được tải lại.[39m
+[33mChế độ Zombie: BẬT[39m
+[32m[11:46:04 PM] Cấu hình đã được tải thành công[39m
+[34m[11:46:04 PM] Đang tải cấu hình từ /Users/phuocph/Desktop/CODE/REACT_NATIVE/freelancer/tool-play-club/rule_shake.json[39m
+[33m  - Số tiền cược mặc định: 500 đ[39m
+[33m  - Ngưỡng hũ: 1000000 đ[39m
+[33m  - Ngưỡng dừng cược: 1000 đ[39m
+[33m  - Chế độ Martingale: TẮT[39m
+[34m[11:46:07 PM] Bắt đầu khởi động game Sóc Đĩa[39m
+[34m[11:46:07 PM] Khởi tạo GameWorker cho user: akay131[39m
+[32m[11:46:08 PM] ShakeDisk kết nối thành công![39m
+[32m[11:46:08 PM] Trò chơi Sóc Đĩa đã bắt đầu thành công![39m
+[33mSố tiền đặt cược mặc định: [32m500 đ[39m[33m[39m
+[33mNgưỡng hũ: [32m1000000 đ[39m[33m[39m
+[33mNgưỡng dừng cược: [32m1000 đ[39m[33m[39m
+[33m[39m
+[33m--- Thông tin cấu hình ---[39m
+[33mChế độ Martingale: TẮT[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m2. [Ưu tiên: 5] Phá cầu chẵn dài (4 phiên): Nếu 4 phiên gần nhất đều ra CHẴN, đặt cược LẺ (eid:3). (Cược: 1000 đ)[39m
+[33m1. [Ưu tiên: 1] Phá cầu chẵn cực dài (5 phiên): Nếu 5 phiên gần nhất đều ra CHẴN, đặt cược LẺ (eid:3) với mức cao. (Cược: 2000 đ)[39m
+[33m4. [Ưu tiên: 15] Cược Chẵn sau chuỗi Lẻ: Nếu 3 phiên gần nhất đều ra tổng LẺ, đặt cược CHẴN (eid:2). (Cược: 500 đ)[39m
+[33m5. [Ưu tiên: 15] Cược Lẻ sau chuỗi Chẵn: Nếu 3 phiên gần nhất đều ra tổng CHẴN, đặt cược LẺ (eid:3). (Cược: 500 đ)[39m
+[33m3. [Ưu tiên: 5] Phá cầu lẻ dài (4 phiên): Nếu 4 phiên gần nhất đều ra LẺ, đặt cược CHẴN (eid:2). (Cược: 1000 đ)[39m
+[36m[11:46:09 PM] Jackpot cập nhật: 117.722.917 ₫[39m
+[34m[11:46:09 PM] Phiên mới bắt đầu, chờ đặt cược...[39m
+[32m[11:46:18 PM] Cấu hình rule.json đã được tải lại.[39m
+[33mChế độ Martingale: TẮT[39m
+[33mChế độ Zombie: BẬT[39m
+[32m[11:46:18 PM] Cấu hình đã được tải thành công[39m
+[33m  - Số tiền cược mặc định: 500 đ[39m
+[33m  - Ngưỡng hũ: 1000000 đ[39m
+[34m[11:46:18 PM] Đang tải cấu hình từ /Users/phuocph/Desktop/CODE/REACT_NATIVE/freelancer/tool-play-club/rule_shake.json[39m
+[33m  - Ngưỡng dừng cược: 1000 đ[39m
+[33m  - Chế độ Martingale: TẮT[39m
+[36mKết nối Simms thành công.[39m
+[36mKết nối MainGame thành công.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (3 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 2000 đ)[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (3 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m3. [Ưu tiên: 20] Theo cầu Xỉu (4 Xỉu liên tiếp): Nếu 4 phiên gần nhất đều ra Xỉu, đặt cược Tài. (Cược: 2000 đ)[39m
+[33m4. [Ưu tiên: 20] Theo cầu Tài (4 Tài liên tiếp): Nếu 4 phiên gần nhất đều ra Tài, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33mNgưỡng dừng cược: [32m10000 đ[39m[33m[39m
+[33mChế độ Martingale: TẮT[39m
+[33mSố tiền đặt cược mặc định: [32m5000 đ[39m[33m[39m
+[33mChế độ Zombie: BẬT[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m100000000000 đ[39m[33m[39m
+[34m[11:46:22 PM] [39mKết quả phiên [36m#2117643[39m: [32mXIU (9 điểm)[39m
+[90mLịch sử gần đây: [TAI, TAI, XIU, XIU, TAI, XIU, XIU, XIU, TAI, XIU][39m
+[31mGiá trị hũ dưới ngưỡng dừng. Bỏ cược[39m
+[34m[11:46:22 PM] [39m[35mHũ hiện tại: [39m[32m30748202 đ[39m
+[34m[11:46:27 PM] [39mSố dư ví: [32m29833 đ[39m
+[31mĐang dừng quản lý trò chơi...[39m
+[32mQuản lý trò chơi đã dừng thành công.[39m
+[32mTrò chơi đã dừng bởi người dùng.[39m
+[33mKết nối đã đóng (MainGame): Trò chơi dừng theo yêu cầu người dùng.[39m
+[33mKhông tự động kết nối lại MainGame vì trò chơi đã dừng.[39m
+[36mKết nối Simms thành công.[39m
+[36mKết nối MainGame thành công.[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (3 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 2000 đ)[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (3 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m3. [Ưu tiên: 20] Theo cầu Xỉu (4 Xỉu liên tiếp): Nếu 4 phiên gần nhất đều ra Xỉu, đặt cược Tài. (Cược: 2000 đ)[39m
+[33m4. [Ưu tiên: 20] Theo cầu Tài (4 Tài liên tiếp): Nếu 4 phiên gần nhất đều ra Tài, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33mSố tiền đặt cược mặc định: [32m5000 đ[39m[33m[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m100000000000 đ[39m[33m[39m
+[33mNgưỡng dừng cược: [32m10000 đ[39m[33m[39m
+[33mChế độ Martingale: TẮT[39m
+[33mChế độ Zombie: BẬT[39m
+[34m[11:47:39 PM] [39mSố dư ví: [32m29833 đ[39m
+[34m[11:47:42 PM] [39mPhiên mới bắt đầu: [36m#2117645[39m. Đang chờ đặt cược...
+[90m[11:47:55 PM] [39mBỏ qua đặt cược cho phiên [36m#2117645[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[11:48:22 PM] [39mKết quả phiên [36m#2117645[39m: [32mXIU (7 điểm)[39m
+[90mLịch sử gần đây: [XIU, XIU, TAI, XIU, XIU, XIU, TAI, XIU, XIU, XIU][39m
+[34m[11:48:22 PM] [39m[35mHũ hiện tại: [39m[32m30748202 đ[39m
+[31mGiá trị hũ dưới ngưỡng dừng. Bỏ cược[39m
+[34m[11:48:42 PM] [39mPhiên mới bắt đầu: [36m#2117646[39m. Đang chờ đặt cược...
+[90m[11:49:07 PM] [39mBỏ qua đặt cược cho phiên [36m#2117646[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[11:49:22 PM] [39mKết quả phiên [36m#2117646[39m: [32mXIU (10 điểm)[39m
+[90mLịch sử gần đây: [XIU, TAI, XIU, XIU, XIU, TAI, XIU, XIU, XIU, XIU][39m
+[34m[11:49:42 PM] [39mPhiên mới bắt đầu: [36m#2117647[39m. Đang chờ đặt cược...
+[90m[11:50:11 PM] [39mBỏ qua đặt cược cho phiên [36m#2117647[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[11:50:22 PM] [39mKết quả phiên [36m#2117647[39m: [32mTAI (13 điểm)[39m
+[90mLịch sử gần đây: [TAI, XIU, XIU, XIU, TAI, XIU, XIU, XIU, XIU, TAI][39m
+[34m[11:50:22 PM] [39m[35mHũ hiện tại: [39m[32m30976053 đ[39m
+[31mGiá trị hũ dưới ngưỡng dừng. Bỏ cược[39m
+[34m[11:50:42 PM] [39mPhiên mới bắt đầu: [36m#2117648[39m. Đang chờ đặt cược...
+[90m[11:51:05 PM] [39mBỏ qua đặt cược cho phiên [36m#2117648[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[11:51:22 PM] [39mKết quả phiên [36m#2117648[39m: [32mTAI (15 điểm)[39m
+[90mLịch sử gần đây: [XIU, XIU, XIU, TAI, XIU, XIU, XIU, XIU, TAI, TAI][39m
+[34m[11:51:23 PM] [39m[35mHũ hiện tại: [39m[32m31332127 đ[39m
+[31mGiá trị hũ dưới ngưỡng dừng. Bỏ cược[39m
+[34m[11:51:42 PM] [39mPhiên mới bắt đầu: [36m#2117649[39m. Đang chờ đặt cược...
+[90m[11:52:06 PM] [39mBỏ qua đặt cược cho phiên [36m#2117649[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[11:52:22 PM] [39mKết quả phiên [36m#2117649[39m: [32mTAI (12 điểm)[39m
+[90mLịch sử gần đây: [XIU, XIU, TAI, XIU, XIU, XIU, XIU, TAI, TAI, TAI][39m
+[34m[11:52:42 PM] [39mPhiên mới bắt đầu: [36m#2117650[39m. Đang chờ đặt cược...
+[90m[11:53:01 PM] [39mBỏ qua đặt cược cho phiên [36m#2117650[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[11:53:22 PM] [39mKết quả phiên [36m#2117650[39m: [32mTAI (11 điểm)[39m
+[90mLịch sử gần đây: [XIU, TAI, XIU, XIU, XIU, XIU, TAI, TAI, TAI, TAI][39m
+[34m[11:53:22 PM] [39m[35mHũ hiện tại: [39m[32m31565914 đ[39m
+[31mGiá trị hũ dưới ngưỡng dừng. Bỏ cược[39m
+[34m[11:53:42 PM] [39mPhiên mới bắt đầu: [36m#2117651[39m. Đang chờ đặt cược...
+[90m[11:53:54 PM] [39mBỏ qua đặt cược cho phiên [36m#2117651[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[11:54:22 PM] [39mKết quả phiên [36m#2117651[39m: [32mXIU (7 điểm)[39m
+[90mLịch sử gần đây: [TAI, XIU, XIU, XIU, XIU, TAI, TAI, TAI, TAI, XIU][39m
+[34m[11:54:42 PM] [39mPhiên mới bắt đầu: [36m#2117652[39m. Đang chờ đặt cược...
+[90m[11:55:02 PM] [39mBỏ qua đặt cược cho phiên [36m#2117652[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[11:55:22 PM] [39mKết quả phiên [36m#2117652[39m: [32mTAI (16 điểm)[39m
+[90mLịch sử gần đây: [XIU, XIU, XIU, XIU, TAI, TAI, TAI, TAI, XIU, TAI][39m
+[34m[11:55:22 PM] [39m[35mHũ hiện tại: [39m[32m32138924 đ[39m
+[31mGiá trị hũ dưới ngưỡng dừng. Bỏ cược[39m
+[34m[11:55:42 PM] [39mPhiên mới bắt đầu: [36m#2117653[39m. Đang chờ đặt cược...
+[90m[11:56:03 PM] [39mBỏ qua đặt cược cho phiên [36m#2117653[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[90mLịch sử gần đây: [XIU, XIU, XIU, TAI, TAI, TAI, TAI, XIU, TAI, TAI][39m
+[34m[11:56:22 PM] [39mKết quả phiên [36m#2117653[39m: [32mTAI (13 điểm)[39m
+[34m[11:56:42 PM] [39mPhiên mới bắt đầu: [36m#2117654[39m. Đang chờ đặt cược...
+[90m[11:56:59 PM] [39mBỏ qua đặt cược cho phiên [36m#2117654[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[11:57:23 PM] [39mKết quả phiên [36m#2117654[39m: [32mTAI (15 điểm)[39m
+[90mLịch sử gần đây: [XIU, XIU, TAI, TAI, TAI, TAI, XIU, TAI, TAI, TAI][39m
+[34m[11:57:42 PM] [39mPhiên mới bắt đầu: [36m#2117655[39m. Đang chờ đặt cược...
+[90m[11:58:11 PM] [39mBỏ qua đặt cược cho phiên [36m#2117655[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[11:58:22 PM] [39mKết quả phiên [36m#2117655[39m: [32mTAI (11 điểm)[39m
+[90mLịch sử gần đây: [XIU, TAI, TAI, TAI, TAI, XIU, TAI, TAI, TAI, TAI][39m
+[34m[11:58:42 PM] [39mPhiên mới bắt đầu: [36m#2117656[39m. Đang chờ đặt cược...
+[90m[11:58:55 PM] [39mBỏ qua đặt cược cho phiên [36m#2117656[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[11:59:22 PM] [39mKết quả phiên [36m#2117656[39m: [32mXIU (8 điểm)[39m
+[90mLịch sử gần đây: [TAI, TAI, TAI, TAI, XIU, TAI, TAI, TAI, TAI, XIU][39m
+[34m[11:59:42 PM] [39mPhiên mới bắt đầu: [36m#2117657[39m. Đang chờ đặt cược...
+[90m[11:59:58 PM] [39mBỏ qua đặt cược cho phiên [36m#2117657[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[12:00:23 AM] [39mKết quả phiên [36m#2117657[39m: [32mTAI (14 điểm)[39m
+[90mLịch sử gần đây: [TAI, TAI, TAI, XIU, TAI, TAI, TAI, TAI, XIU, TAI][39m
+[34m[12:00:23 AM] [39m[35mHũ hiện tại: [39m[32m32201745 đ[39m
+[31mGiá trị hũ dưới ngưỡng dừng. Bỏ cược[39m
+[34m[12:00:42 AM] [39mPhiên mới bắt đầu: [36m#2117658[39m. Đang chờ đặt cược...
+[90m[12:00:54 AM] [39mBỏ qua đặt cược cho phiên [36m#2117658[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[90mLịch sử gần đây: [TAI, TAI, XIU, TAI, TAI, TAI, TAI, XIU, TAI, TAI][39m
+[34m[12:01:23 AM] [39mKết quả phiên [36m#2117658[39m: [32mTAI (15 điểm)[39m
+[34m[12:01:42 AM] [39mPhiên mới bắt đầu: [36m#2117659[39m. Đang chờ đặt cược...
+[90m[12:01:59 AM] [39mBỏ qua đặt cược cho phiên [36m#2117659[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[12:02:23 AM] [39mKết quả phiên [36m#2117659[39m: [32mXIU (10 điểm)[39m
+[90mLịch sử gần đây: [TAI, XIU, TAI, TAI, TAI, TAI, XIU, TAI, TAI, XIU][39m
+[31mGiá trị hũ dưới ngưỡng dừng. Bỏ cược[39m
+[34m[12:02:23 AM] [39m[35mHũ hiện tại: [39m[32m32820083 đ[39m
+[34m[12:02:42 AM] [39mPhiên mới bắt đầu: [36m#2117660[39m. Đang chờ đặt cược...
+[90m[12:03:04 AM] [39mBỏ qua đặt cược cho phiên [36m#2117660[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[12:03:23 AM] [39mKết quả phiên [36m#2117660[39m: [32mXIU (8 điểm)[39m
+[90mLịch sử gần đây: [XIU, TAI, TAI, TAI, TAI, XIU, TAI, TAI, XIU, XIU][39m
+[31mGiá trị hũ dưới ngưỡng dừng. Bỏ cược[39m
+[34m[12:03:23 AM] [39m[35mHũ hiện tại: [39m[32m32994974 đ[39m
+[34m[12:03:43 AM] [39mPhiên mới bắt đầu: [36m#2117661[39m. Đang chờ đặt cược...
+[32m[12:04:09 AM] Cấu hình rule.json đã được tải lại.[39m
+[33mChế độ Zombie: BẬT[39m
+[34m[12:04:09 AM] Đang tải cấu hình từ /Users/phuocph/Desktop/CODE/REACT_NATIVE/freelancer/tool-play-club/rule_shake.json[39m
+[32m[12:04:09 AM] Cấu hình đã được tải thành công[39m
+[33m  - Số tiền cược mặc định: 500 đ[39m
+[33mChế độ Martingale: TẮT[39m
+[33m  - Ngưỡng hũ: 1000000 đ[39m
+[33m  - Ngưỡng dừng cược: 1000 đ[39m
+[33m  - Chế độ Martingale: TẮT[39m
+[36mKết nối Simms thành công.[39m
+[36mKết nối MainGame thành công.[39m
+[33m[39m
+[33m--- Quy tắc trò chơi ---[39m
+[33m1. Trò chơi dựa trên kết quả của 3 viên xúc xắc.[39m
+[32mTrò chơi đã bắt đầu thành công![39m
+[33m2. Tổng điểm từ 4 đến 10 là XỈU.[39m
+[33m3. Tổng điểm từ 11 đến 17 là TÀI.[39m
+[33m4. Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).[39m
+[33m[39m
+[33m--- Quy tắc đặt cược đang hoạt động ---[39m
+[33m1. [Ưu tiên: 10] Theo cầu Tài (3 Tài liên tiếp): Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI. (Cược: 2000 đ)[39m
+[33m2. [Ưu tiên: 10] Theo cầu Xỉu (3 Xỉu liên tiếp): Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33m3. [Ưu tiên: 20] Theo cầu Xỉu (4 Xỉu liên tiếp): Nếu 4 phiên gần nhất đều ra Xỉu, đặt cược Tài. (Cược: 2000 đ)[39m
+[33m4. [Ưu tiên: 20] Theo cầu Tài (4 Tài liên tiếp): Nếu 4 phiên gần nhất đều ra Tài, đặt cược Xỉu. (Cược: 2000 đ)[39m
+[33mSố tiền đặt cược mặc định: [32m5000 đ[39m[33m[39m
+[33mNgưỡng hũ để tiếp tục chơi: [32m10000000 đ[39m[33m[39m
+[33mNgưỡng dừng cược: [32m10000 đ[39m[33m[39m
+[33mChế độ Martingale: TẮT[39m
+[33mChế độ Zombie: BẬT[39m
+[34m[12:04:16 AM] [39mSố dư ví: [32m29833 đ[39m
+[34m[12:04:23 AM] [39mKết quả phiên [36m#2117661[39m: [32mTAI (16 điểm)[39m
+[90mLịch sử gần đây: [TAI, TAI, TAI, TAI, XIU, TAI, TAI, XIU, XIU, TAI][39m
+[34m[12:04:23 AM] [39m[35mHũ hiện tại: [39m[32m32994974 đ[39m
+[34m[12:04:42 AM] [39mPhiên mới bắt đầu: [36m#2117662[39m. Đang chờ đặt cược...
+[90m[12:05:03 AM] [39mKhông tìm thấy quy tắc đặt cược phù hợp trong lịch sử gần đây.
+[90m[12:05:03 AM] [39mBỏ qua đặt cược cho phiên [36m#2117662[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[12:05:22 AM] [39mKết quả phiên [36m#2117662[39m: [32mXIU (10 điểm)[39m
+[90mLịch sử gần đây: [TAI, TAI, TAI, XIU, TAI, TAI, XIU, XIU, TAI, XIU][39m
+[34m[12:05:23 AM] [39m[35mHũ hiện tại: [39m[32m33700379 đ[39m
+[34m[12:05:42 AM] [39mPhiên mới bắt đầu: [36m#2117663[39m. Đang chờ đặt cược...
+[90m[12:05:53 AM] [39mKhông tìm thấy quy tắc đặt cược phù hợp trong lịch sử gần đây.
+[90m[12:05:53 AM] [39mBỏ qua đặt cược cho phiên [36m#2117663[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[12:06:23 AM] [39mKết quả phiên [36m#2117663[39m: [32mTAI (14 điểm)[39m
+[90mLịch sử gần đây: [TAI, TAI, XIU, TAI, TAI, XIU, XIU, TAI, XIU, TAI][39m
+[34m[12:06:42 AM] [39mPhiên mới bắt đầu: [36m#2117664[39m. Đang chờ đặt cược...
+[90m[12:07:05 AM] [39mKhông tìm thấy quy tắc đặt cược phù hợp trong lịch sử gần đây.
+[90m[12:07:05 AM] [39mBỏ qua đặt cược cho phiên [36m#2117664[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[12:07:22 AM] [39mKết quả phiên [36m#2117664[39m: [32mTAI (15 điểm)[39m
+[90mLịch sử gần đây: [TAI, XIU, TAI, TAI, XIU, XIU, TAI, XIU, TAI, TAI][39m
+[34m[12:07:23 AM] [39m[35mHũ hiện tại: [39m[32m34289311 đ[39m
+[34m[12:07:43 AM] [39mPhiên mới bắt đầu: [36m#2117665[39m. Đang chờ đặt cược...
+[90m[12:08:02 AM] [39mKhông tìm thấy quy tắc đặt cược phù hợp trong lịch sử gần đây.
+[90m[12:08:02 AM] [39mBỏ qua đặt cược cho phiên [36m#2117665[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[12:08:22 AM] [39mKết quả phiên [36m#2117665[39m: [32mXIU (8 điểm)[39m
+[90mLịch sử gần đây: [XIU, TAI, TAI, XIU, XIU, TAI, XIU, TAI, TAI, XIU][39m
+[34m[12:08:23 AM] [39m[35mHũ hiện tại: [39m[32m34815152 đ[39m
+[34m[12:08:43 AM] [39mPhiên mới bắt đầu: [36m#2117666[39m. Đang chờ đặt cược...
+[90m[12:09:05 AM] [39mKhông tìm thấy quy tắc đặt cược phù hợp trong lịch sử gần đây.
+[90m[12:09:05 AM] [39mBỏ qua đặt cược cho phiên [36m#2117666[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[12:09:22 AM] [39mKết quả phiên [36m#2117666[39m: [32mXIU (5 điểm)[39m
+[90mLịch sử gần đây: [TAI, TAI, XIU, XIU, TAI, XIU, TAI, TAI, XIU, XIU][39m
+[34m[12:09:23 AM] [39m[35mHũ hiện tại: [39m[32m35063099 đ[39m
+[34m[12:09:43 AM] [39mPhiên mới bắt đầu: [36m#2117667[39m. Đang chờ đặt cược...
+[90m[12:10:01 AM] [39mKhông tìm thấy quy tắc đặt cược phù hợp trong lịch sử gần đây.
+[90m[12:10:01 AM] [39mBỏ qua đặt cược cho phiên [36m#2117667[39m: Hũ quá thấp hoặc không có mẫu rõ ràng.
+[34m[12:10:22 AM] [39mKết quả phiên [36m#2117667[39m: [32mXIU (7 điểm)[39m
+[90mLịch sử gần đây: [TAI, XIU, XIU, TAI, XIU, TAI, TAI, XIU, XIU, XIU][39m
+[34m[12:10:43 AM] [39mPhiên mới bắt đầu: [36m#2117668[39m. Đang chờ đặt cược...
+[35m[12:11:10 AM] [39mĐã chọn quy tắc: [33mTheo cầu Xỉu (3 Xỉu liên tiếp)[39m - Đặt cược: [33mXIU[39m với số tiền [31m2000[39m đ.
+[34m[12:11:10 AM] [39mĐang cố gắng đặt 2000 đ vào cửa [33mXIU[39m cho phiên [36m#2117668[39m.
+[34m[12:11:11 AM] [39mPhiên [36m#2117668[39m - [32mNgười dùng: akay131[39m - Đặt cược: [31m2000[39m đ. [35mCược thành công cửa: [39m[33mXIU[39m
+[34m[12:11:11 AM] [39mSố dư ví: [32m27833 đ[39m
+[34m[12:11:23 AM] [39mKết quả phiên [36m#2117668[39m: [32mXIU (10 điểm)[39m
+[90mLịch sử gần đây: [XIU, XIU, TAI, XIU, TAI, TAI, XIU, XIU, XIU, XIU][39m
+[34m[12:11:42 AM] [39mPhiên mới bắt đầu: [36m#2117669[39m. Đang chờ đặt cược...
