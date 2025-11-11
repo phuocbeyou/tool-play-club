@@ -64,7 +64,7 @@
         "TAI",
         "TAI"
       ],
-      "betOn": "1",
+      "betOn": "TAI",
       "priority": 1,
       "active": true,
       "description": "Nếu 4 phiên gần nhất đều ra Xỉu, đặt cược Tài.",
@@ -77,7 +77,7 @@
         "XIU",
         "XIU"
       ],
-      "betOn": "1",
+      "betOn": "TAI",
       "priority": 1,
       "active": true,
       "description": "Nếu 4 phiên gần nhất đều ra Xỉu, đặt cược Tài.",
