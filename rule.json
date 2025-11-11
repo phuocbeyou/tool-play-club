@@ -61,10 +61,23 @@
       "id": "rule_6_xiu_4_lan_dao_chieu_tai",
       "name": "Đảo chiều sau 4 lần Xỉu liên tiếp",
       "pattern": [
+        "TAI",
+        "TAI"
+      ],
+      "betOn": "1",
+      "priority": 1,
+      "active": true,
+      "description": "Nếu 4 phiên gần nhất đều ra Xỉu, đặt cược Tài.",
+      "betAmount": 100000
+    },
+    {
+      "id": "rule_6_xiu_4_lan_dao_chieu_tai",
+      "name": "Đảo chiều sau 4 lần Xỉu liên tiếp",
+      "pattern": [
         "XIU",
         "XIU"
       ],
-      "betOn": "2",
+      "betOn": "1",
       "priority": 1,
       "active": true,
       "description": "Nếu 4 phiên gần nhất đều ra Xỉu, đặt cược Tài.",
