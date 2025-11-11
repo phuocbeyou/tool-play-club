@@ -68,7 +68,7 @@
       "priority": 1,
       "active": true,
       "description": "Nếu 4 phiên gần nhất đều ra Xỉu, đặt cược Tài.",
-      "betAmount": 100000
+      "betAmount": 10000
     },
     {
       "id": "rule_6_xiu_4_lan_dao_chieu_tai",
