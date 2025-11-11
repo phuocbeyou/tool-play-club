@@ -8,10 +8,10 @@
   ],
   "betRule": {
     "pattern": [
-      "\"xiu",
-      "xiu\""
+      "xiu",
+      "xiu"
     ],
-    "result": "\"xiu\""
+    "result": "xiu"
   },
   "walletAlert": {
     "threshold": 1000000,

@@ -20,91 +20,92 @@ import { promptXocDiaMenu } from './src/ui/promtFanTan.js';
 import { startGameShake, stopGameShake } from './src/socket/shake.js';
 
 async function main() {
-  showBanner()
-  while (true) {
-    const mainCmd = await promptMainMenu();
+  // showBanner()
+  // while (true) {
+  //   const mainCmd = await promptMainMenu();
 
-    if (mainCmd === 'exit') {
-      console.log('👋 Thoát chương trình. Hẹn gặp lại!');
-      process.exit(0);
-    }
+  //   if (mainCmd === 'exit') {
+  //     console.log('👋 Thoát chương trình. Hẹn gặp lại!');
+  //     process.exit(0);
+  //   }
 
-    if (mainCmd === 'account') {
-      while (true) {
-        const accountCmd = await promptAccountMenu();
+  //   if (mainCmd === 'account') {
+  //     while (true) {
+  //       const accountCmd = await promptAccountMenu();
 
-        if (accountCmd === 'back') break;
+  //       if (accountCmd === 'back') break;
 
-        if (accountCmd === 'add') {
-          const user = await promptUserAdd();
-          const userData = user.metaData
-          await tokenAdd(userData);
-        } else if (accountCmd === 'update') {
-          const user = await promptUserUpdate();
-          await userUpdate(user.metaData);
-        } else if (accountCmd === 'delete') {
-          const { id } = await promptUserDelete();
-          await userDelete(id);
-        } else if (accountCmd === 'select') {
-          const id = await promptUserSelect();
-          await userSelect(id);
-        } else if (accountCmd === 'current') {
-          await userGetSelected();
-        }
-      }
-    }
+  //       if (accountCmd === 'add') {
+  //         const user = await promptUserAdd();
+  //         const userData = user.metaData
+  //         await tokenAdd(userData);
+  //       } else if (accountCmd === 'update') {
+  //         const user = await promptUserUpdate();
+  //         await userUpdate(user.metaData);
+  //       } else if (accountCmd === 'delete') {
+  //         const { id } = await promptUserDelete();
+  //         await userDelete(id);
+  //       } else if (accountCmd === 'select') {
+  //         const id = await promptUserSelect();
+  //         await userSelect(id);
+  //       } else if (accountCmd === 'current') {
+  //         await userGetSelected();
+  //       }
+  //     }
+  //   }
 
-    else if (mainCmd === 'even_odd') {
-      while (true) {
-        const action = await promptEvenOddMenu();
+  //   else if (mainCmd === 'even_odd') {
+  //     while (true) {
+  //       const action = await promptEvenOddMenu();
     
-        if (action === 'back') break;
+  //       if (action === 'back') break;
     
-        if (action === 'set_jackpot') {
-          await promptSetJackpot();
-        }
+  //       if (action === 'set_jackpot') {
+  //         await promptSetJackpot();
+  //       }
     
-        else if (action === 'set_bet_stop') {
-          await promptSetBetStop()
-        }
+  //       else if (action === 'set_bet_stop') {
+  //         await promptSetBetStop()
+  //       }
 
-        else if (action === 'update_bet_amount') {
-          await promptUpdateBetAmount()
-        }
-      }
-    }
-    else if (mainCmd === 'xoc_dia') {
-      while (true) {
-        const action = await promptXocDiaMenu();
+  //       else if (action === 'update_bet_amount') {
+  //         await promptUpdateBetAmount()
+  //       }
+  //     }
+  //   }
+  //   else if (mainCmd === 'xoc_dia') {
+  //     while (true) {
+  //       const action = await promptXocDiaMenu();
     
-        if (action === 'back') break;
+  //       if (action === 'back') break;
     
-        if (action === 'set_jackpot') {
-          await promptSetJackpot();
-        }
+  //       if (action === 'set_jackpot') {
+  //         await promptSetJackpot();
+  //       }
     
-        else if (action === 'set_bet_stop') {
-          await promptSetBetStop()
-        }
+  //       else if (action === 'set_bet_stop') {
+  //         await promptSetBetStop()
+  //       }
 
-        else if (action === 'update_bet_amount') {
-          await promptUpdateBetAmount()
-        }
-      }
-    }
-    else if (mainCmd === 'start_bet_shake') {
-      startGameShake()
-    }
-    else if (mainCmd === 'stop_bet_shake') {
-      stopGameShake()
-    }
-    else if (mainCmd === 'start_bet') {
-      startGame()
-    }
-    else if (mainCmd === 'stop_bet') {
-      stopGame()
-    }
-  }
+  //       else if (action === 'update_bet_amount') {
+  //         await promptUpdateBetAmount()
+  //       }
+  //     }
+  //   }
+  //   else if (mainCmd === 'start_bet_shake') {
+  //     startGameShake()
+  //   }
+  //   else if (mainCmd === 'stop_bet_shake') {
+  //     stopGameShake()
+  //   }
+  //   else if (mainCmd === 'start_bet') {
+  //     startGame()
+  //   }
+  //   else if (mainCmd === 'stop_bet') {
+  //     stopGame()
+  //   }
+  // }
+  startGame()
 }
 
 main().catch(err => {

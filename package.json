@@ -33,6 +33,7 @@
     "chalk": "^5.4.1",
     "dotenv": "^16.5.0",
     "inquirer": "^12.6.3",
+    "socket.io-client": "^4.8.1",
     "websocket": "^1.0.35"
   },
   "devDependencies": {

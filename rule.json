@@ -1,77 +1,74 @@
 {
   "gameSettings": {
-    "BET_AMOUNT": 5000,
-    "JACKPOT_THRESHOLD": 10000000,
+    "BET_AMOUNT": 1000,
+    "JACKPOT_THRESHOLD": 500000,
     "BET_STOP": 10000,
     "TIME_SEND_MESS": 1,
     "IS_MARTINGALE": false,
     "RATE_MARTINGALE": 2,
-    "ZOMBIE": true
+    "ZOMBIE": true,
+    "GIFT_MODE": false,
+    "AMOUNT_GIFT": 2000,
+    "SOCKET_ENABLED": true,
+    "SOCKET_ROOM_ID": "game_room_01",
+    "JACKPOT_RANGES_NEW": [
+      {
+        "MIN": 12000000,
+        "MAX": 14000000
+      },
+      {
+        "MIN": 15000000,
+        "MAX": 18000000
+      },
+      {
+        "MIN": 22000000,
+        "MAX": 25000000
+      },
+      {
+        "MIN": 26000000,
+        "MAX": 30000000
+      },
+      {
+        "MIN": 32000000,
+        "MAX": 35000000
+      },
+      {
+        "MIN": 36000000,
+        "MAX": 45000000
+      },
+      {
+        "MIN": 47000000,
+        "MAX": 50000000
+      },
+      {
+        "MIN": 62000000,
+        "MAX": 65000000
+      },
+      {
+        "MIN": 70000000,
+        "MAX": 75000000
+      }
+    ]
   },
   "gameRules": [
-    "Trò chơi dựa trên kết quả của 3 viên xúc xắc.",
-    "Tổng điểm từ 4 đến 10 là XỈU.",
+    "Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU).",
     "Tổng điểm từ 11 đến 17 là TÀI.",
-    "Nếu 3 viên xúc xắc ra cùng một số (bộ ba đồng nhất), kết quả là BÃO và nhà cái thắng (người chơi thua cược TÀI/XỈU)."
+    "Tổng điểm từ 4 đến 10 là XỈU.",
+    "Trò chơi dựa trên kết quả của 3 viên xúc xắc."
   ],
   "bettingRules": [
     {
-      "id": "rule_1_tai_tai_tai_bet_tai",
-      "name": "Theo cầu Tài (3 Tài liên tiếp)",
+      "id": "rule_6_xiu_4_lan_dao_chieu_tai",
+      "name": "Đảo chiều sau 4 lần Xỉu liên tiếp",
       "pattern": [
-        "TAI",
-        "TAI",
-        "TAI"
-      ],
-      "betOn": "TAI",
-      "priority": 10,
-      "active": true,
-      "description": "Nếu 2 phiên gần nhất đều ra TÀI, đặt cược TÀI.",
-      "betAmount": 2000
-    },
-    {
-      "id": "rule_2_xiu_xiu_xiu_bet_xiu",
-      "name": "Theo cầu Xỉu (3 Xỉu liên tiếp)",
-      "pattern": [
-        "XIU",
         "XIU",
         "XIU"
       ],
-      "betOn": "XIU",
-      "priority": 10,
-      "active": true,
-      "description": "Nếu 2 phiên gần nhất đều ra Xỉu, đặt cược Xỉu.",
-      "betAmount": 2000
-    },
-    {
-      "id": "rule_3_xiu_xiu_xiu_xiu_bet_tai",
-      "name": "Theo cầu Xỉu (4 Xỉu liên tiếp)",
-      "pattern": [
-        "XIU",
-        "XIU",
-        "XIU",
-        "XIU"
-      ],
-      "betOn": "TAI",
-      "priority": 20,
+      "betOn": "2",
+      "priority": 1,
       "active": true,
       "description": "Nếu 4 phiên gần nhất đều ra Xỉu, đặt cược Tài.",
-      "betAmount": 2000
-    },
-    {
-      "id": "rule_4_tai_tai_tai_tai_bet_xiu",
-      "name": "Theo cầu Tài (4 Tài liên tiếp)",
-      "pattern": [
-        "TAI",
-        "TAI",
-        "TAI",
-        "TAI"
-      ],
-      "betOn": "XIU",
-      "priority": 20,
-      "active": true,
-      "description": "Nếu 4 phiên gần nhất đều ra Tài, đặt cược Xỉu.",
-      "betAmount": 2000
+      "betAmount": 100000
     }
   ]
 }
