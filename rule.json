@@ -13,7 +13,7 @@
     "SOCKET_ROOM_ID": "game_room_01",
     "JACKPOT_RANGES_NEW": [
       {
-        "MIN": 12000000,
+        "MIN": 10000000,
         "MAX": 14000000
       },
       {
