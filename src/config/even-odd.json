@@ -1,6 +1,6 @@
 {
   "gameSettings": {
-    "BET_AMOUNT": 1000,
+    "BET_AMOUNT": 5000,
     "JACKPOT_THRESHOLD": 10000000,
     "BET_STOP": 100000,
     "TIME_SEND_MESS": 1,
