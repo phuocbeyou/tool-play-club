@@ -12,7 +12,13 @@ import { convertVnd } from "../utils/bet.js"
 const WebSocketClient = websocket.client
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
-const configPath = path.resolve(__dirname, "../../rule.json")
+const configPath = path.resolve(__dirname, "../config/even-odd.json")
+const statsPath = path.resolve(__dirname, "../config/stast-even-odd.json")
+
+let latestSessionStats = null
+export function getLatestSessionStats() {
+  return latestSessionStats
+}
 
 /*------- HÀM TIỆN ÍCH --------------------*/
 /**
@@ -22,11 +28,6 @@ const configPath = path.resolve(__dirname, "../../rule.json")
  */
 const Log = (message) => {
   console.log(message)
-  try {
-    fs.appendFile("./game.log", message.replace(/ \[\d+m/gm, "") + "\n", () => {})
-  } catch (error) {
-    fs.appendFile("./game.log", message + "\n", () => {})
-  }
 }
 
 /*------- CẤU HÌNH ĐƯỢC TẢI TỪ FILE JSON ----------------*/
@@ -38,6 +39,9 @@ let ZOMBIE_MODE // Thêm biến zombie mode
 // Các biến này sẽ được cập nhật khi config thay đổi
 let IS_MARTINGALE
 let RATE_MARTINGALE
+let COUNTDOWN_TIME
+let WIN_STOP
+let LOSS_STOP
 let configReloadTimeout // Biến để quản lý debounce
 
 /**
@@ -53,9 +57,15 @@ const loadConfigAndConstants = () => {
     IS_MARTINGALE = config.gameSettings.IS_MARTINGALE // Cập nhật biến Martingale
     RATE_MARTINGALE = config.gameSettings.RATE_MARTINGALE // Cập nhật biến Martingale Rate
     ZOMBIE_MODE = config.gameSettings.ZOMBIE || false // Thêm zombie mode
+    COUNTDOWN_TIME = config.gameSettings.COUNTDOWN_TIME || 37 // Thời gian đếm ngược
+    WIN_STOP = config.gameSettings.WIN_STOP || 200000
+    LOSS_STOP = config.gameSettings.LOSS_STOP || 100000
     Log(chalk.green(`[${new Date().toLocaleTimeString()}] Cấu hình rule.json đã được tải lại.`))
     Log(chalk.yellow(`Chế độ Martingale: ${IS_MARTINGALE ? "BẬT" : "TẮT"}`))
     Log(chalk.yellow(`Chế độ Zombie: ${ZOMBIE_MODE ? "BẬT" : "TẮT"}`))
+    Log(chalk.yellow(`Thời gian đếm ngược: ${COUNTDOWN_TIME} giây`))
+    Log(chalk.yellow(`Mục tiêu thắng (Win Stop): ${WIN_STOP} đ`))
+    Log(chalk.yellow(`Giới hạn thua (Loss Stop): ${LOSS_STOP} đ`))
     if (IS_MARTINGALE) {
       Log(chalk.yellow(`Tỷ lệ gấp thếp: ${RATE_MARTINGALE}`))
     }
@@ -117,10 +127,23 @@ class GameWorker {
     this.bettingChoice = null // Lựa chọn cược cho phiên hiện tại (TAI/XIU)
     this.currentBetAmount = DEFAULT_BET_AMOUNT // Số tiền cược cho phiên hiện tại
     this.currentBudget = null
+    this.initialBudget = null
     this.currentJackpot = 0
     this.gameHistory = [] // Lưu trữ lịch sử kết quả TAI/XIU (ví dụ: ["TAI", "XIU", "TAI"])
     this.activeIntervals = []
     this.pingCounter = 0
+
+    // Biến lưu trữ pool và quản lý đếm ngược đặt cược
+    this.latestTaiPool = 0
+    this.latestXiuPool = 0
+    this.betTimeout = null
+    this.countdownInterval = null
+
+    // Thống kê phiên chạy cho báo cáo Telegram
+    this.sessionCounter = 0
+    this.runTotalBets = 0
+    this.runWins = 0
+    this.runLosses = 0
 
     // Biến cho chế độ Martingale
     this.baseBetAmount = DEFAULT_BET_AMOUNT // Số tiền cược cơ sở, không đổi trong một chuỗi Martingale
@@ -192,6 +215,14 @@ class GameWorker {
     if (this.zombieReconnectTimeout) {
       clearTimeout(this.zombieReconnectTimeout)
       this.zombieReconnectTimeout = null
+    }
+    if (this.betTimeout) {
+      clearTimeout(this.betTimeout)
+      this.betTimeout = null
+    }
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval)
+      this.countdownInterval = null
     }
 
     // Force close connections
@@ -370,8 +401,22 @@ class GameWorker {
       return
     }
 
+    if (parsedMessage && parsedMessage[1] && Array.isArray(parsedMessage[1].bs)) {
+      const taiEntry = parsedMessage[1].bs.find(item => item.eid === 1);
+      const xiuEntry = parsedMessage[1].bs.find(item => item.eid === 2);
+      if (taiEntry && typeof taiEntry.v === "number") {
+        this.latestTaiPool = taiEntry.v;
+      }
+      if (xiuEntry && typeof xiuEntry.v === "number") {
+        this.latestXiuPool = xiuEntry.v;
+      }
+    }
+
     // Lệnh 2000: Trạng thái trò chơi ban đầu hoặc lịch sử
     if (messageString.includes(`"cmd":2000`)) {
+      if (parsedMessage[1] && typeof parsedMessage[1].J === "number") {
+        this.currentJackpot = parsedMessage[1].J
+      }
       if (parsedMessage[1] && parsedMessage[1].htr && parsedMessage[1].htr.length >= 2) {
         this.latestGameResult = parsedMessage[1].htr[parsedMessage[1].htr.length - 1]
         this.secondLatestGameResult = parsedMessage[1].htr[parsedMessage[1].htr.length - 2]
@@ -399,6 +444,73 @@ class GameWorker {
       if (ZOMBIE_MODE && this.zombieFailureCount > 0) {
         Log(chalk.green(`[${new Date().toLocaleTimeString()}] Zombie Mode: Kết nối ổn định, reset failure count.`))
         this.zombieFailureCount = 0
+      }
+
+      // Save stats to stast-even-odd.json
+      try {
+        let won = null;
+        if (this.lastBetChoice) {
+          won = (this.lastBetChoice === resultType);
+        }
+        
+        const sessionEntry = {
+          gid: parsedMessage[1].sid,
+          endedAt: new Date().toISOString(),
+          result: `${resultType} (${sumResult}đ)`,
+          dices: [parsedMessage[1].d1, parsedMessage[1].d2, parsedMessage[1].d3],
+          botBet: this.lastBetChoice ? {
+            choice: this.lastBetChoice,
+            amount: this.lastBetAmount,
+            won: won
+          } : null,
+          budget: this.currentBudget,
+          jackpot: this.currentJackpot
+        };
+
+        latestSessionStats = sessionEntry;
+
+        let history = [];
+        if (fs.existsSync(statsPath)) {
+          const raw = fs.readFileSync(statsPath, "utf8").trim();
+          if (raw && raw !== "[]") {
+            history = JSON.parse(raw);
+          }
+        }
+        history.push(sessionEntry);
+        fs.writeFileSync(statsPath, JSON.stringify(history, null, 2), "utf8");
+        Log(chalk.cyan(`[${new Date().toLocaleTimeString()}] 📝 Đã lưu phiên GID:${sessionEntry.gid} vào stast-even-odd.json (${history.length} phiên)`))
+      } catch (err) {
+        Log(chalk.red(`❌ Lỗi lưu stats: ${err.message}`));
+      }
+
+      // Cập nhật thống kê và gửi báo cáo Telegram mỗi 50 ván
+      this.sessionCounter++
+      if (this.lastBetChoice) {
+        this.runTotalBets++
+        if (this.lastBetChoice === resultType) {
+          this.runWins++
+        } else {
+          this.runLosses++
+        }
+      }
+
+      if (this.sessionCounter > 0 && this.sessionCounter % 50 === 0) {
+        const profit = this.currentBudget !== null && this.initialBudget !== null ? this.currentBudget - this.initialBudget : 0
+        const winRate = this.runTotalBets > 0 ? ((this.runWins / this.runTotalBets) * 100).toFixed(1) + "%" : "0%"
+        
+        sendTelegramAlert({
+          type: "info",
+          title: `📊 Báo Cáo Thống Kê Tài Xỉu - ${this.username}`,
+          content: `Hệ thống vừa hoàn thành thêm 50 phiên đấu liên tiếp.`,
+          metadata: {
+            "Tổng số phiên": `${this.sessionCounter} phiên`,
+            "Số dư hiện tại": this.currentBudget !== null ? convertVnd(this.currentBudget) : "Chưa cập nhật",
+            "Lợi nhuận ròng": profit >= 0 ? `+${convertVnd(profit)}` : convertVnd(profit),
+            "Số ván đã cược": `${this.runTotalBets} ván`,
+            "Thắng / Thua": `${this.runWins} Thắng / ${this.runLosses} Thua`,
+            "Tỉ lệ thắng": winRate
+          }
+        }).catch(err => Log(chalk.red(`❌ Lỗi gửi báo cáo Telegram: ${err.message}`)))
       }
 
       // Xử lý logic Martingale sau khi có kết quả
@@ -462,16 +574,44 @@ class GameWorker {
     else if (messageString.includes(`"cmd":2005`)) {
       if (parsedMessage[1].sid !== this.previousSessionId) {
         this.currentSessionId = parsedMessage[1].sid
+        this.latestTaiPool = 0
+        this.latestXiuPool = 0
+        this.isBettingAllowed = true
+        
+        let countdownSeconds = COUNTDOWN_TIME
         Log(
           chalk.blue(`[${new Date().toLocaleTimeString()}] `) +
-          `Phiên mới bắt đầu: ${chalk.cyan(`#${this.currentSessionId}`)}. Đang chờ đặt cược...`,
+          `Phiên mới bắt đầu: ${chalk.cyan(`#${this.currentSessionId}`)}. Bắt đầu đếm ngược ${chalk.yellow(countdownSeconds + " giây")} đặt cược...`,
         )
-        setTimeout(
+
+        if (this.betTimeout) {
+          clearTimeout(this.betTimeout)
+          this.betTimeout = null
+        }
+        if (this.countdownInterval) {
+          clearInterval(this.countdownInterval)
+          this.countdownInterval = null
+        }
+
+        this.countdownInterval = setInterval(() => {
+          countdownSeconds--
+          if (countdownSeconds <= 0) {
+            clearInterval(this.countdownInterval)
+            this.countdownInterval = null
+          } else if (countdownSeconds % 5 === 0 || countdownSeconds <= 5) {
+            Log(
+              chalk.blue(`[${new Date().toLocaleTimeString()}] `) +
+              `Phiên ${chalk.cyan(`#${this.currentSessionId}`)} - Còn ${chalk.yellow(countdownSeconds + "s")} | Pool Tài: ${chalk.green(convertVnd(this.latestTaiPool))} | Pool Xỉu: ${chalk.green(convertVnd(this.latestXiuPool))}`,
+            )
+          }
+        }, 1000)
+
+        this.betTimeout = setTimeout(
           () => {
-            this.executeBettingLogic(this.currentSessionId)
+            this.executePoolBettingLogic(this.currentSessionId)
           },
-          Math.floor(Math.random() * 20000) + 10000,
-        ) // Đặt cược sau 10-30 giây ngẫu nhiên
+          COUNTDOWN_TIME * 1000,
+        )
       }
     }
   }
@@ -503,6 +643,28 @@ class GameWorker {
       if (parsedMessage[1] && parsedMessage[1].As && typeof parsedMessage[1].As.gold === "number") {
         this.currentBudget = parsedMessage[1].As.gold
         Log(chalk.blue(`[${new Date().toLocaleTimeString()}] `) + `Số dư ví: ${chalk.green(this.currentBudget + " đ")}`)
+
+        if (this.initialBudget === null) {
+          this.initialBudget = this.currentBudget
+          Log(chalk.cyan(`[${new Date().toLocaleTimeString()}] 💰 Số dư ban đầu: ${convertVnd(this.initialBudget)}`))
+        } else {
+          const profit = this.currentBudget - this.initialBudget
+          Log(
+            chalk.cyan(`[${new Date().toLocaleTimeString()}] `) +
+            `Lợi nhuận hiện tại: ${profit >= 0 ? chalk.green("+" + convertVnd(profit)) : chalk.red(convertVnd(profit))}`
+          )
+          
+          if (WIN_STOP && profit >= WIN_STOP) {
+            Log(chalk.green(`[${new Date().toLocaleTimeString()}] 🎉 Đã đạt mục tiêu thắng dừng cược (Win Stop +${convertVnd(WIN_STOP)}). Dừng trò chơi!`))
+            this.stop()
+            return
+          }
+          if (LOSS_STOP && profit <= -LOSS_STOP) {
+            Log(chalk.red(`[${new Date().toLocaleTimeString()}] 🛑 Đã chạm giới hạn thua dừng cược (Loss Stop -${convertVnd(LOSS_STOP)}). Dừng trò chơi!`))
+            this.stop()
+            return
+          }
+        }
       }
     }
   }
@@ -625,6 +787,116 @@ class GameWorker {
       Log(
         chalk.gray(`[${new Date().toLocaleTimeString()}] `) +
         `Bỏ qua đặt cược cho phiên ${chalk.cyan(`#${sessionId}`)}: Hũ quá thấp hoặc không có mẫu rõ ràng.`,
+      )
+    }
+  }
+
+  /**
+   * Thực thi logic đặt cược dựa trên tổng số tiền cược của hai bên sau 38 giây.
+   * @param {number} sessionId - ID phiên trò chơi hiện tại.
+   */
+  executePoolBettingLogic(sessionId) {
+    if (this.isStopped) return;
+
+    if (this.initialBudget !== null) {
+      const profit = this.currentBudget - this.initialBudget
+      if (WIN_STOP && profit >= WIN_STOP) {
+        Log(chalk.green(`[${new Date().toLocaleTimeString()}] 🎉 Đã đạt mục tiêu thắng dừng cược (Win Stop +${convertVnd(WIN_STOP)}). Hủy đặt cược và dừng!`))
+        this.stop()
+        return
+      }
+      if (LOSS_STOP && profit <= -LOSS_STOP) {
+        Log(chalk.red(`[${new Date().toLocaleTimeString()}] 🛑 Đã chạm giới hạn thua dừng cược (Loss Stop -${convertVnd(LOSS_STOP)}). Hủy đặt cược và dừng!`))
+        this.stop()
+        return
+      }
+    }
+
+    if (this.currentJackpot > JACKPOT_THRESHOLD) { // Sử dụng JACKPOT_THRESHOLD global
+      if (!this.isBettingAllowed) {
+        Log(chalk.yellow("Chưa được phép đặt cược, đang chờ xác nhận cược trước đó."))
+        return
+      }
+
+      // So sánh pool
+      const taiPool = this.latestTaiPool;
+      const xiuPool = this.latestXiuPool;
+      
+      Log(
+        chalk.blue(`[${new Date().toLocaleTimeString()}] `) +
+        `So sánh Pool phiên #${sessionId} sau ${COUNTDOWN_TIME} giây: ` +
+        `Tài: ${chalk.yellow(convertVnd(taiPool))} | Xỉu: ${chalk.yellow(convertVnd(xiuPool))}`
+      );
+
+      if (taiPool < xiuPool) {
+        this.bettingChoice = "TAI";
+        Log(chalk.green(`[${new Date().toLocaleTimeString()}] Chọn cửa TÀI vì pool Tài nhỏ hơn.`));
+      } else if (xiuPool < taiPool) {
+        this.bettingChoice = "XIU";
+        Log(chalk.green(`[${new Date().toLocaleTimeString()}] Chọn cửa XỈU vì pool Xỉu nhỏ hơn.`));
+      } else {
+        this.bettingChoice = "TAI"; // Cửa mặc định khi hai bên bằng nhau
+        Log(chalk.yellow(`[${new Date().toLocaleTimeString()}] Pool bằng nhau hoặc chưa có dữ liệu. Mặc định chọn TÀI.`));
+      }
+
+      // Xác định số tiền cược
+      if (IS_MARTINGALE) {
+        this.currentBetAmount = this.martingaleCurrentBet;
+      } else {
+        this.currentBetAmount = DEFAULT_BET_AMOUNT;
+      }
+
+      // Kiểm tra số dư trước khi đặt cược
+      if (this.currentBudget !== null) {
+        const notEnoughToPlay = this.currentBudget <= BET_STOP // Sử dụng BET_STOP global
+        const notEnoughToBet = this.currentBetAmount > this.currentBudget
+        if (notEnoughToPlay || notEnoughToBet) {
+          const reason = notEnoughToPlay ?
+            "Cảnh báo ví tiền không đủ để cược (dưới ngưỡng dừng cược)" :
+            "Cảnh báo ví tiền không đủ để đặt cược (không đủ tiền cho ván này)"
+          sendTelegramAlert({
+            type: "warning",
+            title: reason,
+            content: "Xin hãy vào để kiểm tra lại ví tiền hoặc điều chỉnh mức cược.",
+            metadata: {
+              wallet: `Số tiền hiện tại: ${convertVnd(this.currentBudget)}`,
+              betAmount: `Số tiền muốn cược: ${convertVnd(this.currentBetAmount)}`,
+              betStop: `Ngưỡng dừng cược: ${convertVnd(BET_STOP)}`, // Sử dụng BET_STOP global
+              rateMartingale: `${this.lastBetAmount / RATE_MARTINGALE} số thếp đang gấp`,
+            },
+          })
+          const logTime = new Date().toLocaleTimeString()
+          Log(
+            chalk.red(`[${logTime}] `) +
+            `${reason}` +
+            `Số dư hiện tại: ${convertVnd(this.currentBudget)}. Đang dừng trò chơi.`,
+          )
+          this.stop()
+          return
+        }
+      }
+
+      const betId = this.bettingChoice === "TAI" ? 1 : 2
+      const betCommand = `[6,"MiniGame","taixiuUnbalancedPlugin",{"cmd":2002,"b":${this.currentBetAmount},"aid":1,"sid":${sessionId},"eid":${betId}}]`
+
+      if (betCommand && this.mainGameConnection && this.mainGameConnection.connected) {
+        this.mainGameConnection.sendUTF(betCommand)
+        this.isBettingAllowed = false
+        // Lưu lại thông tin cược cho logic Martingale ở phiên sau
+        this.lastBetAmount = this.currentBetAmount;
+        this.lastBetChoice = this.bettingChoice;
+        Log(
+          chalk.blue(`[${new Date().toLocaleTimeString()}] `) +
+          `Đang cố gắng đặt ${this.currentBetAmount} đ vào cửa ${chalk.yellow(this.bettingChoice)} cho phiên ${chalk.cyan(`#${sessionId}`)}.`,
+        )
+      } else {
+        Log(chalk.red("Không thể gửi lệnh đặt cược: Kết nối chưa sẵn sàng hoặc lệnh không hợp lệ."))
+      }
+      this.previousSessionId = sessionId
+    } else {
+      Log(
+        chalk.gray(`[${new Date().toLocaleTimeString()}] `) +
+        `Bỏ qua đặt cược cho phiên ${chalk.cyan(`#${sessionId}`)}: Hũ quá thấp.`,
       )
     }
   }
@@ -789,6 +1061,14 @@ class GameWorker {
       clearTimeout(this.zombieReconnectTimeout)
       this.zombieReconnectTimeout = null
     }
+    if (this.betTimeout) {
+      clearTimeout(this.betTimeout)
+      this.betTimeout = null
+    }
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval)
+      this.countdownInterval = null
+    }
     this.reconnectAttempts = 0 // Reset attempts on explicit stop
     this.zombieReconnectAttempts = 0 // Reset zombie attempts
     this.zombieFailureCount = 0 // Reset zombie failure count
@@ -873,6 +1153,7 @@ export const startGame = async () => {
       Log(chalk.yellow(`Tỷ lệ gấp thếp: ${RATE_MARTINGALE}`))
     }
     Log(chalk.yellow(`Chế độ Zombie: ${ZOMBIE_MODE ? "BẬT" : "TẮT"}`))
+    Log(chalk.yellow(`Thời gian đếm ngược đặt cược: ${chalk.green(COUNTDOWN_TIME + " giây")}`))
   } catch (error) {
     logError(`Không thể bắt đầu trò chơi: ${error.message}`)
     console.error(error)

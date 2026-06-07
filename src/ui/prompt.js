@@ -15,10 +15,7 @@ export async function promptMainMenu() {
       choices : [
         { name: '[🔑] Quản lý tài khoản', value: 'account' },
         { name: '[🎲] Thiết lập tài xỉu', value: 'even_odd' },
-        { name: '[⭕] Thiết lập sóc đĩa', value: 'xoc_dia' },
         new inquirer.Separator(),
-        { name: '[▶]  Bắt đầu cược xóc đĩa', value: 'start_bet_shake' },
-        { name: '[■]  Dừng cược xóc đĩa', value: 'stop_bet_shake' },
         { name: '[▶]  Bắt đầu cược tài xỉu', value: 'start_bet' },
         { name: '[■]  Dừng cược tài xỉu', value: 'stop_bet' },
         new inquirer.Separator(),

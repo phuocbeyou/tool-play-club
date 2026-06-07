@@ -1,26 +1,43 @@
 import {
   promptMainMenu,
 } from './src/ui/prompt.js';
-
-import {
-  userUpdate,
-  userDelete,
-  userSelect,
-  userGetSelected,
-  tokenAdd,
-} from './src/commands/user.js';
 import { showBanner } from './src/ui/banner.js';
-import { promptAccountMenu,promptUserAdd,
-  promptUserUpdate,
-  promptUserDelete,
-  promptUserSelect, } from './src/ui/promptUser.js';
-import { promptEvenOddMenu, promptSetBetStop, promptSetJackpot, promptUpdateBetAmount } from './src/ui/promtEvenOdd.js';
+import { promptEvenOddMenu } from './src/ui/promtEvenOdd.js';
 import { startGame, stopGame } from './src/socket/index.js';
-import { promptXocDiaMenu } from './src/ui/promtFanTan.js';
-import { startGameShake, stopGameShake } from './src/socket/shake.js';
+import { startServer } from './server.js';
+import { openHtml } from './src/utils/htmlHelper.js';
 
 async function main() {
   showBanner()
+
+  // Khởi động API Server nếu port 3000 còn trống
+  await startServer();
+
+  // Handle command-line arguments for non-interactive mode (PM2)
+  const args = process.argv.slice(2);
+  
+  if (args.includes('--api-only')) {
+    console.log('🚀 Chế độ API Server Only.');
+    return;
+  }
+
+  const gameArg = args.find(arg => arg.startsWith('--game='));
+  const gameType = gameArg ? gameArg.split('=')[1] : args[0];
+
+  if (gameType) {
+    console.log(`🚀 Khởi động bot ở chế độ tự động cho game: ${gameType}`);
+
+    if (gameType === 'even_odd' || gameType === 'even-odd') {
+      await startGame();
+    } else {
+      console.log(`⚠️ Không tìm thấy game: ${gameType}`);
+      process.exit(1);
+    }
+    
+    console.log("🟢 Bot đang chạy... (Nhấn Ctrl+C để dừng)");
+    return;
+  }
+
   while (true) {
     const mainCmd = await promptMainMenu();
 
@@ -30,28 +47,7 @@ async function main() {
     }
 
     if (mainCmd === 'account') {
-      while (true) {
-        const accountCmd = await promptAccountMenu();
-
-        if (accountCmd === 'back') break;
-
-        if (accountCmd === 'add') {
-          const user = await promptUserAdd();
-          const userData = user.metaData
-          await tokenAdd(userData);
-        } else if (accountCmd === 'update') {
-          const user = await promptUserUpdate();
-          await userUpdate(user.metaData);
-        } else if (accountCmd === 'delete') {
-          const { id } = await promptUserDelete();
-          await userDelete(id);
-        } else if (accountCmd === 'select') {
-          const id = await promptUserSelect();
-          await userSelect(id);
-        } else if (accountCmd === 'current') {
-          await userGetSelected();
-        }
-      }
+      openHtml('account-manager.html');
     }
 
     else if (mainCmd === 'even_odd') {
@@ -60,43 +56,14 @@ async function main() {
     
         if (action === 'back') break;
     
-        if (action === 'set_jackpot') {
-          await promptSetJackpot();
+        if (action === 'open_settings') {
+          openHtml('even-odd-settings.html');
         }
     
-        else if (action === 'set_bet_stop') {
-          await promptSetBetStop()
-        }
-
-        else if (action === 'update_bet_amount') {
-          await promptUpdateBetAmount()
+        else if (action === 'open_stats') {
+          openHtml('even-odd-stats.html');
         }
       }
-    }
-    else if (mainCmd === 'xoc_dia') {
-      while (true) {
-        const action = await promptXocDiaMenu();
-    
-        if (action === 'back') break;
-    
-        if (action === 'set_jackpot') {
-          await promptSetJackpot();
-        }
-    
-        else if (action === 'set_bet_stop') {
-          await promptSetBetStop()
-        }
-
-        else if (action === 'update_bet_amount') {
-          await promptUpdateBetAmount()
-        }
-      }
-    }
-    else if (mainCmd === 'start_bet_shake') {
-      startGameShake()
-    }
-    else if (mainCmd === 'stop_bet_shake') {
-      stopGameShake()
     }
     else if (mainCmd === 'start_bet') {
       startGame()
@@ -108,6 +75,10 @@ async function main() {
 }
 
 main().catch(err => {
+  if (err.name === 'ExitPromptError') {
+    console.log('\n👋 Thoát chương trình. Hẹn gặp lại!');
+    process.exit(0);
+  }
   console.error('Lỗi không mong muốn:', err);
   process.exit(1);
 });

@@ -1,0 +1,319 @@
+[
+  {
+    "gid": 2554696,
+    "endedAt": "2026-06-07T05:40:14.160Z",
+    "result": "XIU (7đ)",
+    "dices": [
+      1,
+      4,
+      2
+    ],
+    "botBet": null,
+    "budget": 200000,
+    "jackpot": 0
+  },
+  {
+    "gid": 2554701,
+    "endedAt": "2026-06-07T05:45:14.197Z",
+    "result": "TAI (15đ)",
+    "dices": [
+      6,
+      5,
+      4
+    ],
+    "botBet": null,
+    "budget": 200000,
+    "jackpot": 0
+  },
+  {
+    "gid": 2554702,
+    "endedAt": "2026-06-07T05:46:14.199Z",
+    "result": "XIU (9đ)",
+    "dices": [
+      5,
+      3,
+      1
+    ],
+    "botBet": null,
+    "budget": 200000,
+    "jackpot": 0
+  },
+  {
+    "gid": 2554704,
+    "endedAt": "2026-06-07T05:48:14.209Z",
+    "result": "TAI (14đ)",
+    "dices": [
+      6,
+      4,
+      4
+    ],
+    "botBet": null,
+    "budget": 200000,
+    "jackpot": 142960409
+  },
+  {
+    "gid": 2554705,
+    "endedAt": "2026-06-07T05:49:14.216Z",
+    "result": "XIU (7đ)",
+    "dices": [
+      4,
+      1,
+      2
+    ],
+    "botBet": {
+      "choice": "XIU",
+      "amount": 1000,
+      "won": true
+    },
+    "budget": 200000,
+    "jackpot": 143241453
+  },
+  {
+    "gid": 2554707,
+    "endedAt": "2026-06-07T05:51:14.182Z",
+    "result": "TAI (18đ)",
+    "dices": [
+      6,
+      6,
+      6
+    ],
+    "botBet": null,
+    "budget": 200000,
+    "jackpot": 143639650
+  },
+  {
+    "gid": 2554708,
+    "endedAt": "2026-06-07T05:52:14.185Z",
+    "result": "XIU (6đ)",
+    "dices": [
+      1,
+      2,
+      3
+    ],
+    "botBet": {
+      "choice": "TAI",
+      "amount": 1000,
+      "won": false
+    },
+    "budget": 200000,
+    "jackpot": 143735116
+  },
+  {
+    "gid": 2554709,
+    "endedAt": "2026-06-07T05:53:14.218Z",
+    "result": "XIU (9đ)",
+    "dices": [
+      3,
+      5,
+      1
+    ],
+    "botBet": null,
+    "budget": 200000,
+    "jackpot": 143735116
+  },
+  {
+    "gid": 2554713,
+    "endedAt": "2026-06-07T05:57:14.245Z",
+    "result": "XIU (10đ)",
+    "dices": [
+      5,
+      3,
+      2
+    ],
+    "botBet": {
+      "choice": "TAI",
+      "amount": 1000,
+      "won": false
+    },
+    "budget": 200000,
+    "jackpot": 144367869
+  },
+  {
+    "gid": 2554714,
+    "endedAt": "2026-06-07T05:58:14.250Z",
+    "result": "XIU (8đ)",
+    "dices": [
+      3,
+      4,
+      1
+    ],
+    "botBet": null,
+    "budget": 200000,
+    "jackpot": 144367869
+  },
+  {
+    "gid": 2554715,
+    "endedAt": "2026-06-07T05:59:14.258Z",
+    "result": "TAI (16đ)",
+    "dices": [
+      6,
+      6,
+      4
+    ],
+    "botBet": {
+      "choice": "TAI",
+      "amount": 1000,
+      "won": true
+    },
+    "budget": 200000,
+    "jackpot": 144367869
+  },
+  {
+    "gid": 2554719,
+    "endedAt": "2026-06-07T06:03:14.284Z",
+    "result": "XIU (10đ)",
+    "dices": [
+      2,
+      5,
+      3
+    ],
+    "botBet": null,
+    "budget": 200980,
+    "jackpot": 144785399
+  },
+  {
+    "gid": 2554720,
+    "endedAt": "2026-06-07T06:04:14.292Z",
+    "result": "XIU (5đ)",
+    "dices": [
+      3,
+      1,
+      1
+    ],
+    "botBet": {
+      "choice": "TAI",
+      "amount": 1000,
+      "won": false
+    },
+    "budget": 199980,
+    "jackpot": 144785399
+  },
+  {
+    "gid": 2554721,
+    "endedAt": "2026-06-07T06:05:14.265Z",
+    "result": "TAI (17đ)",
+    "dices": [
+      5,
+      6,
+      6
+    ],
+    "botBet": {
+      "choice": "TAI",
+      "amount": 1000,
+      "won": true
+    },
+    "budget": 198980,
+    "jackpot": 144785399
+  },
+  {
+    "gid": 2554722,
+    "endedAt": "2026-06-07T06:06:14.220Z",
+    "result": "XIU (7đ)",
+    "dices": [
+      2,
+      1,
+      4
+    ],
+    "botBet": {
+      "choice": "XIU",
+      "amount": 1000,
+      "won": true
+    },
+    "budget": 199960,
+    "jackpot": 145262415
+  },
+  {
+    "gid": 2554723,
+    "endedAt": "2026-06-07T06:07:14.298Z",
+    "result": "XIU (10đ)",
+    "dices": [
+      4,
+      5,
+      1
+    ],
+    "botBet": {
+      "choice": "XIU",
+      "amount": 1000,
+      "won": true
+    },
+    "budget": 200940,
+    "jackpot": 146207936
+  },
+  {
+    "gid": 2554724,
+    "endedAt": "2026-06-07T06:08:14.274Z",
+    "result": "XIU (9đ)",
+    "dices": [
+      2,
+      3,
+      4
+    ],
+    "botBet": null,
+    "budget": 201920,
+    "jackpot": 146207936
+  },
+  {
+    "gid": 2554725,
+    "endedAt": "2026-06-07T06:09:14.268Z",
+    "result": "XIU (9đ)",
+    "dices": [
+      2,
+      2,
+      5
+    ],
+    "botBet": null,
+    "budget": 202900,
+    "jackpot": 146461236
+  },
+  {
+    "gid": 2554726,
+    "endedAt": "2026-06-07T06:10:14.233Z",
+    "result": "TAI (16đ)",
+    "dices": [
+      6,
+      4,
+      6
+    ],
+    "botBet": {
+      "choice": "TAI",
+      "amount": 1000,
+      "won": true
+    },
+    "budget": 203880,
+    "jackpot": 146828004
+  },
+  {
+    "gid": 2554727,
+    "endedAt": "2026-06-07T06:11:14.251Z",
+    "result": "TAI (15đ)",
+    "dices": [
+      4,
+      6,
+      5
+    ],
+    "botBet": {
+      "choice": "XIU",
+      "amount": 1000,
+      "won": false
+    },
+    "budget": 204860,
+    "jackpot": 146871053
+  },
+  {
+    "gid": 2554728,
+    "endedAt": "2026-06-07T06:12:14.326Z",
+    "result": "XIU (9đ)",
+    "dices": [
+      5,
+      3,
+      1
+    ],
+    "botBet": {
+      "choice": "XIU",
+      "amount": 1000,
+      "won": true
+    },
+    "budget": 203860,
+    "jackpot": 146871053
+  }
+]
