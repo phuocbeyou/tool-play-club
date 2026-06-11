@@ -4,6 +4,8 @@ module.exports = {
       name: "play-club-api",
       script: "index.js",
       args: "--api-only",
+      out_file: "/dev/null",
+      error_file: "/dev/null",
       env: {
         NODE_ENV: "production",
       }
@@ -13,7 +15,9 @@ module.exports = {
       script: "index.js",
       args: "--game=even_odd",
       autorestart: true,
-      watch: false
+      watch: false,
+      out_file: "/dev/null",
+      error_file: "/dev/null"
     }
   ]
 };
