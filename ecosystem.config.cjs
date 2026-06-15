@@ -16,8 +16,8 @@ module.exports = {
       args: "--game=even_odd",
       autorestart: true,
       watch: false,
-      out_file: "/dev/null",
-      error_file: "/dev/null"
+      // out_file: "/dev/null",
+      // error_file: "/dev/null"
     }
   ]
 };
