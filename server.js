@@ -7,7 +7,9 @@ import { getLatestSessionStats } from "./src/socket/index.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
-const PORT = 3000;
+// Cổng riêng cho tool-play-club (tránh đụng các bot khác đang chiếm 3000, vd tool-sun-win).
+// Có thể override bằng biến môi trường PORT.
+const PORT = process.env.PORT || 3001;
 
 app.use(cors()); // Enable CORS
 app.use(express.json());

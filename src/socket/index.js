@@ -42,7 +42,38 @@ let RATE_MARTINGALE
 let COUNTDOWN_TIME
 let WIN_STOP
 let LOSS_STOP
+let JACKPOT_HUNT
+let JACKPOT_HUNT_BET
+let JACKPOT_HUNT_MARTINGALE
+let JACKPOT_HUNT_RATE
+let JACKPOT_HUNT_CONSECUTIVE
+let JACKPOT_HUNT_MIN
+let JACKPOT_HUNT_MAX
+let JACKPOT_HUNT_BET_TIERS // Bậc cược theo giá trị hũ: [{ jackpot, bet }]
 let configReloadTimeout // Biến để quản lý debounce
+
+/**
+ * Tính mức cược săn hũ theo giá trị hũ dựa trên bảng khoảng JACKPOT_HUNT_BET_TIERS.
+ * Mỗi bậc là 1 khoảng { min, max, bet }; chọn bậc có min cao nhất mà min <= jackpot <= max.
+ * - Không định nghĩa bậc nào → dùng JACKPOT_HUNT_BET phẳng (tương thích chế độ cũ).
+ * - Có bậc nhưng hũ NẰM NGOÀI mọi khoảng → trả về null (báo hiệu "ngoài range" để dừng).
+ * @param {number} jackpot - Giá trị hũ hiện tại.
+ * @returns {number|null} Mức cược, hoặc null nếu hũ ngoài range các bậc.
+ */
+const computeJackpotHuntBet = (jackpot) => {
+  const tiers = Array.isArray(JACKPOT_HUNT_BET_TIERS) ? JACKPOT_HUNT_BET_TIERS : []
+  if (!tiers.length) return JACKPOT_HUNT_BET // không có bậc → mức phẳng
+  let matched = null
+  for (const t of tiers) {
+    if (
+      typeof t.min === "number" && typeof t.max === "number" && typeof t.bet === "number" &&
+      jackpot >= t.min && jackpot <= t.max
+    ) {
+      if (!matched || t.min > matched.min) matched = t // ưu tiên bậc cao hơn ở ranh giới
+    }
+  }
+  return matched ? matched.bet : null // null = ngoài range tiers
+}
 
 /**
  * Tải cấu hình từ file rule.json và cập nhật các hằng số liên quan.
@@ -60,12 +91,31 @@ const loadConfigAndConstants = () => {
     COUNTDOWN_TIME = config.gameSettings.COUNTDOWN_TIME || 37 // Thời gian đếm ngược
     WIN_STOP = config.gameSettings.WIN_STOP || 200000
     LOSS_STOP = config.gameSettings.LOSS_STOP || 100000
+    JACKPOT_HUNT = config.gameSettings.JACKPOT_HUNT || false
+    JACKPOT_HUNT_BET = config.gameSettings.JACKPOT_HUNT_BET || 20000
+    JACKPOT_HUNT_MARTINGALE = config.gameSettings.JACKPOT_HUNT_MARTINGALE !== false
+    JACKPOT_HUNT_RATE = config.gameSettings.JACKPOT_HUNT_RATE || 2
+    JACKPOT_HUNT_CONSECUTIVE = config.gameSettings.JACKPOT_HUNT_CONSECUTIVE || 2
+    JACKPOT_HUNT_MIN = config.gameSettings.JACKPOT_HUNT_MIN || 0
+    JACKPOT_HUNT_MAX = config.gameSettings.JACKPOT_HUNT_MAX || Number.MAX_SAFE_INTEGER
+    JACKPOT_HUNT_BET_TIERS = Array.isArray(config.gameSettings.JACKPOT_HUNT_BET_TIERS)
+      ? config.gameSettings.JACKPOT_HUNT_BET_TIERS
+          .filter((t) => t && typeof t.min === "number" && typeof t.max === "number" && typeof t.bet === "number")
+          .sort((a, b) => a.min - b.min)
+      : []
     Log(chalk.green(`[${new Date().toLocaleTimeString()}] Cấu hình rule.json đã được tải lại.`))
     Log(chalk.yellow(`Chế độ Martingale: ${IS_MARTINGALE ? "BẬT" : "TẮT"}`))
     Log(chalk.yellow(`Chế độ Zombie: ${ZOMBIE_MODE ? "BẬT" : "TẮT"}`))
     Log(chalk.yellow(`Thời gian đếm ngược: ${COUNTDOWN_TIME} giây`))
     Log(chalk.yellow(`Mục tiêu thắng (Win Stop): ${WIN_STOP} đ`))
     Log(chalk.yellow(`Giới hạn thua (Loss Stop): ${LOSS_STOP} đ`))
+    Log(chalk.yellow(`Chế độ Săn Hũ (Jackpot Hunt): ${JACKPOT_HUNT ? "BẬT" : "TẮT"}`))
+    if (JACKPOT_HUNT) {
+      Log(chalk.yellow(`  Mức cược săn hũ (mặc định): ${JACKPOT_HUNT_BET} đ | Chuỗi cần: ${JACKPOT_HUNT_CONSECUTIVE} | Range hũ: ${JACKPOT_HUNT_MIN} → ${JACKPOT_HUNT_MAX} đ`))
+      if (JACKPOT_HUNT_BET_TIERS.length) {
+        Log(chalk.yellow(`  Bậc cược theo hũ: ${JACKPOT_HUNT_BET_TIERS.map((t) => `${t.min}-${t.max}→${t.bet}đ`).join(" | ")} (ngoài range → DỪNG cả 2 acc)`))
+      }
+    }
     if (IS_MARTINGALE) {
       Log(chalk.yellow(`Tỷ lệ gấp thếp: ${RATE_MARTINGALE}`))
     }
@@ -80,16 +130,20 @@ loadConfigAndConstants()
 // Theo dõi sự thay đổi của file rule.json
 fs.watch(configPath, (eventType, filename) => {
   if (filename) {
-    Log(chalk.yellow(`[${new Date().toLocaleTimeString()}] Phát hiện thay đổi trong rule.json (${eventType}). Đang tải lại...`))
+    // fs.watch có thể bắn nhiều sự kiện cho 1 lần lưu (macOS/editor ghi nhiều bước).
+    // Gộp bằng debounce: chỉ log + tải lại 1 lần khi đã ổn định.
     clearTimeout(configReloadTimeout)
     configReloadTimeout = setTimeout(() => {
+      Log(chalk.yellow(`[${new Date().toLocaleTimeString()}] Phát hiện thay đổi rule.json, đang tải lại...`))
       loadConfigAndConstants()
       // Khi cấu hình được tải lại, các GameWorker đang chạy sẽ tự động sử dụng các giá trị mới
       // vì chúng truy cập các biến global như IS_MARTINGALE, RATE_MARTINGALE, DEFAULT_BET_AMOUNT.
       // Tuy nhiên, martingaleCurrentBet của các instance hiện tại cần được reset nếu IS_MARTINGALE bị tắt
       // hoặc nếu baseBetAmount thay đổi. Để đơn giản, chúng ta sẽ reset martingaleCurrentBet về baseBetAmount
       // khi config được tải lại, đảm bảo trạng thái sạch.
-      if (activeGameWorker) {
+      if (activeJackpotManager) {
+        activeJackpotManager.resetMartingaleState()
+      } else if (activeGameWorker) {
         activeGameWorker.resetMartingaleState()
       }
     }, 300) // Thời gian debounce 300ms
@@ -113,6 +167,10 @@ class GameWorker {
     this.password = password
     this.info = info
     this.signature = signature
+    // Chế độ điều phối bởi JackpotHuntManager (bet song song 2 acc)
+    this.managedMode = false
+    this.manager = null
+    this.role = null // "A" (cửa săn hũ) hoặc "B" (cửa backup)
     this.mainGameClient = new WebSocketClient()
     this.simmsClient = new WebSocketClient()
     this.mainGameConnection = null
@@ -120,6 +178,7 @@ class GameWorker {
     this.isStopped = false // Indicates if the game is explicitly stopped by user or max reconnects
     this.isBettingAllowed = true
     this.shouldRequestBudget = true
+    this.budgetFresh = true // số dư hiện tại đã phản ánh kết quả ván gần nhất (đã settle) chưa
     this.latestGameResult = null
     this.secondLatestGameResult = null
     this.currentSessionId = null
@@ -151,6 +210,11 @@ class GameWorker {
     this.lastBetAmount = 0 // Số tiền đã cược ở phiên trước
     this.lastBetChoice = null // Cửa đã cược ở phiên trước (TAI/XIU)
 
+    // Jackpot hunt state
+    this.jackpotHuntCurrentBet = JACKPOT_HUNT_BET
+    this.jackpotHuntLastChoice = null
+    this.jackpotHuntLastAmount = 0
+
     // Reconnection properties
     this.reconnectAttempts = 0
     this.maxReconnectAttempts = 5
@@ -180,9 +244,37 @@ class GameWorker {
     this.martingaleCurrentBet = this.baseBetAmount
     this.lastBetAmount = 0
     this.lastBetChoice = null
+    this.jackpotHuntCurrentBet = JACKPOT_HUNT_BET
+    this.jackpotHuntLastChoice = null
+    this.jackpotHuntLastAmount = 0
     if (IS_MARTINGALE) {
       Log(chalk.magenta(`[${new Date().toLocaleTimeString()}] Trạng thái Martingale đã được reset.`))
     }
+  }
+
+  /**
+   * Kiểm tra điều kiện săn hũ: N ván liên tiếp cùng loại → cược theo chiều đó.
+   * Rule nổ hũ: 2 ván trước cùng Tài → ván tiếp theo 6-6-6 nổ hũ; cùng Xỉu → 1-1-1 nổ hũ.
+   * @returns {{ choice: string, betAmount: number } | null}
+   */
+  detectJackpotCondition() {
+    if (!JACKPOT_HUNT || this.gameHistory.length < JACKPOT_HUNT_CONSECUTIVE) return null
+
+    const recent = this.gameHistory.slice(-JACKPOT_HUNT_CONSECUTIVE)
+    const allSame = recent.every(r => r === recent[0])
+    if (!allSame) return null
+
+    const choice = recent[0] // TAI hoặc XIU — cược tiếp theo chiều này để hưởng jackpot
+
+    let betAmount
+    if (JACKPOT_HUNT_MARTINGALE && this.jackpotHuntLastChoice === choice && this.jackpotHuntLastAmount > 0) {
+      // Thua ván trước cùng chiều → gấp thếp
+      betAmount = Math.ceil(this.jackpotHuntLastAmount * JACKPOT_HUNT_RATE)
+    } else {
+      betAmount = JACKPOT_HUNT_BET
+    }
+
+    return { choice, betAmount }
   }
 
   /**
@@ -256,7 +348,12 @@ class GameWorker {
    */
   handleConnectFailed(error, clientName) {
     Log(chalk.red(`Kết nối thất bại (${clientName}): ${error.toString()}`))
-    
+
+    if (this.managedMode && this.manager && !this.isStopped) {
+      this.manager.onWorkerConnectionFailure(this, `Kết nối thất bại (${clientName}): ${error.toString()}`)
+      return
+    }
+
     if (ZOMBIE_MODE && !this.isStopped) {
       this.handleZombieReconnect(clientName, error)
     } else if (!this.isStopped) {
@@ -274,7 +371,12 @@ class GameWorker {
    */
   handleConnectionClose(reasonCode, description, clientName) {
     Log(chalk.yellow(`Kết nối đã đóng (${clientName}): ${description.toString()}`))
-    
+
+    if (this.managedMode && this.manager && !this.isStopped) {
+      this.manager.onWorkerConnectionFailure(this, `Kết nối đã đóng (${clientName}): ${description.toString()}`)
+      return
+    }
+
     if (ZOMBIE_MODE && !this.isStopped) {
       this.handleZombieReconnect(clientName, new Error(`Connection closed: ${description}`))
     } else if (!this.isStopped) {
@@ -291,7 +393,12 @@ class GameWorker {
    */
   handleConnectionError(error, clientName) {
     Log(chalk.red(`Lỗi (${clientName}): ${error.toString()}`))
-    
+
+    if (this.managedMode && this.manager && !this.isStopped) {
+      this.manager.onWorkerConnectionFailure(this, `Lỗi (${clientName}): ${error.toString()}`)
+      return
+    }
+
     if (ZOMBIE_MODE && !this.isStopped) {
       this.handleZombieReconnect(clientName, error)
     } else if (!this.isStopped) {
@@ -380,6 +487,23 @@ class GameWorker {
   }
 
   /**
+   * Nhãn ngắn nhận diện worker trong log (vd "[A] MA_playman1").
+   * @returns {string}
+   */
+  get logLabel() {
+    return this.managedMode ? `[${this.role}] ${this.username}` : this.username
+  }
+
+  /**
+   * Ghi log trạng thái DÙNG CHUNG của ván (kết quả, hũ, lịch sử, đếm ngược...).
+   * Ở chế độ săn hũ 2 acc, chỉ acc A in để tránh log trùng lặp 2 lần.
+   * @param {string} message
+   */
+  logOnce(message) {
+    if (!this.managedMode || this.role === "A") Log(message)
+  }
+
+  /**
    * Xử lý các tin nhắn nhận được từ kết nối WebSocket trò chơi chính.
    * @param {object} msg - Đối tượng tin nhắn thô từ thư viện websocket.
    */
@@ -434,10 +558,12 @@ class GameWorker {
       this.latestGameResult = parsedMessage[1]
       const sumResult = parsedMessage[1].d1 + parsedMessage[1].d2 + parsedMessage[1].d3
       const resultType = sumResult > 10 ? "TAI" : "XIU"
-      Log(
+      const betThisRound = this.lastBetChoice !== null // worker có đặt cược ở phiên này không
+      this.logOnce(
         chalk.blue(`[${new Date().toLocaleTimeString()}] `) +
         `Kết quả phiên ${chalk.cyan(`#${parsedMessage[1].sid}`)}: ` +
-        chalk.green(`${resultType} (${sumResult} điểm)`),
+        chalk.green(`${resultType} (${sumResult} điểm)`) +
+        chalk.gray(` [${parsedMessage[1].d1}-${parsedMessage[1].d2}-${parsedMessage[1].d3}]`),
       )
 
       // Reset zombie failure count khi có kết quả thành công
@@ -446,8 +572,8 @@ class GameWorker {
         this.zombieFailureCount = 0
       }
 
-      // Save stats to stast-even-odd.json
-      try {
+      // Save stats to stast-even-odd.json (managed mode: chỉ acc A ghi để tránh race ghi file)
+      if (!this.managedMode || this.role === "A") try {
         let won = null;
         if (this.lastBetChoice) {
           won = (this.lastBetChoice === resultType);
@@ -530,6 +656,19 @@ class GameWorker {
           }
         }
       }
+      // Cập nhật jackpot hunt martingale state
+      if (JACKPOT_HUNT && this.jackpotHuntLastChoice) {
+        if (this.jackpotHuntLastChoice === resultType) {
+          Log(chalk.green(`[${new Date().toLocaleTimeString()}] 🎯 Jackpot Hunt: THẮNG! Reset mức cược săn hũ.`))
+          this.jackpotHuntCurrentBet = JACKPOT_HUNT_BET
+        } else {
+          this.jackpotHuntCurrentBet = Math.ceil(this.jackpotHuntLastAmount * JACKPOT_HUNT_RATE)
+          Log(chalk.yellow(`[${new Date().toLocaleTimeString()}] 🎯 Jackpot Hunt: THUA, gấp thếp lần sau: ${this.jackpotHuntCurrentBet} đ`))
+        }
+      }
+      this.jackpotHuntLastChoice = null
+      this.jackpotHuntLastAmount = 0
+
       // Reset lastBetChoice và lastBetAmount cho phiên tiếp theo
       this.lastBetChoice = null;
       this.lastBetAmount = 0;
@@ -539,7 +678,19 @@ class GameWorker {
       if (this.gameHistory.length > 10) {
         this.gameHistory.shift() // Xóa phần tử cũ nhất
       }
-      Log(chalk.gray(`Lịch sử gần đây: [${this.gameHistory.join(", ")}]`))
+      this.logOnce(chalk.gray(`Lịch sử gần đây: [${this.gameHistory.join(", ")}]`))
+
+      // Chỉ lấy lại số dư khi acc này CÓ cược ở ván vừa rồi (tránh log số dư thừa khi không cược).
+      // Lúc này tiền thắng/thua đã settle nên số dư mới sẽ phản ánh đúng lãi/lỗ.
+      if (betThisRound) {
+        this.budgetFresh = false
+        this.shouldRequestBudget = true
+      }
+
+      // Báo cho manager (chế độ săn hũ 2 acc) để reset trạng thái tổng kết cho phiên mới
+      if (this.managedMode && this.manager && betThisRound) {
+        this.manager.onWorkerResult(this, resultType, parsedMessage[1])
+      }
     }
     // Lệnh 2002: Xác nhận đặt cược thành công
     else if (messageString.includes(`"cmd":2002`)) {
@@ -552,20 +703,21 @@ class GameWorker {
         chalk.yellow(this.bettingChoice),
       )
       this.isBettingAllowed = true
-      this.shouldRequestBudget = true
+      // KHÔNG lấy số dư ở đây: lúc này nhà cái mới trừ tiền cược (pending), chưa cộng tiền thắng
+      // → sẽ lấy số dư sau khi có kết quả (cmd:2006) để hiển thị lãi/lỗ đã settle.
     }
     // Lệnh 2011: Cập nhật hũ
     else if (messageString.includes(`"cmd":2011`)) {
       const newJackpot = parsedMessage[1].J
       if (newJackpot !== this.currentJackpot) {
-        Log(
+        this.logOnce(
           chalk.blue(`[${new Date().toLocaleTimeString()}] `) +
           chalk.magenta(`Hũ hiện tại: `) +
-          chalk.green(`${newJackpot} đ`),
+          chalk.green(convertVnd(newJackpot)),
         )
         this.currentJackpot = newJackpot
         if (this.currentJackpot < JACKPOT_THRESHOLD) { // Sử dụng JACKPOT_THRESHOLD global
-          Log(chalk.red("Giá trị hũ dưới ngưỡng dừng. Bỏ cược"))
+          this.logOnce(chalk.red("Giá trị hũ dưới ngưỡng dừng. Bỏ cược"))
           // this.stop()
         }
       }
@@ -578,12 +730,7 @@ class GameWorker {
         this.latestXiuPool = 0
         this.isBettingAllowed = true
         
-        let countdownSeconds = COUNTDOWN_TIME
-        Log(
-          chalk.blue(`[${new Date().toLocaleTimeString()}] `) +
-          `Phiên mới bắt đầu: ${chalk.cyan(`#${this.currentSessionId}`)}. Bắt đầu đếm ngược ${chalk.yellow(countdownSeconds + " giây")} đặt cược...`,
-        )
-
+        // Dọn timeout/interval còn sót từ phiên trước
         if (this.betTimeout) {
           clearTimeout(this.betTimeout)
           this.betTimeout = null
@@ -593,25 +740,38 @@ class GameWorker {
           this.countdownInterval = null
         }
 
-        this.countdownInterval = setInterval(() => {
-          countdownSeconds--
-          if (countdownSeconds <= 0) {
-            clearInterval(this.countdownInterval)
-            this.countdownInterval = null
-          } else if (countdownSeconds % 5 === 0 || countdownSeconds <= 5) {
-            Log(
-              chalk.blue(`[${new Date().toLocaleTimeString()}] `) +
-              `Phiên ${chalk.cyan(`#${this.currentSessionId}`)} - Còn ${chalk.yellow(countdownSeconds + "s")} | Pool Tài: ${chalk.green(convertVnd(this.latestTaiPool))} | Pool Xỉu: ${chalk.green(convertVnd(this.latestXiuPool))}`,
-            )
-          }
-        }, 1000)
+        if (this.managedMode) {
+          // Săn hũ: quyết định dựa vào LỊCH SỬ (không phụ thuộc pool) → đặt cược NGAY khi phiên mở,
+          // không chờ hết đếm ngược theo COUNTDOWN_TIME.
+          this.logOnce(
+            chalk.blue(`[${new Date().toLocaleTimeString()}] `) +
+            `Phiên mới: ${chalk.cyan(`#${this.currentSessionId}`)} — săn hũ, đặt cược ngay (bỏ qua đếm ngược).`,
+          )
+          this.executeManagedBet(this.currentSessionId)
+        } else {
+          let countdownSeconds = COUNTDOWN_TIME
+          this.logOnce(
+            chalk.blue(`[${new Date().toLocaleTimeString()}] `) +
+            `Phiên mới bắt đầu: ${chalk.cyan(`#${this.currentSessionId}`)}. Bắt đầu đếm ngược ${chalk.yellow(countdownSeconds + " giây")} đặt cược...`,
+          )
 
-        this.betTimeout = setTimeout(
-          () => {
+          this.countdownInterval = setInterval(() => {
+            countdownSeconds--
+            if (countdownSeconds <= 0) {
+              clearInterval(this.countdownInterval)
+              this.countdownInterval = null
+            } else if (countdownSeconds % 5 === 0 || countdownSeconds <= 5) {
+              this.logOnce(
+                chalk.blue(`[${new Date().toLocaleTimeString()}] `) +
+                `Phiên ${chalk.cyan(`#${this.currentSessionId}`)} - Còn ${chalk.yellow(countdownSeconds + "s")} | Pool Tài: ${chalk.green(convertVnd(this.latestTaiPool))} | Pool Xỉu: ${chalk.green(convertVnd(this.latestXiuPool))}`,
+              )
+            }
+          }, 1000)
+
+          this.betTimeout = setTimeout(() => {
             this.executePoolBettingLogic(this.currentSessionId)
-          },
-          COUNTDOWN_TIME * 1000,
-        )
+          }, COUNTDOWN_TIME * 1000)
+        }
       }
     }
   }
@@ -642,28 +802,41 @@ class GameWorker {
     if (messageString.includes(`"cmd":310`)) {
       if (parsedMessage[1] && parsedMessage[1].As && typeof parsedMessage[1].As.gold === "number") {
         this.currentBudget = parsedMessage[1].As.gold
-        Log(chalk.blue(`[${new Date().toLocaleTimeString()}] `) + `Số dư ví: ${chalk.green(this.currentBudget + " đ")}`)
+        const time = new Date().toLocaleTimeString()
+        const label = chalk.bold(this.logLabel)
 
         if (this.initialBudget === null) {
           this.initialBudget = this.currentBudget
-          Log(chalk.cyan(`[${new Date().toLocaleTimeString()}] 💰 Số dư ban đầu: ${convertVnd(this.initialBudget)}`))
+          Log(
+            chalk.cyan(`[${time}] 💰 `) + label +
+            ` │ Số dư: ${chalk.green(convertVnd(this.currentBudget))} (số dư ban đầu)`,
+          )
         } else {
           const profit = this.currentBudget - this.initialBudget
+          const profitStr = profit >= 0 ? chalk.green("+" + convertVnd(profit)) : chalk.red(convertVnd(profit))
           Log(
-            chalk.cyan(`[${new Date().toLocaleTimeString()}] `) +
-            `Lợi nhuận hiện tại: ${profit >= 0 ? chalk.green("+" + convertVnd(profit)) : chalk.red(convertVnd(profit))}`
+            chalk.blue(`[${time}] 💰 `) + label +
+            ` │ Số dư: ${chalk.green(convertVnd(this.currentBudget))}` +
+            ` │ Lãi/Lỗ: ${profitStr}`,
           )
-          
-          if (WIN_STOP && profit >= WIN_STOP) {
+
+          // Trong managed mode, manager kiểm tra win/loss tổng hợp 2 acc — bỏ qua stop riêng lẻ
+          if (!this.managedMode && WIN_STOP && profit >= WIN_STOP) {
             Log(chalk.green(`[${new Date().toLocaleTimeString()}] 🎉 Đã đạt mục tiêu thắng dừng cược (Win Stop +${convertVnd(WIN_STOP)}). Dừng trò chơi!`))
             this.stop()
             return
           }
-          if (LOSS_STOP && profit <= -LOSS_STOP) {
+          if (!this.managedMode && LOSS_STOP && profit <= -LOSS_STOP) {
             Log(chalk.red(`[${new Date().toLocaleTimeString()}] 🛑 Đã chạm giới hạn thua dừng cược (Loss Stop -${convertVnd(LOSS_STOP)}). Dừng trò chơi!`))
             this.stop()
             return
           }
+        }
+
+        // Số dư vừa cập nhật đã phản ánh kết quả ván gần nhất (đã settle)
+        this.budgetFresh = true
+        if (this.managedMode && this.manager) {
+          this.manager.onBudgetSettled()
         }
       }
     }
@@ -818,6 +991,39 @@ class GameWorker {
         return
       }
 
+      // --- CHẾ ĐỘ SĂN HŨ ---
+      const jackpotSignal = this.detectJackpotCondition()
+      if (jackpotSignal) {
+        const { choice, betAmount } = jackpotSignal
+        this.bettingChoice = choice
+        this.currentBetAmount = betAmount
+
+        Log(
+          chalk.magenta(`[${new Date().toLocaleTimeString()}] 🎯 Jackpot Hunt kích hoạt! `) +
+          `Chuỗi ${JACKPOT_HUNT_CONSECUTIVE} ván ${choice} liên tiếp → Cược ${chalk.yellow(choice)} ${chalk.red(betAmount)} đ`,
+        )
+
+        if (this.currentBudget !== null && (this.currentBudget <= BET_STOP || betAmount > this.currentBudget)) {
+          Log(chalk.red(`[${new Date().toLocaleTimeString()}] Jackpot Hunt: Số dư không đủ. Dừng.`))
+          this.stop()
+          return
+        }
+
+        const betId = choice === "TAI" ? 1 : 2
+        const betCommand = `[6,"MiniGame","taixiuUnbalancedPlugin",{"cmd":2002,"b":${betAmount},"aid":1,"sid":${sessionId},"eid":${betId}}]`
+        if (this.mainGameConnection && this.mainGameConnection.connected) {
+          this.mainGameConnection.sendUTF(betCommand)
+          this.isBettingAllowed = false
+          this.lastBetAmount = betAmount
+          this.lastBetChoice = choice
+          this.jackpotHuntLastChoice = choice
+          this.jackpotHuntLastAmount = betAmount
+        }
+        this.previousSessionId = sessionId
+        return
+      }
+      // --- KẾT THÚC CHẾ ĐỘ SĂN HŨ ---
+
       // So sánh pool
       const taiPool = this.latestTaiPool;
       const xiuPool = this.latestXiuPool;
@@ -899,6 +1105,44 @@ class GameWorker {
         `Bỏ qua đặt cược cho phiên ${chalk.cyan(`#${sessionId}`)}: Hũ quá thấp.`,
       )
     }
+  }
+
+  /**
+   * Đặt cược theo quyết định của JackpotHuntManager (chế độ săn hũ 2 acc song song).
+   * Manager quyết định cửa (A = cửa săn hũ, B = cửa backup ngược lại) và mức cược,
+   * đồng thời gác điều kiện range hũ và số dư của cả 2 acc.
+   * @param {number} sessionId - ID phiên trò chơi hiện tại.
+   */
+  executeManagedBet(sessionId) {
+    if (this.isStopped || !this.manager) return
+
+    const decision = this.manager.requestBet(this, sessionId)
+    if (!decision) {
+      // Không có tín hiệu săn hũ, hoặc đã bị dừng — không cược ván này
+      this.previousSessionId = sessionId
+      return
+    }
+
+    const { choice, amount } = decision
+    this.bettingChoice = choice
+    this.currentBetAmount = amount
+
+    const betId = choice === "TAI" ? 1 : 2
+    const betCommand = `[6,"MiniGame","taixiuUnbalancedPlugin",{"cmd":2002,"b":${amount},"aid":1,"sid":${sessionId},"eid":${betId}}]`
+
+    if (this.mainGameConnection && this.mainGameConnection.connected) {
+      this.mainGameConnection.sendUTF(betCommand)
+      this.isBettingAllowed = false
+      this.lastBetAmount = amount
+      this.lastBetChoice = choice
+      Log(
+        chalk.magenta(`[${new Date().toLocaleTimeString()}] 🎯 [Hunt ${this.role}] `) +
+        `${this.username} đặt ${chalk.yellow(choice)} ${chalk.red(amount)} đ cho phiên ${chalk.cyan(`#${sessionId}`)}.`,
+      )
+    } else {
+      Log(chalk.red(`[Hunt ${this.role}] Không thể gửi lệnh đặt cược: Kết nối chưa sẵn sàng.`))
+    }
+    this.previousSessionId = sessionId
   }
 
   /**
@@ -1098,19 +1342,277 @@ class GameWorker {
   }
 }
 
+/*------- QUẢN LÝ SĂN HŨ 2 TÀI KHOẢN SONG SONG --------*/
+/**
+ * Điều phối 2 GameWorker chạy song song để săn hũ có phòng hộ (hedge):
+ * - Acc A đặt theo chiều có thể nổ hũ (chuỗi N ván cùng loại).
+ * - Acc B đặt cửa ngược lại để "backup" gỡ lại khi A thua.
+ * - Chỉ cược khi giá trị hũ nằm trong range cho phép (JACKPOT_HUNT_MIN..MAX).
+ * - Nếu 1 acc thiếu tiền hoặc lỗi kết nối → dừng cả 2 và báo Telegram.
+ */
+class JackpotHuntManager {
+  constructor(workerA, workerB) {
+    this.workerA = workerA
+    this.workerB = workerB
+    this.stopped = false
+    this.sessionDecisions = new Map() // sid -> { active, jackpotSide }
+    this.processedResultSids = new Set()
+    this.combinedLoggedThisRound = false // đã in tổng kết (theo số dư đã settle) cho ván hiện tại chưa
+
+    for (const [w, role] of [[workerA, "A"], [workerB, "B"]]) {
+      w.managedMode = true
+      w.manager = this
+      w.role = role
+    }
+  }
+
+  /**
+   * Khởi động cả 2 worker. Nếu 1 trong 2 thất bại, dừng tất cả.
+   */
+  async start() {
+    await Promise.all([this.workerA.start(), this.workerB.start()])
+  }
+
+  /** Worker có lịch sử dài hơn được dùng làm tham chiếu trạng thái game. */
+  refWorker() {
+    return this.workerB.gameHistory.length > this.workerA.gameHistory.length ? this.workerB : this.workerA
+  }
+
+  /**
+   * Tính (và cache) quyết định săn hũ cho 1 phiên: có kích hoạt không và cửa săn hũ là gì.
+   * Cache theo sid để cả A và B nhận cùng 1 quyết định nhất quán.
+   */
+  getDecisionForSession(sessionId) {
+    if (this.sessionDecisions.has(sessionId)) return this.sessionDecisions.get(sessionId)
+
+    const ref = this.refWorker()
+    let decision = { active: false, jackpotSide: null, betAmount: 0, outOfRange: false }
+    const jackpot = ref.currentJackpot
+    const inRange = jackpot >= JACKPOT_HUNT_MIN && jackpot <= JACKPOT_HUNT_MAX
+
+    if (inRange && ref.gameHistory.length >= JACKPOT_HUNT_CONSECUTIVE) {
+      const recent = ref.gameHistory.slice(-JACKPOT_HUNT_CONSECUTIVE)
+      if (recent.every((r) => r === recent[0])) {
+        // Mức cược tăng theo giá trị hũ (bảng khoảng); null = hũ ngoài range các bậc
+        const bet = computeJackpotHuntBet(jackpot)
+        decision = { active: true, jackpotSide: recent[0], betAmount: bet, outOfRange: bet === null }
+      }
+    }
+
+    this.sessionDecisions.set(sessionId, decision)
+    if (this.sessionDecisions.size > 50) {
+      this.sessionDecisions.delete(this.sessionDecisions.keys().next().value)
+    }
+    return decision
+  }
+
+  /**
+   * Kiểm tra số dư cả 2 acc đủ để cược tiếp hay không.
+   * @returns {{ok: boolean, offender?: GameWorker, reason?: string}}
+   */
+  checkBudgets(requiredAmount) {
+    for (const w of [this.workerA, this.workerB]) {
+      if (w.currentBudget === null) continue // chưa có số dư, tạm cho qua
+      if (w.currentBudget <= BET_STOP) {
+        return { ok: false, offender: w, reason: `Số dư dưới ngưỡng dừng (${convertVnd(w.currentBudget)} <= ${convertVnd(BET_STOP)})` }
+      }
+      if (requiredAmount && w.currentBudget < requiredAmount) {
+        return { ok: false, offender: w, reason: `Không đủ tiền cho ván này (${convertVnd(w.currentBudget)} < ${convertVnd(requiredAmount)})` }
+      }
+    }
+    return { ok: true }
+  }
+
+  /**
+   * Worker gọi khi đến giờ cược. Trả về { choice, amount } hoặc null (bỏ qua/đã dừng).
+   */
+  requestBet(worker, sessionId) {
+    if (this.stopped) return null
+
+    if (!worker.isBettingAllowed) {
+      Log(chalk.yellow(`[Hunt ${worker.role}] Chưa được phép đặt cược, chờ xác nhận cược trước đó.`))
+      return null
+    }
+
+    const decision = this.getDecisionForSession(sessionId)
+    if (!decision.active) {
+      Log(
+        chalk.gray(`[${new Date().toLocaleTimeString()}] [Hunt ${worker.role}] `) +
+        `Phiên #${sessionId}: không có tín hiệu săn hũ (chưa đủ chuỗi ${JACKPOT_HUNT_CONSECUTIVE} ván hoặc hũ ngoài MIN/MAX). Bỏ qua.`,
+      )
+      return null
+    }
+
+    // Hũ ngoài mọi khoảng bậc cược → dừng cả 2 acc theo cấu hình
+    if (decision.outOfRange) {
+      const jp = this.refWorker().currentJackpot
+      this.stopAll(`Hũ ${convertVnd(jp)} ngoài range bậc cược (JACKPOT_HUNT_BET_TIERS). Dừng cả 2 acc.`)
+      return null
+    }
+
+    const betAmount = decision.betAmount || JACKPOT_HUNT_BET
+
+    // Gác số dư cả 2 acc trước khi đặt
+    const budget = this.checkBudgets(betAmount)
+    if (!budget.ok) {
+      this.stopAll(`Tài khoản ${budget.offender.username} không đủ tiền cược: ${budget.reason}`, budget.offender)
+      return null
+    }
+
+    const opposite = decision.jackpotSide === "TAI" ? "XIU" : "TAI"
+    const choice = worker.role === "A" ? decision.jackpotSide : opposite
+    return { choice, amount: betAmount }
+  }
+
+  /**
+   * Worker gọi khi VỪA có kết quả (cmd:2006). Chỉ đánh dấu "chờ settle" cho ván mới;
+   * phần kiểm tra số dư / tổng kết để dành cho onBudgetSettled (khi số dư đã cập nhật xong).
+   */
+  onWorkerResult(worker, resultType, data) {
+    if (this.stopped) return
+    const sid = data.sid
+    if (this.processedResultSids.has(sid)) return // chỉ reset 1 lần / phiên
+    this.processedResultSids.add(sid)
+    if (this.processedResultSids.size > 100) {
+      this.processedResultSids.delete(this.processedResultSids.values().next().value)
+    }
+    this.lastSid = sid
+    this.combinedLoggedThisRound = false // mở khoá để in tổng kết khi cả 2 số dư đã settle
+  }
+
+  /**
+   * Worker gọi khi số dư của nó vừa cập nhật (đã settle). Khi CẢ 2 acc đã settle,
+   * in tổng kết + kiểm tra số dư & win/loss tổng hợp — tất cả dựa trên số dư đã settle.
+   */
+  onBudgetSettled() {
+    if (this.stopped) return
+    if (!this.workerA.budgetFresh || !this.workerB.budgetFresh) return // chờ acc còn lại settle
+    if (this.combinedLoggedThisRound) return
+    this.combinedLoggedThisRound = true
+
+    const profitOf = (w) =>
+      w.currentBudget !== null && w.initialBudget !== null ? w.currentBudget - w.initialBudget : 0
+    const pA = profitOf(this.workerA)
+    const pB = profitOf(this.workerB)
+    const combined = pA + pB
+    const fmt = (p) => (p >= 0 ? chalk.green("+" + convertVnd(p)) : chalk.red(convertVnd(p)))
+    Log(
+      chalk.magenta(`[${new Date().toLocaleTimeString()}] 📊 Tổng kết${this.lastSid ? ` #${this.lastSid}` : ""} `) +
+      `│ ${this.workerA.username}: ${fmt(pA)} │ ${this.workerB.username}: ${fmt(pB)} │ ` +
+      chalk.bold(`Tổng 2 acc: ${fmt(combined)}`),
+    )
+
+    // Kiểm tra số dư (đã settle) đủ cho ván tới chưa
+    const nextBet = computeJackpotHuntBet(this.refWorker().currentJackpot) || JACKPOT_HUNT_BET
+    const budget = this.checkBudgets(nextBet)
+    if (!budget.ok) {
+      this.stopAll(`Tài khoản ${budget.offender.username} không đủ tiền: ${budget.reason}`, budget.offender)
+      return
+    }
+
+    // Win/Loss tổng hợp 2 acc
+    if (WIN_STOP && combined >= WIN_STOP) {
+      this.stopAll(`🎉 Đạt mục tiêu thắng tổng hợp 2 acc (+${convertVnd(combined)} >= +${convertVnd(WIN_STOP)})`)
+      return
+    }
+    if (LOSS_STOP && combined <= -LOSS_STOP) {
+      this.stopAll(`🛑 Chạm giới hạn thua tổng hợp 2 acc (${convertVnd(combined)} <= -${convertVnd(LOSS_STOP)})`)
+    }
+  }
+
+  /** Worker báo lỗi kết nối → dừng cả 2 ngay lập tức. */
+  onWorkerConnectionFailure(worker, reason) {
+    if (this.stopped) return
+    this.stopAll(`Tài khoản ${worker.username} (acc ${worker.role}) lỗi kết nối: ${reason}`, worker)
+  }
+
+  /** Dừng cả 2 worker và gửi 1 báo cáo Telegram tổng hợp (idempotent). */
+  stopAll(reason, offender) {
+    if (this.stopped) return
+    this.stopped = true
+
+    Log(chalk.red(`[${new Date().toLocaleTimeString()}] 🛑 Jackpot Hunt Manager dừng cả 2 acc: ${reason}`))
+    try { this.workerA.stop(true) } catch (e) { /* noop */ }
+    try { this.workerB.stop(true) } catch (e) { /* noop */ }
+
+    const profitStr = (w) => {
+      if (w.currentBudget === null || w.initialBudget === null) return "?"
+      const p = w.currentBudget - w.initialBudget
+      return (p >= 0 ? "+" : "") + convertVnd(p)
+    }
+
+    sendTelegramAlert({
+      type: "warning",
+      title: "🎯 Jackpot Hunt: Đã dừng cả 2 tài khoản",
+      content: reason,
+      metadata: {
+        "Tài khoản A": this.workerA.username,
+        "Số dư A": this.workerA.currentBudget !== null ? convertVnd(this.workerA.currentBudget) : "?",
+        "Lợi nhuận A": profitStr(this.workerA),
+        "Tài khoản B": this.workerB.username,
+        "Số dư B": this.workerB.currentBudget !== null ? convertVnd(this.workerB.currentBudget) : "?",
+        "Lợi nhuận B": profitStr(this.workerB),
+        ...(offender ? { "Acc gây dừng": offender.username } : {}),
+      },
+    }).catch((err) => Log(chalk.red(`❌ Lỗi gửi Telegram khi dừng: ${err.message}`)))
+
+    activeJackpotManager = null
+  }
+
+  resetMartingaleState() {
+    this.workerA.resetMartingaleState()
+    this.workerB.resetMartingaleState()
+  }
+}
+
 /*------- CÁC HÀM ĐIỀU KHIỂN TRÒ CHƠI TOÀN CỤC --------*/
 let activeGameWorker = null
+let activeJackpotManager = null
 /**
  * Bắt đầu trò chơi bằng cách khởi tạo một thể hiện GameWorker mới.
  * Nếu trò chơi đang chạy, nó sẽ ghi lỗi.
  * @returns {Promise<void>} Một promise sẽ được giải quyết khi trò chơi bắt đầu hoặc bị từ chối khi có lỗi.
  */
 export const startGame = async () => {
-  if (activeGameWorker) {
+  if (activeGameWorker || activeJackpotManager) {
     logError("Trò chơi đang chạy. Vui lòng dừng nó trước.")
     return
   }
   const users = await readUsers()
+
+  // ===== CHẾ ĐỘ SĂN HŨ: yêu cầu đúng 2 tài khoản chạy song song =====
+  if (JACKPOT_HUNT) {
+    const selected = users.filter((u) => u.selected)
+    if (selected.length !== 2) {
+      return logError(
+        `Chế độ Săn Hũ (Jackpot Hunt) yêu cầu chọn ĐÚNG 2 tài khoản (hiện đang chọn ${selected.length}). Vui lòng chọn 2 acc rồi thử lại.`,
+      )
+    }
+
+    const buildWorker = (u) => {
+      const { name: username, password, infoData, signature } = u
+      const userInfo = infoData && infoData[4] ? infoData[4].info : null
+      if (!username || !signature || !userInfo) {
+        throw new Error(`Tài khoản "${u.name}" thiếu thông tin bắt buộc (tên, chữ ký hoặc info).`)
+      }
+      return new GameWorker({ username, password, info: userInfo, signature })
+    }
+
+    try {
+      const workerA = buildWorker(selected[0]) // cửa săn hũ
+      const workerB = buildWorker(selected[1]) // cửa backup
+      activeJackpotManager = new JackpotHuntManager(workerA, workerB)
+      await activeJackpotManager.start()
+      Log(chalk.green(`🎯 Chế độ Săn Hũ đã bắt đầu với 2 acc: ${workerA.username} (A/săn hũ) + ${workerB.username} (B/backup)`))
+      Log(chalk.yellow(`Mức cược mỗi ván: ${JACKPOT_HUNT_BET} đ | Chuỗi kích hoạt: ${JACKPOT_HUNT_CONSECUTIVE} ván | Range hũ: ${JACKPOT_HUNT_MIN} → ${JACKPOT_HUNT_MAX} đ`))
+    } catch (error) {
+      logError(`Không thể bắt đầu chế độ Săn Hũ: ${error.message}`)
+      if (activeJackpotManager) activeJackpotManager.stopAll(`Khởi động thất bại: ${error.message}`)
+      activeJackpotManager = null
+    }
+    return
+  }
+
   const selectedUser = users.find((u) => u.selected)
   if (!selectedUser) {
     return logError("Không tìm thấy người dùng được chọn. Vui lòng chọn một người dùng trong trình quản lý dữ liệu của bạn.",
@@ -1166,6 +1668,12 @@ export const startGame = async () => {
  * Nếu không có trò chơi nào đang hoạt động, nó sẽ ghi thông báo.
  */
 export const stopGame = () => {
+  if (activeJackpotManager) {
+    activeJackpotManager.stopAll("Người dùng dừng trò chơi.")
+    activeJackpotManager = null
+    Log(chalk.green("Chế độ Săn Hũ đã dừng bởi người dùng."))
+    return
+  }
   if (activeGameWorker) {
     activeGameWorker.stop() // Call stop without isAutoStop=true, indicating user-initiated stop
     activeGameWorker = null

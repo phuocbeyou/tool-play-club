@@ -10,7 +10,7 @@ import { openHtml } from './src/utils/htmlHelper.js';
 async function main() {
   showBanner()
 
-  // Khởi động API Server nếu port 3000 còn trống
+  // Khởi động API Server (cổng 3001 cho tool-play-club; xem server.js)
   await startServer();
 
   // Handle command-line arguments for non-interactive mode (PM2)

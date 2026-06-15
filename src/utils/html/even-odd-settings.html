@@ -224,6 +224,88 @@
         </div>
 
         <div class="section">
+            <h2>🎯 Săn Hũ (Jackpot Hunt)</h2>
+            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 18px; line-height: 1.6;">
+                Chạy song song <strong>2 tài khoản</strong>: acc A đặt cửa có thể nổ hũ, acc B đặt cửa backup ngược lại.
+                Chế độ này cần chọn <strong>ĐÚNG 2 tài khoản</strong> ở trang Quản Lý Tài Khoản. Mức cược thay đổi theo
+                <strong>khoảng giá trị hũ</strong> bên dưới; hũ ngoài mọi khoảng → bot dừng cả 2 acc
+                (Martingale/hệ số chỉ áp dụng cho chế độ 1 acc cũ).
+            </p>
+            <div class="settings-grid">
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="jackpotHunt"> Bật chế độ Săn Hũ (2 acc)
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label for="jackpotHuntBet">Mức cược mặc định khi săn hũ (đ):</label>
+                    <input type="number" id="jackpotHuntBet" value="20000">
+                </div>
+                <div class="form-group">
+                    <label for="jackpotHuntConsecutive">Số ván cùng loại liên tiếp để kích hoạt:</label>
+                    <input type="number" id="jackpotHuntConsecutive" value="2">
+                </div>
+                <div class="form-group">
+                    <label for="jackpotHuntMin">Hũ tối thiểu để săn (đ):</label>
+                    <input type="number" id="jackpotHuntMin" value="1000000">
+                </div>
+                <div class="form-group">
+                    <label for="jackpotHuntMax">Hũ tối đa để săn (đ):</label>
+                    <input type="number" id="jackpotHuntMax" value="100000000">
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="jackpotHuntMartingale"> Gấp thếp (chỉ chế độ 1 acc cũ)
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label for="jackpotHuntRate">Hệ số gấp thếp săn hũ:</label>
+                    <input type="number" id="jackpotHuntRate" step="0.1" value="2.0">
+                </div>
+            </div>
+
+            <div style="background: var(--bg-card); padding: 20px; border-radius: 12px; margin: 10px 0 20px; border: 1px solid var(--border);">
+                <h3 style="font-size: 1rem; margin-bottom: 6px; color: #38bdf8;">📈 Bậc cược theo khoảng giá trị hũ</h3>
+                <p style="color: var(--text-secondary); font-size: 0.82rem; margin-bottom: 15px; line-height: 1.6;">
+                    Mỗi bậc là 1 khoảng hũ <strong>[từ – đến]</strong> với mức cược riêng.
+                    Khi hũ <strong>NẰM NGOÀI mọi khoảng</strong> → bot <strong style="color: #fb923c;">DỪNG hẳn cả 2 acc</strong> (gửi Telegram).
+                    (VD: 5–10tr → 1.000đ, 10–20tr → 2.000đ, 20–50tr → 10.000đ). Thêm/xóa bậc sẽ tự lưu.
+                </p>
+                <div class="settings-grid">
+                    <div class="form-group">
+                        <label for="tierMin">Hũ từ (đ):</label>
+                        <input type="number" id="tierMin" placeholder="VD: 20000000">
+                    </div>
+                    <div class="form-group">
+                        <label for="tierMax">Hũ đến (đ):</label>
+                        <input type="number" id="tierMax" placeholder="VD: 50000000">
+                    </div>
+                    <div class="form-group">
+                        <label for="tierBet">Mức cược của bậc (đ):</label>
+                        <input type="number" id="tierBet" placeholder="VD: 10000">
+                    </div>
+                </div>
+                <button class="btn btn-success" onclick="addHuntTier()">➕ Thêm Bậc</button>
+            </div>
+
+            <table class="rules-table">
+                <thead>
+                    <tr>
+                        <th>Hũ từ (đ)</th>
+                        <th>Hũ đến (đ)</th>
+                        <th>Mức cược (đ)</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody id="huntTiersList">
+                    <!-- Load bằng JS -->
+                </tbody>
+            </table>
+
+            <button class="btn btn-primary" onclick="saveGameSettings()">💾 Lưu Cài Đặt</button>
+        </div>
+
+        <div class="section">
             <h2>📜 Quy Tắc Đặt Cược</h2>
             
             <div style="background: var(--bg-card); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border);">
@@ -289,7 +371,8 @@
 
     <script>
         let config = {};
-        const API_URL = 'http://localhost:3000/api/config/even-odd';
+        let huntBetTiers = []; // Bậc cược theo hũ: [{ jackpot, bet }]
+        const API_URL = 'http://localhost:3001/api/config/even-odd';
 
         document.addEventListener('DOMContentLoaded', () => {
             loadConfig();
@@ -319,7 +402,67 @@
             document.getElementById('winStop').value = gs.WIN_STOP || 200000;
             document.getElementById('lossStop').value = gs.LOSS_STOP || 100000;
 
+            // Săn Hũ (Jackpot Hunt)
+            document.getElementById('jackpotHunt').checked = gs.JACKPOT_HUNT || false;
+            document.getElementById('jackpotHuntBet').value = gs.JACKPOT_HUNT_BET || 20000;
+            document.getElementById('jackpotHuntConsecutive').value = gs.JACKPOT_HUNT_CONSECUTIVE || 2;
+            document.getElementById('jackpotHuntMin').value = gs.JACKPOT_HUNT_MIN || 1000000;
+            document.getElementById('jackpotHuntMax').value = gs.JACKPOT_HUNT_MAX || 100000000;
+            document.getElementById('jackpotHuntMartingale').checked = gs.JACKPOT_HUNT_MARTINGALE !== false;
+            document.getElementById('jackpotHuntRate').value = gs.JACKPOT_HUNT_RATE || 2.0;
+            huntBetTiers = Array.isArray(gs.JACKPOT_HUNT_BET_TIERS) ? gs.JACKPOT_HUNT_BET_TIERS.slice() : [];
+
+            renderHuntTiers();
             renderRules();
+        }
+
+        function renderHuntTiers() {
+            const tbody = document.getElementById('huntTiersList');
+            huntBetTiers.sort((a, b) => a.min - b.min);
+            if (huntBetTiers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-secondary);">Chưa có bậc nào — dùng mức cược mặc định (không có khái niệm ngoài range).</td></tr>';
+                return;
+            }
+            tbody.innerHTML = huntBetTiers.map(t => `
+                <tr>
+                    <td style="font-weight: 600;">${t.min.toLocaleString('vi-VN')} đ</td>
+                    <td>${t.max.toLocaleString('vi-VN')} đ</td>
+                    <td>${t.bet.toLocaleString('vi-VN')} đ</td>
+                    <td><button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="deleteHuntTier(${t.min})">🗑️ Xóa</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function addHuntTier() {
+            const min = parseInt(document.getElementById('tierMin').value);
+            const max = parseInt(document.getElementById('tierMax').value);
+            const bet = parseInt(document.getElementById('tierBet').value);
+            if (!min || min <= 0 || !max || max <= 0 || !bet || bet <= 0) {
+                showStatus('Nhập hũ từ / đến / mức cược hợp lệ (> 0)!', 'error');
+                return;
+            }
+            if (max <= min) {
+                showStatus('Hũ "đến" phải lớn hơn hũ "từ"!', 'error');
+                return;
+            }
+            const existing = huntBetTiers.find(t => t.min === min);
+            if (existing) {
+                existing.max = max;
+                existing.bet = bet;
+            } else {
+                huntBetTiers.push({ min, max, bet });
+            }
+            document.getElementById('tierMin').value = '';
+            document.getElementById('tierMax').value = '';
+            document.getElementById('tierBet').value = '';
+            renderHuntTiers();
+            saveGameSettings();
+        }
+
+        function deleteHuntTier(min) {
+            huntBetTiers = huntBetTiers.filter(t => t.min !== min);
+            renderHuntTiers();
+            saveGameSettings();
         }
 
         function renderRules() {
@@ -376,7 +519,15 @@
                 ZOMBIE: document.getElementById('zombie').checked,
                 COUNTDOWN_TIME: parseInt(document.getElementById('countdownTime').value) || 37,
                 WIN_STOP: parseInt(document.getElementById('winStop').value) || 200000,
-                LOSS_STOP: parseInt(document.getElementById('lossStop').value) || 100000
+                LOSS_STOP: parseInt(document.getElementById('lossStop').value) || 100000,
+                JACKPOT_HUNT: document.getElementById('jackpotHunt').checked,
+                JACKPOT_HUNT_BET: parseInt(document.getElementById('jackpotHuntBet').value) || 20000,
+                JACKPOT_HUNT_CONSECUTIVE: parseInt(document.getElementById('jackpotHuntConsecutive').value) || 2,
+                JACKPOT_HUNT_MIN: parseInt(document.getElementById('jackpotHuntMin').value) || 1000000,
+                JACKPOT_HUNT_MAX: parseInt(document.getElementById('jackpotHuntMax').value) || 100000000,
+                JACKPOT_HUNT_MARTINGALE: document.getElementById('jackpotHuntMartingale').checked,
+                JACKPOT_HUNT_RATE: parseFloat(document.getElementById('jackpotHuntRate').value) || 2.0,
+                JACKPOT_HUNT_BET_TIERS: huntBetTiers
             };
             await saveConfigToServer();
         }

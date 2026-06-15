@@ -195,6 +195,19 @@
         }
         .status-success { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
         .status-error { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .status-warning { background: rgba(249, 115, 22, 0.15); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.35); }
+        .status-info { background: rgba(2, 132, 199, 0.15); color: #38bdf8; border: 1px solid rgba(2, 132, 199, 0.35); }
+
+        .role-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-top: 6px;
+        }
+        .role-a { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); }
+        .role-b { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); }
 
         .stats-grid {
             display: grid;
@@ -253,6 +266,7 @@
 
         <div class="section">
             <h2>👥 Danh Sách Tài Khoản</h2>
+            <div id="modeBanner" class="status-message" style="display: none;"></div>
             <div id="accountsList" class="accounts-grid">
                 <!-- Danh sách load bằng JS -->
             </div>
@@ -261,14 +275,29 @@
 
     <script>
         let accounts = [];
-        const API_BASE = 'http://localhost:3000/api/config';
+        let jackpotHuntMode = false; // bật khi gameSettings.JACKPOT_HUNT === true
+        const API_BASE = 'http://localhost:3001/api/config';
 
         document.addEventListener('DOMContentLoaded', () => {
             loadAccounts();
         });
 
+        // Đọc cờ Săn Hũ từ cấu hình even-odd để biết cho chọn 1 hay 2 acc
+        async function loadHuntMode() {
+            try {
+                const res = await fetch(`${API_BASE}/even-odd`);
+                if (res.ok) {
+                    const cfg = await res.json();
+                    jackpotHuntMode = !!(cfg.gameSettings && cfg.gameSettings.JACKPOT_HUNT);
+                }
+            } catch (err) {
+                jackpotHuntMode = false; // lỗi/không có config → chế độ thường
+            }
+        }
+
         async function loadAccounts() {
             try {
+                await loadHuntMode();
                 const res = await fetch(`${API_BASE}/account`);
                 if (res.ok) {
                     accounts = await res.json();
@@ -366,11 +395,25 @@
 
         async function toggleActive(username, categoryGame) {
             const idx = accounts.findIndex(acc => acc[2] === username && acc[4]?.categoryGame === categoryGame);
-            if (idx !== -1) {
-                const currentStatus = accounts[idx][4]?.isActive || false;
-                
+            if (idx === -1) return;
+
+            const currentStatus = accounts[idx][4]?.isActive || false;
+
+            if (jackpotHuntMode) {
+                // Chế độ Săn Hũ: cho phép tối đa 2 acc cùng categoryGame active
                 if (!currentStatus) {
-                    // Tắt các tài khoản khác cùng categoryGame
+                    const activeCount = accounts.filter(acc => acc[4]?.categoryGame === categoryGame && acc[4]?.isActive).length;
+                    if (activeCount >= 2) {
+                        showStatus('Chế độ Săn Hũ chỉ cho phép 2 acc. Bỏ chọn 1 acc trước.', 'error');
+                        return;
+                    }
+                    accounts[idx][4].isActive = true;
+                } else {
+                    accounts[idx][4].isActive = false;
+                }
+            } else {
+                // Chế độ thường: single-select (chỉ 1 acc cùng categoryGame)
+                if (!currentStatus) {
                     accounts.forEach(acc => {
                         if (acc[4] && acc[4].categoryGame === categoryGame) {
                             acc[4].isActive = false;
@@ -380,11 +423,11 @@
                 } else {
                     accounts[idx][4].isActive = false;
                 }
-
-                await saveAccounts();
-                displayAccounts();
-                updateStats();
             }
+
+            await saveAccounts();
+            displayAccounts();
+            updateStats();
         }
 
         async function deleteAccount(username, categoryGame) {
@@ -407,12 +450,32 @@
             }
         }
 
+        function renderModeBanner() {
+            const banner = document.getElementById('modeBanner');
+            if (!banner) return;
+            if (jackpotHuntMode) {
+                const activeCount = accounts.filter(acc => acc[4]?.isActive).length;
+                const okCount = activeCount === 2;
+                banner.className = `status-message ${okCount ? 'status-info' : 'status-warning'}`;
+                banner.innerHTML = `🎯 <strong>Chế độ Săn Hũ đang BẬT</strong> — hãy chọn <strong>ĐÚNG 2 acc</strong>. `
+                    + `Acc ở TRÊN = <strong>A (săn hũ)</strong>, acc DƯỚI = <strong>B (backup)</strong>. `
+                    + `Đã chọn <strong>${activeCount}/2</strong>${okCount ? ' ✅' : ' ⚠️'}`;
+            } else {
+                banner.className = 'status-message status-info';
+                banner.innerHTML = 'ℹ️ <strong>Chế độ thường</strong> — chỉ chọn 1 acc.';
+            }
+            banner.style.display = 'block';
+        }
+
         function displayAccounts() {
+            renderModeBanner();
             const list = document.getElementById('accountsList');
             if (accounts.length === 0) {
                 list.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary);">Chưa có tài khoản nào được cấu hình.</p>';
                 return;
             }
+
+            let huntActiveSeen = 0; // đếm thứ tự acc active để gán vai A/B (theo thứ tự danh sách = thứ tự socket dùng)
 
             list.innerHTML = accounts.map(arr => {
                 const gameType = arr[1];
@@ -426,6 +489,17 @@
                     const parsed = typeof info.info === 'string' ? JSON.parse(info.info) : info.info;
                     if (parsed && parsed.displayName) displayName = parsed.displayName;
                 } catch (e) {}
+
+                // Vai A/B trong chế độ Săn Hũ
+                let roleBadge = '';
+                if (jackpotHuntMode && isActive) {
+                    huntActiveSeen++;
+                    if (huntActiveSeen === 1) {
+                        roleBadge = '<div><span class="role-badge role-a">🎯 A · Săn hũ</span></div>';
+                    } else if (huntActiveSeen === 2) {
+                        roleBadge = '<div><span class="role-badge role-b">🛡️ B · Backup</span></div>';
+                    }
+                }
 
                 const border = isActive ? '2px solid var(--accent-green)' : '1px solid var(--border)';
                 const statusLabel = isActive ? 'ĐANG CHỌN (ACTIVE)' : 'Tạm dừng';
@@ -441,6 +515,7 @@
                             <div><strong>Username:</strong> ${username}</div>
                             <div><strong>Trò chơi:</strong> <span class="account-category">Tài Xỉu</span></div>
                             <div><strong>Trạng thái:</strong> <span style="color: ${statusColor}; font-weight: 600;">${statusLabel}</span></div>
+                            ${roleBadge}
                         </div>
                         <div class="account-actions">
                             <button class="btn btn-warning" onclick="toggleActive('${username}', '${categoryGame}')">${isActive ? '⏸️ Deactivate' : '⭐ Set Active'}</button>
@@ -453,7 +528,13 @@
 
         function updateStats() {
             document.getElementById('totalAccounts').textContent = accounts.length;
-            document.getElementById('activeAccounts').textContent = accounts.filter(acc => acc[4]?.isActive).length;
+            const activeCount = accounts.filter(acc => acc[4]?.isActive).length;
+            const activeEl = document.getElementById('activeAccounts');
+            activeEl.textContent = jackpotHuntMode ? `${activeCount}/2` : activeCount;
+            // Trong chế độ Săn Hũ: xanh khi đủ 2 acc, cam khi chưa đủ
+            activeEl.style.color = jackpotHuntMode
+                ? (activeCount === 2 ? 'var(--accent-green)' : 'var(--accent-orange)')
+                : '#38bdf8';
         }
 
         function showStatus(msg, type) {
