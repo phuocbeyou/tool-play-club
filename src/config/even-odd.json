@@ -15,33 +15,33 @@
     "JACKPOT_HUNT_MARTINGALE": false,
     "JACKPOT_HUNT_RATE": 2,
     "JACKPOT_HUNT_CONSECUTIVE": 2,
-    "JACKPOT_HUNT_MIN": 1000000,
+    "JACKPOT_HUNT_MIN": 20000000,
     "JACKPOT_HUNT_MAX": 300000000,
     "JACKPOT_HUNT_BET_TIERS": [
       {
-        "min": 1000000,
-        "max": 5000000,
-        "bet": 1000
-      },
-      {
-        "min": 5000000,
-        "max": 15000000,
-        "bet": 2000
-      },
-      {
-        "min": 15000000,
-        "max": 35000000,
-        "bet": 3000
-      },
-      {
-        "min": 35000000,
-        "max": 75000000,
+        "min": 20000000,
+        "max": 50000000,
         "bet": 5000
       },
       {
-        "min": 75000000,
-        "max": 300000000,
+        "min": 50000000,
+        "max": 100000000,
         "bet": 10000
+      },
+      {
+        "min": 100000000,
+        "max": 150000000,
+        "bet": 20000
+      },
+      {
+        "min": 150000000,
+        "max": 200000000,
+        "bet": 20000
+      },
+      {
+        "min": 200000000,
+        "max": 300000000,
+        "bet": 20000
       }
     ]
   },

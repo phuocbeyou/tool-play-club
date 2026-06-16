@@ -227,6 +227,17 @@ class GameWorker {
     this.zombieReconnectTimeout = null
     this.zombieFailureCount = 0 // Đếm số lần kết nối thất bại liên tiếp
 
+    // Managed-mode reconnect (săn hũ 2 acc): kết nối lại nhanh 15s/lần, tối đa 3 lần rồi mới dừng
+    this.maxManagedReconnect = 3
+    this.managedReconnectDelay = 15 * 1000 // 15 giây
+    this.managedReconnectAttempts = 0
+    this.managedReconnectTimeout = null
+    this.isManagedReconnecting = false
+
+    // Watchdog: phát hiện kết nối "chết treo" (không bắn close/error)
+    this.lastMainMessageAt = Date.now()
+    this.watchdogTimeoutMs = 90 * 1000 // không nhận message > 90s ⇒ coi như mất kết nối
+
     // Gắn các hàm xử lý sự kiện vào ngữ cảnh 'this'
     this.handleConnectFailed = this.handleConnectFailed.bind(this)
     this.handleConnectionClose = this.handleConnectionClose.bind(this)
@@ -308,6 +319,10 @@ class GameWorker {
       clearTimeout(this.zombieReconnectTimeout)
       this.zombieReconnectTimeout = null
     }
+    if (this.managedReconnectTimeout) {
+      clearTimeout(this.managedReconnectTimeout)
+      this.managedReconnectTimeout = null
+    }
     if (this.betTimeout) {
       clearTimeout(this.betTimeout)
       this.betTimeout = null
@@ -350,7 +365,7 @@ class GameWorker {
     Log(chalk.red(`Kết nối thất bại (${clientName}): ${error.toString()}`))
 
     if (this.managedMode && this.manager && !this.isStopped) {
-      this.manager.onWorkerConnectionFailure(this, `Kết nối thất bại (${clientName}): ${error.toString()}`)
+      this.handleManagedReconnect(clientName, error)
       return
     }
 
@@ -373,7 +388,7 @@ class GameWorker {
     Log(chalk.yellow(`Kết nối đã đóng (${clientName}): ${description.toString()}`))
 
     if (this.managedMode && this.manager && !this.isStopped) {
-      this.manager.onWorkerConnectionFailure(this, `Kết nối đã đóng (${clientName}): ${description.toString()}`)
+      this.handleManagedReconnect(clientName, new Error(`Connection closed: ${description}`))
       return
     }
 
@@ -395,7 +410,7 @@ class GameWorker {
     Log(chalk.red(`Lỗi (${clientName}): ${error.toString()}`))
 
     if (this.managedMode && this.manager && !this.isStopped) {
-      this.manager.onWorkerConnectionFailure(this, `Lỗi (${clientName}): ${error.toString()}`)
+      this.handleManagedReconnect(clientName, error)
       return
     }
 
@@ -406,6 +421,41 @@ class GameWorker {
     } else {
       Log(chalk.red(`Không tự động kết nối lại ${clientName} vì trò chơi đã dừng.`))
     }
+  }
+
+  /**
+   * Kết nối lại cho chế độ săn hũ 2 acc: kiểu zombie (force kill + reconnect) nhưng nhanh —
+   * 15s/lần, tối đa 3 lần. Hết 3 lần thất bại → dừng cả 2 acc + Telegram (qua manager).
+   * @param {string} clientName - Tên client
+   * @param {Error} error - Lỗi gây ra việc kết nối lại
+   */
+  handleManagedReconnect(clientName, error) {
+    if (this.isStopped) return
+    if (this.isManagedReconnecting) return // đang trong 1 chu kỳ reconnect, bỏ qua event trùng
+
+    this.managedReconnectAttempts++
+    if (this.managedReconnectAttempts > this.maxManagedReconnect) {
+      Log(chalk.red(`[${new Date().toLocaleTimeString()}] [Hunt ${this.role}] Kết nối lại thất bại sau ${this.maxManagedReconnect} lần.`))
+      this.manager.onWorkerConnectionFailure(
+        this,
+        `Kết nối lại thất bại sau ${this.maxManagedReconnect} lần (15s/lần) cho ${clientName}: ${error.message}`,
+      )
+      return
+    }
+
+    this.isManagedReconnecting = true
+    Log(
+      chalk.magenta(`[${new Date().toLocaleTimeString()}] [Hunt ${this.role}] `) +
+      `Mất kết nối ${clientName}. Thử kết nối lại sau 15s (lần ${this.managedReconnectAttempts}/${this.maxManagedReconnect})...`,
+    )
+    this.forceKillConnections()
+    this.managedReconnectTimeout = setTimeout(() => {
+      this.isManagedReconnecting = false // cho phép lần thử kế nếu lần này lại fail
+      this.start().catch((startError) => {
+        Log(chalk.red(`[Hunt ${this.role}] Kết nối lại lỗi: ${startError.message}`))
+        // start() fail sẽ tự trigger handleConnectFailed → handleManagedReconnect lần kế
+      })
+    }, this.managedReconnectDelay)
   }
 
   /**
@@ -512,6 +562,7 @@ class GameWorker {
       Log(chalk.yellow(`Nhận tin nhắn không phải UTF8 từ MainGame: ${msg.type}. Bỏ qua.`))
       return
     }
+    this.lastMainMessageAt = Date.now() // watchdog: đánh dấu kết nối còn sống
     const messageString = msg.utf8Data
     let parsedMessage
     try {
@@ -1164,12 +1215,28 @@ class GameWorker {
     setTimeout(() => {
       this.mainGameConnection.sendUTF(`[6,"MiniGame","taixiuUnbalancedPlugin",{"cmd":2000}]`)
     }, 200)
+    this.lastMainMessageAt = Date.now()
     this.addManagedInterval(() => {
       if (this.isStopped) return
       if (this.mainGameConnection && this.mainGameConnection.connected) {
         this.mainGameConnection.sendUTF(`[7,"Simms",${++this.pingCounter},0]`)
       }
     }, 5000)
+
+    // Watchdog: nếu quá lâu không nhận được message nào từ MainGame ⇒ kết nối "chết treo"
+    // (không bắn close/error) ⇒ xử lý như mất kết nối để kích hoạt reconnect/dừng.
+    this.addManagedInterval(() => {
+      if (this.isStopped || this.isManagedReconnecting) return
+      if (!this.mainGameConnection || !this.mainGameConnection.connected) return
+      const silentMs = Date.now() - this.lastMainMessageAt
+      if (silentMs > this.watchdogTimeoutMs) {
+        Log(
+          chalk.red(`[${new Date().toLocaleTimeString()}] ⚠️ Watchdog: `) +
+          `${this.managedMode ? `[Hunt ${this.role}] ` : ""}Không nhận dữ liệu MainGame ${Math.round(silentMs / 1000)}s — coi như mất kết nối.`,
+        )
+        this.handleConnectionError(new Error(`Watchdog: im lặng ${Math.round(silentMs / 1000)}s`), "MainGame")
+      }
+    }, 15000)
   }
 
   /**
@@ -1227,6 +1294,9 @@ class GameWorker {
         this.mainGameConnection = connection
         Log(chalk.cyan("Kết nối MainGame thành công."))
         this.reconnectAttempts = 0 // Reset attempts on successful connect
+        this.managedReconnectAttempts = 0 // Reset managed-mode reconnect
+        this.isManagedReconnecting = false
+        this.lastMainMessageAt = Date.now()
         if (this.reconnectTimeout) {
           clearTimeout(this.reconnectTimeout)
           this.reconnectTimeout = null
@@ -1254,6 +1324,8 @@ class GameWorker {
         this.simmsConnection = connection
         Log(chalk.cyan("Kết nối Simms thành công."))
         this.reconnectAttempts = 0 // Reset attempts on successful connect
+        this.managedReconnectAttempts = 0 // Reset managed-mode reconnect
+        this.isManagedReconnecting = false
         if (this.reconnectTimeout) {
           clearTimeout(this.reconnectTimeout)
           this.reconnectTimeout = null
@@ -1305,6 +1377,12 @@ class GameWorker {
       clearTimeout(this.zombieReconnectTimeout)
       this.zombieReconnectTimeout = null
     }
+    // Clear managed-mode reconnect timeout
+    if (this.managedReconnectTimeout) {
+      clearTimeout(this.managedReconnectTimeout)
+      this.managedReconnectTimeout = null
+    }
+    this.isManagedReconnecting = false
     if (this.betTimeout) {
       clearTimeout(this.betTimeout)
       this.betTimeout = null
@@ -1378,6 +1456,12 @@ class JackpotHuntManager {
     return this.workerB.gameHistory.length > this.workerA.gameHistory.length ? this.workerB : this.workerA
   }
 
+  /** Cả 2 acc đều đang kết nối ổn định (để giữ hedge, không đặt lệch khi 1 acc đang reconnect). */
+  bothConnected() {
+    const ok = (w) => !!(w.mainGameConnection && w.mainGameConnection.connected) && !w.isManagedReconnecting
+    return ok(this.workerA) && ok(this.workerB)
+  }
+
   /**
    * Tính (và cache) quyết định săn hũ cho 1 phiên: có kích hoạt không và cửa săn hũ là gì.
    * Cache theo sid để cả A và B nhận cùng 1 quyết định nhất quán.
@@ -1428,6 +1512,12 @@ class JackpotHuntManager {
    */
   requestBet(worker, sessionId) {
     if (this.stopped) return null
+
+    // Giữ hedge: chỉ đặt khi CẢ 2 acc online. Nếu 1 acc đang reconnect → bỏ qua ván này (không đặt lệch).
+    if (!this.bothConnected()) {
+      Log(chalk.yellow(`[Hunt ${worker.role}] Một acc đang mất kết nối/kết nối lại — bỏ qua ván #${sessionId} để giữ hedge.`))
+      return null
+    }
 
     if (!worker.isBettingAllowed) {
       Log(chalk.yellow(`[Hunt ${worker.role}] Chưa được phép đặt cược, chờ xác nhận cược trước đó.`))
