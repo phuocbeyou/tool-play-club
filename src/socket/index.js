@@ -609,7 +609,6 @@ class GameWorker {
       this.latestGameResult = parsedMessage[1]
       const sumResult = parsedMessage[1].d1 + parsedMessage[1].d2 + parsedMessage[1].d3
       const resultType = sumResult > 10 ? "TAI" : "XIU"
-      const betThisRound = this.lastBetChoice !== null // worker có đặt cược ở phiên này không
       this.logOnce(
         chalk.blue(`[${new Date().toLocaleTimeString()}] `) +
         `Kết quả phiên ${chalk.cyan(`#${parsedMessage[1].sid}`)}: ` +
@@ -731,15 +730,12 @@ class GameWorker {
       }
       this.logOnce(chalk.gray(`Lịch sử gần đây: [${this.gameHistory.join(", ")}]`))
 
-      // Chỉ lấy lại số dư khi acc này CÓ cược ở ván vừa rồi (tránh log số dư thừa khi không cược).
-      // Lúc này tiền thắng/thua đã settle nên số dư mới sẽ phản ánh đúng lãi/lỗ.
-      if (betThisRound) {
-        this.budgetFresh = false
-        this.shouldRequestBudget = true
-      }
+      // Sau MỖI ván: lấy lại số dư đã settle để luôn hiển thị lãi/lỗ (kể cả ván không cược).
+      this.budgetFresh = false
+      this.shouldRequestBudget = true
 
-      // Báo cho manager (chế độ săn hũ 2 acc) để reset trạng thái tổng kết cho phiên mới
-      if (this.managedMode && this.manager && betThisRound) {
+      // Báo cho manager (chế độ săn hũ 2 acc) để in tổng kết khi cả 2 số dư đã settle
+      if (this.managedMode && this.manager) {
         this.manager.onWorkerResult(this, resultType, parsedMessage[1])
       }
     }
